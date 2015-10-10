@@ -1,0 +1,3 @@
+#!/bin/bash
+
+rm *.txt *.param_limits *.params *used_seeds
