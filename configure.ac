@@ -83,7 +83,7 @@ AC_CHECK_FUNCS([memset strerror strtol pow sqrt])
 
 # Check for GSL.
 dnl GSL
-AC_ARG_WITH(    gsllib, 
+AC_ARG_WITH(    gsllib,
                 [  --with-gsllib=DIR       DIR=-LDIR, has libgsl and libgslcblas],
                 gsllib="$withval/",gsllib= )
 
@@ -102,13 +102,13 @@ if test $gsllib; then
                     [ -lm -lgslcblas -L$gsllib ] )
 else
     AC_MSG_RESULT(  Checking GSL )
-    AC_CHECK_LIB(   gsl, gsl_rng_alloc, 
+    AC_CHECK_LIB(   gsl, gsl_rng_alloc,
                     ,
-                    AC_MSG_ERROR("libgsl not found; use --with-gsllib"), 
+                    AC_MSG_ERROR("libgsl not found; use --with-gsllib"),
                     [ -lgsl -lgslcblas ] )
-    AC_CHECK_LIB(   gslcblas, cblas_dsdot, 
+    AC_CHECK_LIB(   gslcblas, cblas_dsdot,
                     ,
-                    AC_MSG_ERROR("libgslcblas not found; use --with-gsllib"), 
+                    AC_MSG_ERROR("libgslcblas not found; use --with-gsllib"),
                     [ -lgsl -lgslcblas ] )
 fi
 
@@ -120,24 +120,16 @@ AC_ARG_WITH(    gslinc,
 AC_MSG_RESULT(  Checking GSL Headers )
 AC_CHECK_HEADERS(   [   gsl/gsl_errno.h \
                         gsl/gsl_math.h \
-                        gsl/gsl_integration.h \
                         gsl/gsl_rng.h \
-                        gsl/gsl_randist.h \
-                        gsl/gsl_histogram.h \
-                        gsl/gsl_vector.h \
-                        gsl/gsl_matrix.h ],
+                        gsl/gsl_randist.h ],
                     ,
                     [   if test $gslinc; then
                             AC_MSG_ERROR("gsl headers not in location specified by --with-gslinc")
                         elif test $gsllib; then
                             AC_CHECK_HEADER([   $gsllib/../include/gsl/gsl_errno.h\
                                                 $gsllib/../include/gsl_math.h \
-                                                $gsllib/../include/gsl_integration.h \
                                                 $gsllib/../include/gsl_rng.h \
-                                                $gsllib/../include/gsl_randist.h \
-                                                $gsllib/../include/gsl_histogram.h \
-                                                $gsllib/../include/gsl_vector.h \
-                                                $gsllib/../include/gsl_matrix.h ],
+                                                $gsllib/../include/gsl_randist.h ],
                                             [gslinc="$gsllib/../include/" CPPFLAGS="$CPPFLAGS -I$gslinc"],
                                             AC_MSG_ERROR("Can't find gsl includes in user specified location; use --with-gslinc"))
                         else
@@ -146,7 +138,7 @@ AC_CHECK_HEADERS(   [   gsl/gsl_errno.h \
 
 #	Checking for mpi
 dnl MPI
-AC_ARG_WITH(    mpilib, 
+AC_ARG_WITH(    mpilib,
                 [  --with-mpilib=DIR       DIR=-LDIR, has libmpi_cxx ],
                 mpilib="$withval/",mpilib= )
 
@@ -157,11 +149,11 @@ if test $mpilib; then
     else
         LDFLAGS="$LDFLAGS -L$mpilib"
     fi
-    AC_CHECK_LIB(   mpi, main, 
+    AC_CHECK_LIB(   mpi, main,
                     ,
                     AC_MSG_ERROR("libmpi not in location specified by --with-mpilib: $mpilib"),
                     [ -lmpi -L$mpilib ] )
-    AC_CHECK_LIB(   mpi_cxx, main, 
+    AC_CHECK_LIB(   mpi_cxx, main,
                     ,
                     AC_MSG_ERROR("libmpi_cxx not in location specified by --with-mpilib: $mpilib"),
                     [ -lmpi_cxx -L$mpilib ] )
