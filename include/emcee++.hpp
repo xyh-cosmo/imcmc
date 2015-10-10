@@ -106,9 +106,9 @@ namespace imcmc{
             //	be used.  This is quite common when someone is trying to constraining model parameters using different combinations of
             //	data sets.
             void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void* ),
-                                 imcmc_vector_string 	modelparam,
-                                 void 					*model,
-                                 void 					*data );
+                                 imcmc_vector_string modelparam,
+                                 void                *model,
+                                 void                *data );
 
             bool    prior( imcmc_double& full_param );	//	check Samplingparams, if out of prior range, return false
 
