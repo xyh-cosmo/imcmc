@@ -122,17 +122,17 @@ namespace parser{
         double      Read_Double_from_File( std::string infile, std::string key );
 
         //  read in an array of values, and the number of readed values will be also returned
-        std::string* 	Read_Array_of_String_from_File( std::string infile,
-                                                        std::string key,
-                                                        int         &array_size );
-
-        int* 			Read_Array_of_Int_from_File( std::string infile,
+        std::string* Read_Array_of_String_from_File( std::string infile,
                                                      std::string key,
-                                                     int         &array_size	);
+                                                     int         &array_size );
 
-        double* 		Read_Array_of_Double_from_File( std::string infile,
-                                                        std::string key,
-                                                        int         &array_size );
+        int*         Read_Array_of_Int_from_File( std::string infile,
+                                                  std::string key,
+                                                  int         &array_size	);
+
+        double*      Read_Array_of_Double_from_File( std::string infile,
+                                                     std::string key,
+                                                     int         &array_size );
 
         //  for know size
         void Read_Array_from_File( std::string infile,
