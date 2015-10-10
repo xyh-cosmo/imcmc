@@ -24,42 +24,40 @@
 namespace imcmc{
 namespace parser{
     namespace Read{
+        bool Has_File( std::string paramfile );           //  test whether a file exist
+        bool Is_Commented( std::string line );            //  check whether the given line is commented, if commented, true will be return
 
-      bool Has_File( std::string paramfile );           //  test whether a file exist
-      bool Is_Commented( std::string line );            //  check whether the given line is commented, if commented, true will be return
+        std::string Remove_Comments( std::string line );  //	extract un-commented parts of a line
+        void        Remove_TabSpace( std::string& value, bool info=false );
 
-      std::string Remove_Comments( std::string line );  //	extract un-commented parts of a line
-      void        Remove_TabSpace( std::string& value, bool info=false );
+        bool        Is_Array( std::string param );
+        std::string GetArrayName( std::string param );     //	A(:) means that A is a vector, but the size is unknown ...
 
-	    //	A(:) means that A is a vector, but the size is unknown ...
-		  bool        Is_Array( std::string param );
-		  std::string GetArrayName( std::string param );
+        //  check if the given line has the key you wanted, not case sensitive
+        bool Has_Key( std::string line, std::string key );
+        bool Has_Key_in_File( std::string file, std::string key );
 
-      //  check if the given line has the key you wanted, not case sensitive
-      bool Has_Key( std::string line, std::string key );
-		  bool Has_Key_in_File( std::string file, std::string key );
+        //  find the beginning and ending postions for value(s)
+        std::string::size_type Begin_of_Value( std::string line );
+        std::string::size_type End_of_Value( std::string line );
 
-      //  find the beginning and ending postions for value(s)
-      std::string::size_type Begin_of_Value( std::string line );
-      std::string::size_type End_of_Value( std::string line );
+        //  count the number of values in the given line
+        int Num_of_Value(	std::string            line,
+                            std::string::size_type begin,
+                            std::string::size_type end,
+                            std::string            type="string" );
 
-      //  count the number of values in the given line
-		  int Num_of_Value(	std::string            line,
-							          std::string::size_type begin,
-							          std::string::size_type end,
-							          std::string            type="string" );
+        int Num_of_Value_for_Key( std::string infile,
+					              std::string key,
+					              std::string type="string"	);
 
-      int Num_of_Value_for_Key(	std::string infile,
-									              std::string key,
-									              std::string type="string"	);
+        //  added @2014-11-26, to handel empty value cases, while for boolean values, empty means false
+        bool Has_Value( std::string infile, std::string key, std::string type );
+        bool Is_Empty( std::string line );
 
-      //  added @2014-11-26, to handel empty value cases, while for boolean values, empty means false
-      bool Has_Value( std::string infile, std::string key, std::string type );
-      bool Is_Empty( std::string line );
-
-      //  convert string to int / double
-      int     String_to_Int( std::string str );
-      double  String_to_Double( std::string str );
+        //  convert string to int / double
+        int     String_to_Int( std::string str );
+        double  String_to_Double( std::string str );
 
 	    //	int to string
 		  std::string Int_to_String( int a );
