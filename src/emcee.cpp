@@ -4,23 +4,23 @@
 using namespace imcmc::parser;
 
 namespace imcmc{
-	
+
     emcee_workspace::emcee_workspace(){
-	    rank_size			= 0;
-	    walker_num			= 0;
-	    burnin_step			= 0;
-	    chain_num			= 0;
-	    chain_size			= 0;
+        rank_size           = 0;
+        walker_num          = 0;
+        burnin_step         = 0;
+        chain_num           = 0;
+        chain_size          = 0;
         total_accepts       = 0;
         total_rejects       = 0;
-	    sampling_param_num	= 0;
-	    full_param_num		= 0;
-	    chain_root			= "";
-	    chain_name			= "";
+        sampling_param_num  = 0;
+        full_param_num      = 0;
+        chain_root          = "";
+        chain_name          = "";
         config_file         = "";
 
-        walker_initialized  = false;
-        _searched_lndet_min_chisq_min_ = false;
+        walker_initialized              = false;
+        _searched_lndet_min_chisq_min_  = false;
     }
 
     emcee_workspace::~emcee_workspace(){

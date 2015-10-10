@@ -21,13 +21,13 @@ namespace imcmc{
         rank        = MPI::COMM_WORLD.Get_rank();
         rank_size   = MPI::COMM_WORLD.Get_size();
 
-	    if( !Read::Has_File(paramfile) ){
-		    std::cout << "--->\tCannot open parameter file: " << paramfile << "\n\n";
-		    MPI::COMM_WORLD.Abort(-110);
-	    }
+        if( !Read::Has_File(paramfile) ){
+            std::cout << "--->\tCannot open parameter file: " << paramfile << "\n\n";
+            MPI::COMM_WORLD.Abort(-110);
+        }
 
-	    if( Read::Has_Key_in_File( paramfile, "walker_num" ) ){
-		    Read::Read_Value_from_File(paramfile, "walker_num", walker_num);
+        if( Read::Has_Key_in_File( paramfile, "walker_num" ) ){
+            Read::Read_Value_from_File(paramfile, "walker_num", walker_num);
 
             if( rank_size == 1 )
                 parallel_mode   = 0;
@@ -37,9 +37,9 @@ namespace imcmc{
                 parallel_mode   = 2;
                 walker_num      = 2*rank_size;
                 std::cout << "emcee_workspace::Init() --> you have lots of cores, set the number of \
-                            walkers to twice of number of ranks\n";
+                             walkers to twice of number of ranks\n";
             }
-	    }
+        }
 
 	    if( Read::Has_Key_in_File( paramfile, "burnin_step" ) ){
 		    Read::Read_Value_from_File(paramfile, "burnin_step", burnin_step);
@@ -90,11 +90,11 @@ namespace imcmc{
 	    gsl_rng_set( rand_seed, seed );
 	    rand_num = gsl_rng_get(rand_seed);
 
-	    MPI::COMM_WORLD.Gather( &seed, 1, MPI::UNSIGNED_LONG, 
-                                random_seeds, 1, MPI::UNSIGNED_LONG, 
+	    MPI::COMM_WORLD.Gather( &seed, 1, MPI::UNSIGNED_LONG,
+                                random_seeds, 1, MPI::UNSIGNED_LONG,
                                 ROOT_RANK );
-	    MPI::COMM_WORLD.Gather( &rand_num, 1, MPI::UNSIGNED_LONG, 
-                                first_number, 1, MPI::UNSIGNED_LONG, 
+	    MPI::COMM_WORLD.Gather( &rand_num, 1, MPI::UNSIGNED_LONG,
+                                first_number, 1, MPI::UNSIGNED_LONG,
                                 ROOT_RANK );
 
 	    if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
@@ -130,8 +130,8 @@ namespace imcmc{
 	    if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
             std::cout   << "\nemcee_workspace::init_param():\n"
                         << "\treading sampling parameters from: " + config_file << "\n";
-		    std::cout   << std::setw(15) << "params" << ": " 
-					    << std::setw(15) << "fid-value" << "  " 
+		    std::cout   << std::setw(15) << "params" << ": "
+					    << std::setw(15) << "fid-value" << "  "
 					    << std::setw(15) << "min-value" << "  "
 					    << std::setw(15) << "max-value" << "\n";
 
@@ -143,11 +143,11 @@ namespace imcmc{
 	    }
 
 	    imcmc_double_iterator it = full_param.begin();
-	
+
 	    while( it != full_param.end() ){
 
 		    ++full_param_num;
-		
+
 		    int nvalue = Read::Num_of_Value_for_Key( config_file, it->first );
 
 		    if( nvalue > 0 ){
@@ -166,13 +166,13 @@ namespace imcmc{
 					    full_param[it->first]  		= par[0];
 					    full_param_min[it->first]  	= par[1];
 					    full_param_max[it->first]  	= par[2];
-					
+
 					    sampling_param_name.push_back(it->first);
 					    ++sampling_param_num;
 
                         if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
                             param_limits_os << std::left << std::setw(25) << "limits[" + it->first + "]"
-                                            << " = " 
+                                            << " = "
                                             << std::setw(10) << par[1] << " "
                                             << std::setw(10) << par[2] << "\n";
                         }
@@ -193,8 +193,8 @@ namespace imcmc{
 			    }
 
 			    if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
-				    std::cout   << std::setw(15) << it->first << ": " 
-							    << std::setw(15) << full_param[it->first] << "  " 
+				    std::cout   << std::setw(15) << it->first << ": "
+							    << std::setw(15) << full_param[it->first] << "  "
 							    << std::setw(15) << full_param_min[it->first] << "  "
 							    << std::setw(15) << full_param_max[it->first] << "\n";
 			    }
@@ -239,7 +239,7 @@ namespace imcmc{
                     for( int m=0; m<nvalue; ++m ){
                         for( int n=m+1; n<nvalue; ++n ){
                             if( name[m] == name[n] ){
-                                std::string errmesg = "\nemcee_workspace::init_param()\n\tfound duplicate of parameter: " 
+                                std::string errmesg = "\nemcee_workspace::init_param()\n\tfound duplicate of parameter: "
                                                     + name[m] + " in output_params, remove it.";
                                 throw std::runtime_error(errmesg);
                             }
@@ -263,7 +263,7 @@ namespace imcmc{
                         ++i;
                     }
                     else{
-                        std::string err = "\nemcee_workspace::init_param():\n" + name[i] 
+                        std::string err = "\nemcee_workspace::init_param():\n" + name[i]
                             + " is not in the sampling parameter list, check your input file.\n";
                         throw std::runtime_error(err);
                     }
@@ -295,7 +295,7 @@ namespace imcmc{
             imcmc_double_iterator it_min    = full_param_min.begin();
             imcmc_double_iterator it_max    = full_param_max.begin();
 
-		    outfile << std::setw(15) << "params" << ":" 
+		    outfile << std::setw(15) << "params" << ":"
 				    << std::setw(15) << "min-value" << "  "
 				    << std::setw(15) << "max-value" << "  "
                     << std::setw(15) << "do sampling?" << "\n";
@@ -366,7 +366,7 @@ namespace imcmc{
         walker["LnDet"]     = new double[walker_num];
         walker["Chisq"]     = new double[walker_num];
 
-        //  Now initialize 
+        //  Now initialize
         imcmc_double	full_param_temp(full_param);
 
 	    int *sendcounts	= new int[rank_size];
@@ -418,8 +418,8 @@ namespace imcmc{
                 double value_width  = full_param_max[*it] - full_param_min[*it];
 
             //  just give the walkers some reasonable values...
-                walker[*it][i]      = gsl_ran_flat( rand_seed, 
-                                                    mean_value - 0.1*value_width, 
+                walker[*it][i]      = gsl_ran_flat( rand_seed,
+                                                    mean_value - 0.1*value_width,
                                                     mean_value + 0.1*value_width );
 
                 full_param_temp[*it]     = walker[*it][i];
@@ -437,13 +437,13 @@ namespace imcmc{
 
         while( it != sampling_param_name.end() ){
 
-            MPI::COMM_WORLD.Gatherv(	&walker[*it][i_start], 
+            MPI::COMM_WORLD.Gatherv(	&walker[*it][i_start],
 							            sendcounts[rank], MPI::DOUBLE,
-							            walker[*it], 
+							            walker[*it],
 							            recvcounts, displace, MPI::DOUBLE,
 	            						ROOT_RANK );
 
-            MPI::COMM_WORLD.Bcast( 	walker[*it], 
+            MPI::COMM_WORLD.Bcast( 	walker[*it],
 						            walker_num,
 						            MPI::DOUBLE,
 						            ROOT_RANK	);
@@ -451,36 +451,36 @@ namespace imcmc{
             ++it;
         }
 
-        MPI::COMM_WORLD.Gatherv(	&walker["LnPost"][i_start], 
+        MPI::COMM_WORLD.Gatherv(	&walker["LnPost"][i_start],
 						            sendcounts[rank], MPI::DOUBLE,
-						            walker["LnPost"], 
+						            walker["LnPost"],
 						            recvcounts, displace, MPI::DOUBLE,
             						ROOT_RANK );
 
-        MPI::COMM_WORLD.Gatherv(	&walker["LnDet"][i_start], 
+        MPI::COMM_WORLD.Gatherv(	&walker["LnDet"][i_start],
 						            sendcounts[rank], MPI::DOUBLE,
-						            walker["LnDet"], 
+						            walker["LnDet"],
 						            recvcounts, displace, MPI::DOUBLE,
             						ROOT_RANK );
 
-        MPI::COMM_WORLD.Gatherv(	&walker["Chisq"][i_start], 
+        MPI::COMM_WORLD.Gatherv(	&walker["Chisq"][i_start],
 						            sendcounts[rank], MPI::DOUBLE,
-						            walker["Chisq"], 
+						            walker["Chisq"],
 						            recvcounts, displace, MPI::DOUBLE,
             						ROOT_RANK );
 
     //  broadcast walkers to each proc
-        MPI::COMM_WORLD.Bcast( 	walker["LnPost"], 
+        MPI::COMM_WORLD.Bcast( 	walker["LnPost"],
 					            walker_num,
 					            MPI::DOUBLE,
 					            ROOT_RANK	);
 
-        MPI::COMM_WORLD.Bcast( 	walker["LnDet"], 
+        MPI::COMM_WORLD.Bcast( 	walker["LnDet"],
 					            walker_num,
 					            MPI::DOUBLE,
 					            ROOT_RANK	);
 
-        MPI::COMM_WORLD.Bcast( 	walker["Chisq"], 
+        MPI::COMM_WORLD.Bcast( 	walker["Chisq"],
 					            walker_num,
 					            MPI::DOUBLE,
 					            ROOT_RANK	);
@@ -534,8 +534,8 @@ namespace imcmc{
             while( it != sampling_param_name.end() ){
                 double mean_value   = 0.5*(full_param_min[*it]+full_param_max[*it]);
                 double value_width  = full_param_max[*it] - full_param_min[*it];
-                walker[*it][i]      = gsl_ran_flat( rand_seed, 
-                                                    mean_value - 0.1*value_width, 
+                walker[*it][i]      = gsl_ran_flat( rand_seed,
+                                                    mean_value - 0.1*value_width,
                                                     mean_value + 0.1*value_width );
                 full_param_temp[*it]     = walker[*it][i];
                 ++it;
