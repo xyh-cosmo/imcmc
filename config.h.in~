@@ -12,14 +12,26 @@
 /* Define to 1 if you have the <gsl/gsl_errno.h> header file. */
 #undef HAVE_GSL_GSL_ERRNO_H
 
+/* Define to 1 if you have the <gsl/gsl_histogram.h> header file. */
+#undef HAVE_GSL_GSL_HISTOGRAM_H
+
+/* Define to 1 if you have the <gsl/gsl_integration.h> header file. */
+#undef HAVE_GSL_GSL_INTEGRATION_H
+
 /* Define to 1 if you have the <gsl/gsl_math.h> header file. */
 #undef HAVE_GSL_GSL_MATH_H
+
+/* Define to 1 if you have the <gsl/gsl_matrix.h> header file. */
+#undef HAVE_GSL_GSL_MATRIX_H
 
 /* Define to 1 if you have the <gsl/gsl_randist.h> header file. */
 #undef HAVE_GSL_GSL_RANDIST_H
 
 /* Define to 1 if you have the <gsl/gsl_rng.h> header file. */
 #undef HAVE_GSL_GSL_RNG_H
+
+/* Define to 1 if you have the <gsl/gsl_vector.h> header file. */
+#undef HAVE_GSL_GSL_VECTOR_H
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
