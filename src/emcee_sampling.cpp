@@ -17,7 +17,7 @@ namespace imcmc{
         if( chain_size  % walker_num == 0 )
             sampling_loops  = chain_size/walker_num;
         else
-            sampling_loops    = chain_size/walker_num + 1;
+            sampling_loops  = chain_size/walker_num + 1;
 
         // make sure searching lndet_min and chisq_min will be done at least one time during burn-in
         _searched_lndet_min_chisq_min_ = false;
@@ -125,7 +125,7 @@ namespace imcmc{
 
         do{
             z     = gsl_ran_flat(rand_seed, zmin, zmax);
-            gx     = gsl_ran_flat(rand_seed,  0.0, gmax);
+            gx    = gsl_ran_flat(rand_seed,  0.0, gmax);
         } while( gx > g(z) );
 
         return z;
@@ -202,9 +202,9 @@ namespace imcmc{
             int *id_max     = new int[size];
             int *id_width   = new int[size];
 
-            int *sendcounts    = new int[size];
-            int *recvcounts    = new int[size];
-            int *displace    = new int[size];
+            int *sendcounts = new int[size];
+            int *recvcounts = new int[size];
+            int *displace   = new int[size];
 
             int *walker_id = new int[walker_num];
             int walker_num_half = walker_num / 2;
@@ -222,13 +222,12 @@ namespace imcmc{
                     num_each_proc   = walker_num_half / size;
 
                     for( int i=0; i<size; ++i ){
-                        id_width[i] = num_each_proc;
-                        id_min[i]    = i * num_each_proc;
-                        id_max[i]    = id_min[i] + ( num_each_proc - 1 );
-
-                        sendcounts[i]    = id_width[i];
-                        recvcounts[i]    = sendcounts[i];
-                        displace[i]        = i * num_each_proc;
+                        id_width[i]   = num_each_proc;
+                        id_min[i]     = i * num_each_proc;
+                        id_max[i]     = id_min[i] + ( num_each_proc - 1 );
+                        sendcounts[i] = id_width[i];
+                        recvcounts[i] = sendcounts[i];
+                        displace[i]   = i * num_each_proc;
                     }
                 }
                 else{
@@ -240,23 +239,22 @@ namespace imcmc{
                         throw std::runtime_error(err);
                     }
 
-                    id_min[0]   = 0;
+                    id_min[0]     = 0;
                     id_max[0]     = id_width[0] - 1;
-
-                    sendcounts[0]    = id_width[0];
-                    recvcounts[0]    = sendcounts[0];
-                    displace[0]        = 0;
+                    sendcounts[0] = id_width[0];
+                    recvcounts[0] = sendcounts[0];
+                    displace[0]   = 0;
 
                     num_each_proc    = walker_num_half/size + 1;
 
                     for( int i=1; i<size; ++i ){
-                        id_width[i]    = num_each_proc;
-                        id_min[i]    = id_width[0] + (i-1) * num_each_proc;
-                        id_max[i]    = id_min[i] + ( num_each_proc - 1 );
+                        id_width[i]   = num_each_proc;
+                        id_min[i]     = id_width[0] + (i-1) * num_each_proc;
+                        id_max[i]     = id_min[i] + ( num_each_proc - 1 );
 
-                        sendcounts[i]   = id_width[i] ;
-                        recvcounts[i]    = sendcounts[i];
-                        displace[i]        = (i-1) * num_each_proc + id_width[0];
+                        sendcounts[i] = id_width[i] ;
+                        recvcounts[i] = sendcounts[i];
+                        displace[i]   = (i-1) * num_each_proc + id_width[0];
                     }
                 }
 
@@ -310,17 +308,17 @@ namespace imcmc{
                 MPI::COMM_WORLD.Barrier();
 
                 //  broadcast walkers to each proc
-                MPI::COMM_WORLD.Bcast(     walker["LnPost"],
+                MPI::COMM_WORLD.Bcast(  walker["LnPost"],
                                         walker_num,
                                         MPI::DOUBLE,
                                         ROOT_RANK    );
 
-                MPI::COMM_WORLD.Bcast(     walker["LnDet"],
+                MPI::COMM_WORLD.Bcast(  walker["LnDet"],
                                         walker_num,
                                         MPI::DOUBLE,
                                         ROOT_RANK    );
 
-                MPI::COMM_WORLD.Bcast(     walker["Chisq"],
+                MPI::COMM_WORLD.Bcast(  walker["Chisq"],
                                         walker_num,
                                         MPI::DOUBLE,
                                         ROOT_RANK    );
@@ -344,7 +342,7 @@ namespace imcmc{
                                                 recvcounts, displace, MPI::DOUBLE,
                                                 ROOT_RANK );
 
-                    MPI::COMM_WORLD.Bcast(     walker[*it],
+                    MPI::COMM_WORLD.Bcast(  walker[*it],
                                             walker_num,
                                             MPI::DOUBLE,
                                             ROOT_RANK    );
@@ -377,17 +375,17 @@ namespace imcmc{
                                             ROOT_RANK );
 
                 //  broadcast walkers to each proc
-                MPI::COMM_WORLD.Bcast(     walker["LnPost"],
+                MPI::COMM_WORLD.Bcast(  walker["LnPost"],
                                         walker_num,
                                         MPI::DOUBLE,
                                         ROOT_RANK    );
 
-                MPI::COMM_WORLD.Bcast(     walker["LnDet"],
+                MPI::COMM_WORLD.Bcast(  walker["LnDet"],
                                         walker_num,
                                         MPI::DOUBLE,
                                         ROOT_RANK    );
 
-                MPI::COMM_WORLD.Bcast(     walker["Chisq"],
+                MPI::COMM_WORLD.Bcast(  walker["Chisq"],
                                         walker_num,
                                         MPI::DOUBLE,
                                         ROOT_RANK    );
@@ -400,38 +398,38 @@ namespace imcmc{
 
                 it = sampling_param_name.begin();
                 while( it != sampling_param_name.end() ){
-                    MPI::COMM_WORLD.Gather(    &walker[*it][rank],
+                    MPI::COMM_WORLD.Gather( &walker[*it][rank],
                                             1, MPI::DOUBLE,
                                             walker[*it],
                                             1, MPI::DOUBLE,
                                             ROOT_RANK );
 
-                    MPI::COMM_WORLD.Bcast(     walker[*it],
+                    MPI::COMM_WORLD.Bcast(  walker[*it],
                                             walker_num,
                                             MPI::DOUBLE,
                                             ROOT_RANK    );
                     ++it;
                 }
 
-                MPI::COMM_WORLD.Gather(    &accept[rank],
+                MPI::COMM_WORLD.Gather( &accept[rank],
                                         1, MPI::INT,
                                         accept,
                                         1, MPI::INT,
                                         ROOT_RANK );
 
-                MPI::COMM_WORLD.Gather(    &walker["LnPost"][rank],
+                MPI::COMM_WORLD.Gather( &walker["LnPost"][rank],
                                         1, MPI::DOUBLE,
                                         walker["LnPost"],
                                         1, MPI::DOUBLE,
                                         ROOT_RANK );
 
-                MPI::COMM_WORLD.Gather(    &walker["LnDet"][rank],
+                MPI::COMM_WORLD.Gather( &walker["LnDet"][rank],
                                         1, MPI::DOUBLE,
                                         walker["LnDet"],
                                         1, MPI::DOUBLE,
                                         ROOT_RANK );
 
-                MPI::COMM_WORLD.Gather(    &walker["Chisq"][rank],
+                MPI::COMM_WORLD.Gather( &walker["Chisq"][rank],
                                         1, MPI::DOUBLE,
                                         walker["Chisq"],
                                         1, MPI::DOUBLE,
@@ -440,17 +438,17 @@ namespace imcmc{
                 MPI::COMM_WORLD.Barrier();
 
                 //  broadcast walkers to each proc
-                MPI::COMM_WORLD.Bcast(     walker["LnPost"],
+                MPI::COMM_WORLD.Bcast(  walker["LnPost"],
                                         walker_num,
                                         MPI::DOUBLE,
                                         ROOT_RANK    );
 
-                MPI::COMM_WORLD.Bcast(     walker["LnDet"],
+                MPI::COMM_WORLD.Bcast(  walker["LnDet"],
                                         walker_num,
                                         MPI::DOUBLE,
                                         ROOT_RANK    );
 
-                MPI::COMM_WORLD.Bcast(     walker["Chisq"],
+                MPI::COMM_WORLD.Bcast(  walker["Chisq"],
                                         walker_num,
                                         MPI::DOUBLE,
                                         ROOT_RANK    );
@@ -461,13 +459,13 @@ namespace imcmc{
 
                 it = sampling_param_name.begin();
                 while( it != sampling_param_name.end() ){
-                    MPI::COMM_WORLD.Gather(    &walker[*it][rankx],
+                    MPI::COMM_WORLD.Gather( &walker[*it][rankx],
                                             1, MPI::DOUBLE,
                                             walker[*it],
                                             1, MPI::DOUBLE,
                                             ROOT_RANK );
 
-                    MPI::COMM_WORLD.Bcast(     walker[*it],
+                    MPI::COMM_WORLD.Bcast(  walker[*it],
                                             walker_num,
                                             MPI::DOUBLE,
                                             ROOT_RANK    );
@@ -475,25 +473,25 @@ namespace imcmc{
                     ++it;
                 }
 
-                MPI::COMM_WORLD.Gather(    &accept[rankx],
+                MPI::COMM_WORLD.Gather( &accept[rankx],
                                         1, MPI::INT,
                                         accept,
                                         1, MPI::INT,
                                         ROOT_RANK );
 
-                MPI::COMM_WORLD.Gather(    &walker["LnPost"][rankx],
+                MPI::COMM_WORLD.Gather( &walker["LnPost"][rankx],
                                         1, MPI::DOUBLE,
                                         walker["LnPost"],
                                         1, MPI::DOUBLE,
                                         ROOT_RANK );
 
-                MPI::COMM_WORLD.Gather(    &walker["LnDet"][rankx],
+                MPI::COMM_WORLD.Gather( &walker["LnDet"][rankx],
                                         1, MPI::DOUBLE,
                                         walker["LnDet"],
                                         1, MPI::DOUBLE,
                                         ROOT_RANK );
 
-                MPI::COMM_WORLD.Gather(    &walker["Chisq"][rankx],
+                MPI::COMM_WORLD.Gather( &walker["Chisq"][rankx],
                                         1, MPI::DOUBLE,
                                         walker["Chisq"],
                                         1, MPI::DOUBLE,
@@ -502,17 +500,17 @@ namespace imcmc{
                 MPI::COMM_WORLD.Barrier();
 
                 //  broadcast walkers to each proc
-                MPI::COMM_WORLD.Bcast(     walker["LnPost"],
+                MPI::COMM_WORLD.Bcast(  walker["LnPost"],
                                         walker_num,
                                         MPI::DOUBLE,
                                         ROOT_RANK    );
 
-                MPI::COMM_WORLD.Bcast(     walker["LnDet"],
+                MPI::COMM_WORLD.Bcast(  walker["LnDet"],
                                         walker_num,
                                         MPI::DOUBLE,
                                         ROOT_RANK    );
 
-                MPI::COMM_WORLD.Bcast(     walker["Chisq"],
+                MPI::COMM_WORLD.Bcast(  walker["Chisq"],
                                         walker_num,
                                         MPI::DOUBLE,
                                         ROOT_RANK    );
