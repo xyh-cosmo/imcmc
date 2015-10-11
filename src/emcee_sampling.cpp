@@ -40,6 +40,7 @@ namespace imcmc{
                 chain_name = chain_root + "_" + Read::IntToString(i) + ".txt";
 
             if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+                
                 out_stream.open(chain_name.c_str(), std::ofstream::out);
 
                 if( !out_stream.good() )
@@ -48,7 +49,8 @@ namespace imcmc{
                 //  write parameter names into the first line of the chain file
                 imcmc_vector_string_iterator it = output_param_name.begin();
 
-                if( use_cosmomc_std_format ){
+                //  Write the first line
+                if( use_cosmomc_std_format && write_params_as_chain_header ){
                     out_stream << "# standard cosmomc format\n";
                     out_stream << "#";
                     out_stream << std::setw(_OUT_WIDTH_-1) << "weight" << std::setw(_OUT_WIDTH_) << "-2log(L)";
@@ -59,9 +61,12 @@ namespace imcmc{
                     out_stream << std::setw(_OUT_WIDTH_-1) << "probability" << std::setw(_OUT_WIDTH_) << "chisq";
                 }
 
-                while( it != output_param_name.end() ){   //  updates only the sampling parameters
-                    out_stream << std::setw(_OUT_WIDTH_) << *it << "";
-                    ++it;
+                //  Write the second line
+                if( write_params_as_chain_header ){
+                    while( it != output_param_name.end() ){   //  updates only the sampling parameters
+                        out_stream << std::setw(_OUT_WIDTH_) << *it << "";
+                        ++it;
+                    }
                 }
 
                 out_stream << "\n";

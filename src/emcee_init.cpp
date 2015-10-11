@@ -71,9 +71,14 @@ namespace imcmc{
 
         if( Read::Has_Key_in_File( paramfile, "use_cosmomc_std_format" ) ){
             use_cosmomc_std_format    = Read::Read_Bool_from_File(paramfile, "use_cosmomc_std_format");
+
+            if( Read::Has_Key_in_File( paramfile, "write_params_as_chain_header" ) ){
+                write_params_as_chain_header = Read::Read_Bool_from_File(paramfile, "write_params_as_chain_header");
+            }
         }
         else{
-            use_cosmomc_std_format    = false;
+            use_cosmomc_std_format          = false;
+            write_params_as_chain_header    = false;
         }
 
     //  setup seeds for the random number generators
