@@ -1,6 +1,6 @@
 /*
- *	parser++: a C++ parser
- *	This parser can be embbed into any other projects, it depends only on the standard libs
+ *    parser++: a C++ parser
+ *    This parser can be embbed into any other projects, it depends only on the standard libs
  *
  *  TODO: some functions of this parser will be re-written in templates.
  */
@@ -27,11 +27,11 @@ namespace parser{
         bool Has_File( std::string paramfile );           //  test whether a file exist
         bool Is_Commented( std::string line );            //  check whether the given line is commented, if commented, true will be return
 
-        std::string Remove_Comments( std::string line );  //	extract un-commented parts of a line
+        std::string Remove_Comments( std::string line );  //    extract un-commented parts of a line
         void        Remove_TabSpace( std::string& value, bool info=false );
 
         bool        Is_Array( std::string param );
-        std::string GetArrayName( std::string param );     //	A(:) means that A is a vector, but the size is unknown ...
+        std::string GetArrayName( std::string param );     //    A(:) means that A is a vector, but the size is unknown ...
 
         //  check if the given line has the key you wanted, not case sensitive
         bool Has_Key( std::string line, std::string key );
@@ -49,7 +49,7 @@ namespace parser{
 
         int Num_of_Value_for_Key( std::string infile,
                                   std::string key,
-                                  std::string type="string"	);
+                                  std::string type="string" );
 
         //  added @2014-11-26, to handel empty value cases, while for boolean values, empty means false
         bool Has_Value( std::string infile, std::string key, std::string type );
@@ -59,7 +59,7 @@ namespace parser{
         int     String_to_Int( std::string str );
         double  String_to_Double( std::string str );
 
-	    //	int to string
+        //    int to string
         std::string Int_to_String( int a );
         std::string IntToString( int a );
         std::string DoubleToString( double par, int precision=5 );  //  convert doubles to strings.
@@ -90,12 +90,12 @@ namespace parser{
         void Read_Array_of_String_from_Line( std::string line,
                                              std::string str_array[],
                                              int         size,
-                                             bool        warn=false	);
+                                             bool        warn=false );
 
         void Read_Array_of_Int_from_Line( std::string  line,
                                           int          int_array[],
                                           int          size,
-                                          bool         warn=false	);
+                                          bool         warn=false );
 
         void Read_Array_of_Double_from_Line( std::string  line,
                                              double       double_array[],
@@ -108,7 +108,7 @@ namespace parser{
         void Read_Value_from_File( std::string infile, std::string key, int& value );
         void Read_Value_from_File( std::string infile, std::string key, double& value );
 
-        //	void Read_Value_from_File( std::string infile, std::string key, bool& value );	//	this one is not necessary, since we always use strings "true" / "false" in *.ini files
+        //    void Read_Value_from_File( std::string infile, std::string key, bool& value );    //    this one is not necessary, since we always use strings "true" / "false" in *.ini files
 
         //  BRead_*_*_*
         //  'B' means return a bool value
@@ -128,7 +128,7 @@ namespace parser{
 
         int*         Read_Array_of_Int_from_File( std::string infile,
                                                   std::string key,
-                                                  int         &array_size	);
+                                                  int         &array_size );
 
         double*      Read_Array_of_Double_from_File( std::string infile,
                                                      std::string key,
@@ -138,7 +138,7 @@ namespace parser{
         void Read_Array_from_File( std::string infile,
                                    std::string key,
                                    std::string array[],
-                                   int         array_size	);
+                                   int         array_size );
 
         void Read_Array_from_File( std::string infile,
                                    std::string key,
@@ -148,13 +148,13 @@ namespace parser{
         void Read_Array_from_File( std::string infile,
                                    std::string key,
                                    double      array[],
-                                   int         array_size	);
+                                   int         array_size );
 
         //  modified version for given size of array
         void Read_Array_of_String_from_File(  std::string infile,
                                               std::string key,
                                               std::string str_array[],
-                                              int         array_size	);
+                                              int         array_size );
 
         void Read_Array_of_Int_from_File( std::string infile,
                                           std::string key,
@@ -166,22 +166,22 @@ namespace parser{
                                              double      double_array[],
                                              int         array_size );
 
-        //	BRead_*_*_*
-        //	B means return a bool value
+        //    BRead_*_*_*
+        //    B means return a bool value
         bool BRead_Array_from_File( std::string infile,
                                     std::string key,
                                     std::string array[],
-                                    int         array_size	);
+                                    int         array_size );
 
         bool BRead_Array_from_File( std::string infile,
                                     std::string key,
                                     int         array[],
-                                    int         array_size	);
+                                    int         array_size );
 
         bool BRead_Array_from_File( std::string infile,
                                     std::string key,
                                     double      array[],
-                                    int         array_size	);
+                                    int         array_size );
     }
 
     namespace Write{
@@ -192,4 +192,4 @@ namespace parser{
 
 }
 
-#endif	// __PARSER_CPP__
+#endif    // __PARSER_CPP__
