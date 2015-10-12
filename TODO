@@ -1,16 +1,19 @@
 Feb-5-2015
-    Currently only emcee sampler has been included, later I will include in other commonly used
+  Currently only emcee sampler has been included, later I will include in other commonly used
 algorithms, such as Metropolis-Hastings, Gibbs, Hamiltonian, etc ..
 
 Feb-16-2015
-    How about writing a paper on the design of the structure of imcmc?
+  How about writing a paper on the design of the structure of imcmc?
 
 Mar-19-2015
-    Add support for derived parameters.
+  Add support for derived parameters.
 
 Mar-27-2015
-	  Add convergence check/diagnosis
+  Add convergence check/diagnosis
 
 Oct-10-2015
   Planned to add other algorithms, i.e., the traditional Metropolis-Hastings,
 Hamiltonian Monte Carlo and an interface to MultiNest.
+
+Oct-12-2015
+  Write a document.
