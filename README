@@ -1,2 +1,1 @@
-# imcmc
-A C++ implemented Affine-Invariant Ensemble Sampler
+A C++ implemented MCMC library
