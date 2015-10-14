@@ -1,4 +1,4 @@
-#include "ensemble++.hpp"
+#include "ensemble.hpp"
 #include "parser++.hpp"
 
 using namespace imcmc::parser;

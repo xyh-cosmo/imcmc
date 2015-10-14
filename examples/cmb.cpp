@@ -1,5 +1,5 @@
 #include <iostream>
-#include <ensemble++.hpp>
+#include "ensemble.hpp"
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_integration.h>
 

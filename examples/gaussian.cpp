@@ -1,4 +1,4 @@
-#include "ensemble++.hpp"
+#include "ensemble.hpp"
 using namespace std;
 using namespace imcmc;
 

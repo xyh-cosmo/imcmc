@@ -182,7 +182,7 @@ AC_CHECK_HEADERS(   [mpi.h],
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES(    [ Makefile
                       src/Makefile
-                      tests/Makefile  ]   )
+                      examples/Makefile  ]   )
 AC_OUTPUT
 
 # Summarize configuration.

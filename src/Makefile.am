@@ -1,4 +1,4 @@
-EXTRA_DIST = 
+EXTRA_DIST =
 
 lib_LTLIBRARIES = libimcmc.la
 libimcmc_la_CXXFLAGS = $(OPENMP_CFLAGS) -I$(top_srcdir)/include
@@ -13,7 +13,7 @@ libimcmc_la_SOURCES =   ensemble.cpp               \
 
 #   $(includedir)/@PACKAGE@ is set to /usr/local/include/imcmc by default
 imcmcincdir = $(includedir)/@PACKAGE@
-imcmcinc_HEADERS =  $(top_srcdir)/include/ensemble++.hpp       \
+imcmcinc_HEADERS =  $(top_srcdir)/include/ensemble.hpp       \
                     $(top_srcdir)/include/imcmc.hpp         \
                     $(top_srcdir)/include/parser++.hpp
 

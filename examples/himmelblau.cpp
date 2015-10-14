@@ -1,17 +1,16 @@
-//  Testing example: Rosenbrock
+//  Testing example: Himmelblau function
 
-#include "ensemble++.hpp"
-
+#include "ensemble.hpp"
 using namespace std;
 using namespace imcmc;
 
-struct Rosenbrock{
+struct Himmelblau{
     imcmc_vector_string p_name;
     imcmc_double        p;
 
-    Rosenbrock(){
-        p_name.push_back("x1");
-        p_name.push_back("x2");
+    Himmelblau(){
+        p_name.push_back("x");
+        p_name.push_back("y");
 
         imcmc_vector_string_iterator it = p_name.begin();
         while( it != p_name.end() ){
@@ -29,17 +28,14 @@ struct Rosenbrock{
     }
 
     double Chisq(){
-        double chisq = 0;
-        chisq = (1-p["x2"])*(1-p["x2"]) + 100*pow(p["x1"]-p["x2"]*p["x2"], 2);
-        return chisq;
+        return pow(p["x"]*p["x"]+p["y"]-11,2) + pow(p["x"]+p["y"]*p["y"]-7,2);
     }
 };
 
 double TestLike( imcmc_double& full_param, double& lndet, double& chisq, void* model, void* data ){
-
-    Rosenbrock *r = static_cast<Rosenbrock *>(model);
-    r->Update(full_param);
-    chisq = r->Chisq();
+    Himmelblau *h = static_cast<Himmelblau *>(model);
+    h->Update(full_param);
+    chisq = h->Chisq();
     lndet = 0;
     return -0.5*chisq;
 }
@@ -50,10 +46,10 @@ int main( int argc, char **argv )
 
     ensemble_workspace ew;
 
-    Rosenbrock R;
+    Himmelblau H;
 
-    ew.add_likelihood( TestLike, R.p_name, &R, NULL );
-    ew.init("rosenbrock.ini");
+    ew.add_likelihood( TestLike, H.p_name, &H, NULL );
+    ew.init("himmelblau.ini");
     ew.do_sampling();
 
     MPI::Finalize();

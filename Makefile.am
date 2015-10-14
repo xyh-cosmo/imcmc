@@ -1,14 +1,13 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src tests
+SUBDIRS = src examples
 
 EXTRA_DIST  =   TODO                    \
 	            include                 \
-	            tests/gaussian.ini      \
-                tests/gaussian.py       \
-	            tests/rosenbrock.ini    \
-                tests/rosenbrock.py     \
-	            tests/himmelblau.ini    \
-                tests/himmelblau.py     \
-                tests/cmb.ini			\
-				tests/clean_tests
-
+	            examples/gaussian.ini      \
+                examples/gaussian.py       \
+	            examples/rosenbrock.ini    \
+                examples/rosenbrock.py     \
+	            examples/himmelblau.ini    \
+                examples/himmelblau.py     \
+                examples/cmb.ini			\
+				examples/clean_tests
