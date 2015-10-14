@@ -1,11 +1,11 @@
-#include "emcee++.hpp"
+#include "ensemble++.hpp"
 #include "parser++.hpp"
 
 using namespace imcmc::parser;
 
 namespace imcmc{
 
-    emcee_workspace::emcee_workspace(){
+    ensemble_workspace::ensemble_workspace(){
         rank_size           = 0;
         walker_num          = 0;
         burnin_step         = 0;
@@ -23,7 +23,7 @@ namespace imcmc{
         _searched_lndet_min_chisq_min_  = false;
     }
 
-    emcee_workspace::~emcee_workspace(){
+    ensemble_workspace::~ensemble_workspace(){
 
         if( walker_initialized ){
             gsl_rng_free(rand_seed);
@@ -46,9 +46,9 @@ namespace imcmc{
         }
 
         if( walker_initialized )
-            std::cout << "\n** ~emcee_workspace(): sampling is over, clearing emcee workspace ...\n\n";
+            std::cout << "\n** ~ensemble_workspace(): sampling is over, clearing ensemble workspace ...\n\n";
         else
-            std::cout << "\n** ~emcee_workspace(): no sampling, normal quit ...\n\n";
+            std::cout << "\n** ~ensemble_workspace(): no sampling, normal quit ...\n\n";
     }
 
 }

@@ -1,11 +1,11 @@
-#include "emcee++.hpp"
+#include "ensemble++.hpp"
 #include "parser++.hpp"
 
 using namespace imcmc::parser;
 
 namespace imcmc{
 
-    void emcee_workspace::init( std::string paramfile ){
+    void ensemble_workspace::init( std::string paramfile ){
 
         if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
             std::cout   << "\n"
@@ -36,7 +36,7 @@ namespace imcmc{
             else if( rank_size >= (walker_num/2) ){
                 parallel_mode   = 2;
                 walker_num      = 2*rank_size;
-                std::cout << "emcee_workspace::Init() --> you have lots of cores, set the number of \
+                std::cout << "ensemble_workspace::Init() --> you have lots of cores, set the number of \
                              walkers to twice of number of ranks\n";
             }
         }
@@ -131,10 +131,10 @@ namespace imcmc{
     }
 
 
-    void emcee_workspace::init_param(){    //    loop over FullParams
+    void ensemble_workspace::init_param(){    //    loop over FullParams
 
         if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
-            std::cout   << "\nemcee_workspace::init_param():\n"
+            std::cout   << "\nensemble_workspace::init_param():\n"
                         << "\treading sampling parameters from: " + config_file << "\n";
             std::cout   << std::setw(15) << "params" << ": "
                         << std::setw(15) << "fid-value" << "  "
@@ -189,12 +189,12 @@ namespace imcmc{
                         full_param_max[it->first]   = par[1];
                     }
                     else{
-                        throw std::runtime_error("\nemcee_workspace::init_param( std::string paramfile\
+                        throw std::runtime_error("\nensemble_workspace::init_param( std::string paramfile\
                                              ) --> Check parameter value setting for " + it->first );
                     }
                 }
                 else{
-                    throw std::runtime_error("\nemcee_workspace::init_param( std::string paramfile ) -\
+                    throw std::runtime_error("\nensemble_workspace::init_param( std::string paramfile ) -\
                                             -> Check parameter value setting for " + it->first );
                 }
 
@@ -207,7 +207,7 @@ namespace imcmc{
                 delete[] par;
             }
             else{
-                throw std::runtime_error( "\nemcee_workspace::InitParam( std::string paramfile ) --> \
+                throw std::runtime_error( "\nensemble_workspace::InitParam( std::string paramfile ) --> \
                         input value(s) for " + it->first + " has not been found in " + config_file);
             }
 
@@ -222,14 +222,14 @@ namespace imcmc{
             if( nvalue == 0 ){
                 output_param_name = sampling_param_name;
                 if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
-                    std::cout << "\nemcee_workspace::init_param():\n"
+                    std::cout << "\nensemble_workspace::init_param():\n"
                         << "\tkeyword : output_params found in " + config_file + ", but no parameters \
                             were listed, so all sampling parameters will be output.\n\n";
                 }
             }
             else{
                 if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
-                    std::cout << "\nemcee_workspace::init_param():\t"
+                    std::cout << "\nensemble_workspace::init_param():\t"
                         << nvalue << " parameters will be output:\n";
                 }
 
@@ -245,7 +245,7 @@ namespace imcmc{
                     for( int m=0; m<nvalue; ++m ){
                         for( int n=m+1; n<nvalue; ++n ){
                             if( name[m] == name[n] ){
-                                std::string errmesg = "\nemcee_workspace::init_param()\n\tfound duplicate of parameter: "
+                                std::string errmesg = "\nensemble_workspace::init_param()\n\tfound duplicate of parameter: "
                                                     + name[m] + " in output_params, remove it.";
                                 throw std::runtime_error(errmesg);
                             }
@@ -269,7 +269,7 @@ namespace imcmc{
                         ++i;
                     }
                     else{
-                        std::string err = "\nemcee_workspace::init_param():\n" + name[i]
+                        std::string err = "\nensemble_workspace::init_param():\n" + name[i]
                             + " is not in the sampling parameter list, check your input file.\n";
                         throw std::runtime_error(err);
                     }
@@ -282,7 +282,7 @@ namespace imcmc{
             output_param_name = sampling_param_name;
 
             if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK )
-                std::cout << "\nemcee_workspace::init_param():\n"
+                std::cout << "\nensemble_workspace::init_param():\n"
                     << "\tno keyword : output_params found in " + config_file + ", so all sampling\n"
                     << "\tparameters will be output.\n\n";
         }
@@ -292,7 +292,7 @@ namespace imcmc{
             std::ofstream outfile( ofile.c_str() );
 
             if( !outfile.good() ){
-                throw std::runtime_error("\nemcee_workspace::init_param(): failed to open " + ofile );
+                throw std::runtime_error("\nensemble_workspace::init_param(): failed to open " + ofile );
             }
 
             //  write the full parameters ...
@@ -345,10 +345,10 @@ namespace imcmc{
 
 //    @TODO: parallelize this init_walkers(), so the initialization will be accelerated if the calculation of likelihood is very expansive.
 
-    void emcee_workspace::init_walkers(){   //  NOTE: intialized walkers MUST lie in the valid prior!!!
+    void ensemble_workspace::init_walkers(){   //  NOTE: intialized walkers MUST lie in the valid prior!!!
 
         if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
-            std::cout   << "imcmc::emcee_workspace::init_walkers():\n"
+            std::cout   << "imcmc::ensemble_workspace::init_walkers():\n"
                         << "\tinitializing walkers ...\n"
                         << "\tsearching _lndet_min_ & _chisq_min_ ...\n\n";
 
@@ -522,10 +522,10 @@ namespace imcmc{
     }
 
 
-    void emcee_workspace::reset_walkers(){  //  do similar stuff as ini_walkers(), no need to search _lndet_min_ & _chisq_min_
+    void ensemble_workspace::reset_walkers(){  //  do similar stuff as ini_walkers(), no need to search _lndet_min_ & _chisq_min_
 
         if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
-            std::cout   << "imcmc::emcee_workspace::reset_walkers():\n"
+            std::cout   << "imcmc::ensemble_workspace::reset_walkers():\n"
                         << "\tresetting walkers ...\n\n";
         }
 
