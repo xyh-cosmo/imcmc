@@ -2,12 +2,11 @@
 # Process this file with autoconf to produce a configure script.
 
 #AC_PREREQ(2.59)
-AC_INIT([imcmc], [0.0.2], [yhxu@nao.cas.cn])
+AC_INIT([imcmc], [0.0.3], [yhxu@nao.cas.cn])
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE([disable])
 #LT_PREREQ([2.2])
 LT_INIT
-#AC_CONFIG_SRCDIR([src/ParaEmcee_config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_LANG_CPLUSPLUS
@@ -188,24 +187,26 @@ AC_OUTPUT
 
 # Summarize configuration.
 cat << EOF
--------------------------------------------------------------------------------
-ParaEmcee configuration summary:
+----------------------------------------------
+    =======================================
+    ==   imcmc configuration summary:    ==
+    =======================================
 
-Debug?  $enable_debug
-Verbose?  $enable_verbose
-#Python bindings?  $enable_python
+Debug?              $enable_debug
+Verbose?            $enable_verbose
+#Python bindings?   $enable_python
 
 Installation prefix = $prefix
-CC = $CC
-CXX = $CXX
-CPPFLAGS = $CPPFLAGS
-CFLAGS = $CFLAGS
-CXXFLAGS = $CXXFLAGS
-LDFLAGS = $LDFLAGS
-LIBS = $LIBS
-OPENMP_CFLAGS = $OPENMP_CFLAGS
-SWIG = $SWIG
-PYTHON_CPPFLAGS = $PYTHON_CPPFLAGS
-PYTHON_LDFLAGS = $PYTHON_LDFLAGS
--------------------------------------------------------------------------------
+CC                  = $CC
+CXX                 = $CXX
+CPPFLAGS            = $CPPFLAGS
+CFLAGS              = $CFLAGS
+CXXFLAGS            = $CXXFLAGS
+LDFLAGS             = $LDFLAGS
+LIBS                = $LIBS
+OPENMP_CFLAGS       = $OPENMP_CFLAGS
+SWIG                = $SWIG
+PYTHON_CPPFLAGS     = $PYTHON_CPPFLAGS
+PYTHON_LDFLAGS      = $PYTHON_LDFLAGS
+----------------------------------------------
 EOF

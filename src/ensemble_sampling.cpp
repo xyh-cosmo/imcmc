@@ -1,11 +1,11 @@
-#include "emcee++.hpp"
+#include "ensemble++.hpp"
 #include "parser++.hpp"
 
 using namespace imcmc::parser;
 
 namespace imcmc{
 
-    void emcee_workspace::do_sampling(){
+    void ensemble_workspace::do_sampling(){
 
         int burnin_loops, sampling_loops;
 
@@ -23,7 +23,7 @@ namespace imcmc{
         _searched_lndet_min_chisq_min_ = false;
 
         if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK )
-            std::cout << "emcee_workspace::do_sampling(): start burning\n";
+            std::cout << "ensemble_workspace::do_sampling(): start burning\n";
 
         for( int j=0; j<burnin_loops; ++j )    //  Burn in
             update_walkers( false, j, burnin_loops );
@@ -40,11 +40,11 @@ namespace imcmc{
                 chain_name = chain_root + "_" + Read::IntToString(i) + ".txt";
 
             if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
-                
+
                 out_stream.open(chain_name.c_str(), std::ofstream::out);
 
                 if( !out_stream.good() )
-                    throw std::runtime_error("\nvoid emcee_workspace::do_sampling() --> filed to open file: " + chain_name);
+                    throw std::runtime_error("\nvoid ensemble_workspace::do_sampling() --> filed to open file: " + chain_name);
 
                 //  write parameter names into the first line of the chain file
                 imcmc_vector_string_iterator it = output_param_name.begin();
@@ -56,7 +56,7 @@ namespace imcmc{
                     out_stream << std::setw(_OUT_WIDTH_-1) << "weight" << std::setw(_OUT_WIDTH_) << "-2log(L)";
                 }
                 else{
-                    out_stream << "# emcee format, exactly the same with MultiNest\n";
+                    out_stream << "# ensemble format, exactly the same with MultiNest\n";
                     out_stream << "#";
                     out_stream << std::setw(_OUT_WIDTH_-1) << "probability" << std::setw(_OUT_WIDTH_) << "chisq";
                 }
@@ -73,7 +73,7 @@ namespace imcmc{
             }
 
             if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK )
-                std::cout << "emcee_workspace::do_sampling(): start sampling\n";
+                std::cout << "ensemble_workspace::do_sampling(): start sampling\n";
 
             for( int j=0; j<sampling_loops; ++j ){
                 update_walkers( true, j, sampling_loops );
@@ -86,7 +86,7 @@ namespace imcmc{
                 out_stream.close();
 
             if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
-                std::cout << "\nemcee_workspace::do_sampling():\n"
+                std::cout << "\nensemble_workspace::do_sampling():\n"
                     << ">\t" << total_accepts << " of " << total_accepts + total_rejects << " walkers been accepted ...\n"
                     << ">\t" << total_rejects << " of " << total_accepts + total_rejects << " walkers been rejected ...\n"
                     << ">\t" << "acceptance ratio = " << double(total_accepts)/(total_accepts + total_rejects) << "\n\n";
@@ -103,9 +103,9 @@ namespace imcmc{
         }
     }
 
-    void emcee_workspace::set_efficient_a( double a ){
+    void ensemble_workspace::set_efficient_a( double a ){
         if( a <= 0 )
-            throw std::runtime_error("\nemcee_workspace::set_efficient_a():\n a must be a positive number !");
+            throw std::runtime_error("\nensemble_workspace::set_efficient_a():\n a must be a positive number !");
         else if( a < 1.0 )
             efficient_a = 1.0 / a;
         else
@@ -114,14 +114,14 @@ namespace imcmc{
         MPI::COMM_WORLD.Barrier();
     }
 
-    double emcee_workspace::g( double z ){
+    double ensemble_workspace::g( double z ){
         if( z >= 1.0/efficient_a && z <= efficient_a )
             return 1.0 / sqrt(z);
         else
             return 0.0;
     }
 
-    double emcee_workspace::gz(){
+    double ensemble_workspace::gz(){
         double z;
         double zmin = 1./efficient_a;
         double zmax = efficient_a;
@@ -136,8 +136,8 @@ namespace imcmc{
         return z;
     }
 
-    int emcee_workspace::update_a_walker( imcmc_double& full_param_temp, int current_id, int rand_id ){
-        double z = emcee_workspace::gz();
+    int ensemble_workspace::update_a_walker( imcmc_double& full_param_temp, int current_id, int rand_id ){
+        double z = ensemble_workspace::gz();
 
         imcmc_vector_string_iterator it = sampling_param_name.begin();
         while( it != sampling_param_name.end() ){   //  updates only the sampling parameters
@@ -178,7 +178,7 @@ namespace imcmc{
         return state;
     }
 
-    void emcee_workspace::update_walkers( bool do_sampling, int ith, int num ){   //  do_sampling = true means start to sample
+    void ensemble_workspace::update_walkers( bool do_sampling, int ith, int num ){   //  do_sampling = true means start to sample
         imcmc_double    full_param_temp(full_param);     //  make a copy
 
         int *accept = new int[walker_num];
@@ -239,7 +239,7 @@ namespace imcmc{
                     id_width[0]    = walker_num_half - (walker_num_half/size + 1)*(size-1);
 
                     if( id_width[0] <= 0 ){
-                        std::string err = "\nvoid emcee_workspace::update_walkers():\n";
+                        std::string err = "\nvoid ensemble_workspace::update_walkers():\n";
                             err += "id_width[0] must be positive integer, please adjust the number of walkers / processros\n";
                         throw std::runtime_error(err);
                     }
@@ -521,7 +521,7 @@ namespace imcmc{
                                         ROOT_RANK    );
             }
             else
-                throw std::runtime_error("emcee_workspace::update_walkers() --> Wrong parallel_mode !!!");
+                throw std::runtime_error("ensemble_workspace::update_walkers() --> Wrong parallel_mode !!!");
 
             delete[] walker_id;
         }
@@ -536,19 +536,19 @@ namespace imcmc{
 
                     if( walker["LnDet"][i] < _lndet_min_ ){
                         _lndet_min_ = walker["LnDet"][i];
-//                        std::cout << "\nemcee:: -->  updated _lndet_min_ = " << _lndet_min_ << "\n\n";
+//                        std::cout << "\nensemble:: -->  updated _lndet_min_ = " << _lndet_min_ << "\n\n";
                     }
 
                     if( walker["Chisq"][i] < _chisq_min_ ){
                         _chisq_min_ = walker["Chisq"][i];
-//                        std::cout << "\nemcee:: -->  updated _chisq_min_ = " << _chisq_min_ << "\n\n";
+//                        std::cout << "\nensemble:: -->  updated _chisq_min_ = " << _chisq_min_ << "\n\n";
                     }
 
                 }
             }
 
             if( do_sampling == false ){
-                std::cout   << "emcee:: " << std::setw(15) << "- burning - "
+                std::cout   << "ensemble:: " << std::setw(15) << "- burning - "
                             << "[" << std::setw(5) << ith+1 << " of " << std::setw(5) << num << "] ==> "
                             << std::setw(5) << accept_tot << " of " << std::setw(5) << walker_num
                             << " walkers accepted ...\n";
@@ -557,7 +557,7 @@ namespace imcmc{
                 total_accepts += accept_tot;
                 total_rejects += (walker_num-accept_tot);
 
-                std::cout   << "emcee:: " << std::setw(15) << "- sampling - "
+                std::cout   << "ensemble:: " << std::setw(15) << "- sampling - "
                             << "[" << std::setw(5) << ith+1 << " of " << std::setw(5) << num << "] ==> "
                             << std::setw(5) << accept_tot << " of " << std::setw(5) << walker_num
                             << " walkers accepted ...\n";
