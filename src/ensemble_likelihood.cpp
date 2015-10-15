@@ -1,11 +1,11 @@
-#include "emcee++.hpp"
+#include "ensemble.hpp"
 #include "parser++.hpp"
 
 using namespace imcmc::parser;
 
 namespace imcmc{
 
-    void emcee_workspace::add_likelihood( double (*loglike)( imcmc_double&, double&, double&, void*, void* ),
+    void ensemble_workspace::add_likelihood( double (*loglike)( imcmc_double&, double&, double&, void*, void* ),
                                           imcmc_vector_string     modelparam,
                                           void                     *model,
                                           void                    *data    ){
@@ -31,7 +31,7 @@ namespace imcmc{
     }
 
     //  return log(posterior) = -lndet - 0.5*chisq
-    double emcee_workspace::likelihood_eval(    imcmc_double& full_param,
+    double ensemble_workspace::likelihood_eval(    imcmc_double& full_param,
                                                 double& lndet,
                                                 double& chisq   ){
         double lndet_temp   = 0.0;

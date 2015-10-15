@@ -1,5 +1,5 @@
-#ifndef __EMCEE__
-#define __EMCEE__
+#ifndef __ensemble__
+#define __ensemble__
 
 #include <iostream>
 #include <fstream>
@@ -34,10 +34,10 @@ namespace imcmc{
 //    ...
     };
 
-    class emcee_workspace{
+    class ensemble_workspace{
         public:
-            emcee_workspace();
-            ~emcee_workspace();
+            ensemble_workspace();
+            ~ensemble_workspace();
 
             std::string config_file;
 
@@ -135,4 +135,4 @@ namespace imcmc{
 
 }
 
-#endif // __PARAEMCEE__
+#endif // __PARAensemble__

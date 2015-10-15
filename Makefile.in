@@ -248,6 +248,7 @@ LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
+LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
@@ -327,17 +328,17 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src tests
+SUBDIRS = src examples
 EXTRA_DIST = TODO                    \
 	            include                 \
-	            tests/gaussian.ini      \
-                tests/gaussian.py       \
-	            tests/rosenbrock.ini    \
-                tests/rosenbrock.py     \
-	            tests/himmelblau.ini    \
-                tests/himmelblau.py     \
-                tests/cmb.ini			\
-				tests/clean_tests
+	            examples/gaussian.ini      \
+                examples/gaussian.py       \
+	            examples/rosenbrock.ini    \
+                examples/rosenbrock.py     \
+	            examples/himmelblau.ini    \
+                examples/himmelblau.py     \
+                examples/cmb.ini			\
+				examples/clean_tests
 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive

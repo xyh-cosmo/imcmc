@@ -1,5 +1,5 @@
 #include <iostream>
-#include <emcee++.hpp>
+#include "ensemble.hpp"
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_integration.h>
 
@@ -55,7 +55,7 @@ struct LCDM{
         h           = p["H0"]/100.0;
 		p["Omegag"]	= 2.469E-5/h/h;
         p["Omegar"]	= p["Omegag"]*(1+0.2271*p["Neff"]);
-		p["Omegal"]	= 1.0 - p["Omegam"] - p["Omegar"];        
+		p["Omegal"]	= 1.0 - p["Omegam"] - p["Omegar"];
     }
 
     void Update( imcmc_double param ){
@@ -82,7 +82,7 @@ struct LCDM{
         double Omegal = lcdm->p["Omegal"];
         double Omegar = lcdm->p["Omegar"];
 
-		return  1 / sqrt(   Omegam*z3 
+		return  1 / sqrt(   Omegam*z3
 		                +   Omegal
 		                +   Omegar*z4 );
 	}
@@ -163,8 +163,8 @@ double Like_CMB( imcmc_double& full_param, double& lndet, double& chisq, void* m
 
 	for(int i=0; i<3; ++i){
 		for( int j=0; j<3; ++j){
-			chisq 	+= (wmap7_model[i] - wmap7_data[i]) 
-					*  (wmap7_model[j] - wmap7_data[j]) 
+			chisq 	+= (wmap7_model[i] - wmap7_data[i])
+					*  (wmap7_model[j] - wmap7_data[j])
 					* gsl_matrix_get(wmap7_cov_inv, i, j);
 		}
 	}
@@ -178,7 +178,7 @@ int main(int argc, char *argv[])
 {
     MPI::Init(argc,argv);
 
-    emcee_workspace ew;
+    ensemble_workspace ew;
 
     LCDM lcdm;
 
@@ -186,5 +186,5 @@ int main(int argc, char *argv[])
     ew.init("cmb.ini");
     ew.do_sampling();
 
-    MPI::Finalize();        
+    MPI::Finalize();
 }

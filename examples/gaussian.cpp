@@ -1,4 +1,4 @@
-#include "emcee++.hpp"
+#include "ensemble.hpp"
 using namespace std;
 using namespace imcmc;
 
@@ -46,7 +46,7 @@ int main( int argc, char *argv[] )
 {
     MPI::Init(argc, argv);
 
-    emcee_workspace ew;
+    ensemble_workspace ew;
 
     imcmc_vector_string param;
     param.push_back("x");

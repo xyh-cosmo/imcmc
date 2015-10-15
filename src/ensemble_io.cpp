@@ -1,8 +1,8 @@
-#include "emcee++.hpp"
+#include "ensemble.hpp"
 
 namespace imcmc{
 
-    void emcee_workspace::write_walkers( std::ofstream& of ){
+    void ensemble_workspace::write_walkers( std::ofstream& of ){
 
         imcmc_vector_string_iterator it;
 
@@ -37,11 +37,11 @@ namespace imcmc{
         }
     }
 
-    void emcee_workspace::save_walker_state( std::ofstream& of ){
+    void ensemble_workspace::save_walker_state( std::ofstream& of ){
 //      not implemented yet
     }
 
-    void emcee_workspace::read_walker_state( std::ofstream& of ){
+    void ensemble_workspace::read_walker_state( std::ofstream& of ){
 //      not implemented yet
     }
 

@@ -133,10 +133,11 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(imcmcincdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libimcmc_la_LIBADD =
-am_libimcmc_la_OBJECTS = libimcmc_la-emcee.lo \
-	libimcmc_la-emcee_init.lo libimcmc_la-emcee_io.lo \
-	libimcmc_la-emcee_prior.lo libimcmc_la-emcee_likelihood.lo \
-	libimcmc_la-emcee_sampling.lo libimcmc_la-parser++.lo
+am_libimcmc_la_OBJECTS = libimcmc_la-ensemble.lo \
+	libimcmc_la-ensemble_init.lo libimcmc_la-ensemble_io.lo \
+	libimcmc_la-ensemble_prior.lo \
+	libimcmc_la-ensemble_likelihood.lo \
+	libimcmc_la-ensemble_sampling.lo libimcmc_la-parser++.lo
 libimcmc_la_OBJECTS = $(am_libimcmc_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -251,6 +252,7 @@ LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIPO = lipo
 LN_S = ln -s
 LTLIBOBJS =  ${LIBOBJDIR}lstat$U.lo
+LT_SYS_LIBRARY_PATH = 
 MAINT = #
 MAKEINFO = ${SHELL} /Users/xyh/GitHub/imcmc/missing makeinfo
 MANIFEST_TOOL = :
@@ -264,10 +266,10 @@ OTOOL64 = :
 PACKAGE = imcmc
 PACKAGE_BUGREPORT = yhxu@nao.cas.cn
 PACKAGE_NAME = imcmc
-PACKAGE_STRING = imcmc 0.0.2
+PACKAGE_STRING = imcmc 0.0.3
 PACKAGE_TARNAME = imcmc
 PACKAGE_URL = 
-PACKAGE_VERSION = 0.0.2
+PACKAGE_VERSION = 0.0.3
 PATH_SEPARATOR = :
 POW_LIB = 
 RANLIB = ranlib
@@ -275,7 +277,7 @@ SED = /usr/bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = strip
-VERSION = 0.0.2
+VERSION = 0.0.3
 abs_builddir = /Users/xyh/GitHub/imcmc/src
 abs_srcdir = /Users/xyh/GitHub/imcmc/src
 abs_top_builddir = /Users/xyh/GitHub/imcmc
@@ -333,18 +335,18 @@ EXTRA_DIST =
 lib_LTLIBRARIES = libimcmc.la
 libimcmc_la_CXXFLAGS = $(OPENMP_CFLAGS) -I$(top_srcdir)/include
 libimcmc_la_LDFLAGS = $(OPENMP_CFLAGS)
-libimcmc_la_SOURCES = emcee.cpp               \
-                        emcee_init.cpp          \
-                        emcee_io.cpp            \
-                        emcee_prior.cpp         \
-                        emcee_likelihood.cpp    \
-                        emcee_sampling.cpp      \
+libimcmc_la_SOURCES = ensemble.cpp               \
+                        ensemble_init.cpp          \
+                        ensemble_io.cpp            \
+                        ensemble_prior.cpp         \
+                        ensemble_likelihood.cpp    \
+                        ensemble_sampling.cpp      \
                         parser++.cpp
 
 
 #   $(includedir)/imcmc is set to /usr/local/include/imcmc by default
 imcmcincdir = $(includedir)/imcmc
-imcmcinc_HEADERS = $(top_srcdir)/include/emcee++.hpp       \
+imcmcinc_HEADERS = $(top_srcdir)/include/ensemble.hpp       \
                     $(top_srcdir)/include/imcmc.hpp         \
                     $(top_srcdir)/include/parser++.hpp
 
@@ -426,12 +428,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-include ./$(DEPDIR)/libimcmc_la-emcee.Plo
-include ./$(DEPDIR)/libimcmc_la-emcee_init.Plo
-include ./$(DEPDIR)/libimcmc_la-emcee_io.Plo
-include ./$(DEPDIR)/libimcmc_la-emcee_likelihood.Plo
-include ./$(DEPDIR)/libimcmc_la-emcee_prior.Plo
-include ./$(DEPDIR)/libimcmc_la-emcee_sampling.Plo
+include ./$(DEPDIR)/libimcmc_la-ensemble.Plo
+include ./$(DEPDIR)/libimcmc_la-ensemble_init.Plo
+include ./$(DEPDIR)/libimcmc_la-ensemble_io.Plo
+include ./$(DEPDIR)/libimcmc_la-ensemble_likelihood.Plo
+include ./$(DEPDIR)/libimcmc_la-ensemble_prior.Plo
+include ./$(DEPDIR)/libimcmc_la-ensemble_sampling.Plo
 include ./$(DEPDIR)/libimcmc_la-parser++.Plo
 
 .cpp.o:
@@ -455,47 +457,47 @@ include ./$(DEPDIR)/libimcmc_la-parser++.Plo
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(LTCXXCOMPILE) -c -o $@ $<
 
-libimcmc_la-emcee.lo: emcee.cpp
-	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-emcee.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-emcee.Tpo -c -o libimcmc_la-emcee.lo `test -f 'emcee.cpp' || echo '$(srcdir)/'`emcee.cpp
-	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-emcee.Tpo $(DEPDIR)/libimcmc_la-emcee.Plo
-#	$(AM_V_CXX)source='emcee.cpp' object='libimcmc_la-emcee.lo' libtool=yes \
+libimcmc_la-ensemble.lo: ensemble.cpp
+	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-ensemble.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-ensemble.Tpo -c -o libimcmc_la-ensemble.lo `test -f 'ensemble.cpp' || echo '$(srcdir)/'`ensemble.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-ensemble.Tpo $(DEPDIR)/libimcmc_la-ensemble.Plo
+#	$(AM_V_CXX)source='ensemble.cpp' object='libimcmc_la-ensemble.lo' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-emcee.lo `test -f 'emcee.cpp' || echo '$(srcdir)/'`emcee.cpp
+#	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-ensemble.lo `test -f 'ensemble.cpp' || echo '$(srcdir)/'`ensemble.cpp
 
-libimcmc_la-emcee_init.lo: emcee_init.cpp
-	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-emcee_init.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-emcee_init.Tpo -c -o libimcmc_la-emcee_init.lo `test -f 'emcee_init.cpp' || echo '$(srcdir)/'`emcee_init.cpp
-	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-emcee_init.Tpo $(DEPDIR)/libimcmc_la-emcee_init.Plo
-#	$(AM_V_CXX)source='emcee_init.cpp' object='libimcmc_la-emcee_init.lo' libtool=yes \
+libimcmc_la-ensemble_init.lo: ensemble_init.cpp
+	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-ensemble_init.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-ensemble_init.Tpo -c -o libimcmc_la-ensemble_init.lo `test -f 'ensemble_init.cpp' || echo '$(srcdir)/'`ensemble_init.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-ensemble_init.Tpo $(DEPDIR)/libimcmc_la-ensemble_init.Plo
+#	$(AM_V_CXX)source='ensemble_init.cpp' object='libimcmc_la-ensemble_init.lo' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-emcee_init.lo `test -f 'emcee_init.cpp' || echo '$(srcdir)/'`emcee_init.cpp
+#	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-ensemble_init.lo `test -f 'ensemble_init.cpp' || echo '$(srcdir)/'`ensemble_init.cpp
 
-libimcmc_la-emcee_io.lo: emcee_io.cpp
-	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-emcee_io.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-emcee_io.Tpo -c -o libimcmc_la-emcee_io.lo `test -f 'emcee_io.cpp' || echo '$(srcdir)/'`emcee_io.cpp
-	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-emcee_io.Tpo $(DEPDIR)/libimcmc_la-emcee_io.Plo
-#	$(AM_V_CXX)source='emcee_io.cpp' object='libimcmc_la-emcee_io.lo' libtool=yes \
+libimcmc_la-ensemble_io.lo: ensemble_io.cpp
+	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-ensemble_io.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-ensemble_io.Tpo -c -o libimcmc_la-ensemble_io.lo `test -f 'ensemble_io.cpp' || echo '$(srcdir)/'`ensemble_io.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-ensemble_io.Tpo $(DEPDIR)/libimcmc_la-ensemble_io.Plo
+#	$(AM_V_CXX)source='ensemble_io.cpp' object='libimcmc_la-ensemble_io.lo' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-emcee_io.lo `test -f 'emcee_io.cpp' || echo '$(srcdir)/'`emcee_io.cpp
+#	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-ensemble_io.lo `test -f 'ensemble_io.cpp' || echo '$(srcdir)/'`ensemble_io.cpp
 
-libimcmc_la-emcee_prior.lo: emcee_prior.cpp
-	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-emcee_prior.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-emcee_prior.Tpo -c -o libimcmc_la-emcee_prior.lo `test -f 'emcee_prior.cpp' || echo '$(srcdir)/'`emcee_prior.cpp
-	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-emcee_prior.Tpo $(DEPDIR)/libimcmc_la-emcee_prior.Plo
-#	$(AM_V_CXX)source='emcee_prior.cpp' object='libimcmc_la-emcee_prior.lo' libtool=yes \
+libimcmc_la-ensemble_prior.lo: ensemble_prior.cpp
+	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-ensemble_prior.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-ensemble_prior.Tpo -c -o libimcmc_la-ensemble_prior.lo `test -f 'ensemble_prior.cpp' || echo '$(srcdir)/'`ensemble_prior.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-ensemble_prior.Tpo $(DEPDIR)/libimcmc_la-ensemble_prior.Plo
+#	$(AM_V_CXX)source='ensemble_prior.cpp' object='libimcmc_la-ensemble_prior.lo' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-emcee_prior.lo `test -f 'emcee_prior.cpp' || echo '$(srcdir)/'`emcee_prior.cpp
+#	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-ensemble_prior.lo `test -f 'ensemble_prior.cpp' || echo '$(srcdir)/'`ensemble_prior.cpp
 
-libimcmc_la-emcee_likelihood.lo: emcee_likelihood.cpp
-	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-emcee_likelihood.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-emcee_likelihood.Tpo -c -o libimcmc_la-emcee_likelihood.lo `test -f 'emcee_likelihood.cpp' || echo '$(srcdir)/'`emcee_likelihood.cpp
-	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-emcee_likelihood.Tpo $(DEPDIR)/libimcmc_la-emcee_likelihood.Plo
-#	$(AM_V_CXX)source='emcee_likelihood.cpp' object='libimcmc_la-emcee_likelihood.lo' libtool=yes \
+libimcmc_la-ensemble_likelihood.lo: ensemble_likelihood.cpp
+	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-ensemble_likelihood.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-ensemble_likelihood.Tpo -c -o libimcmc_la-ensemble_likelihood.lo `test -f 'ensemble_likelihood.cpp' || echo '$(srcdir)/'`ensemble_likelihood.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-ensemble_likelihood.Tpo $(DEPDIR)/libimcmc_la-ensemble_likelihood.Plo
+#	$(AM_V_CXX)source='ensemble_likelihood.cpp' object='libimcmc_la-ensemble_likelihood.lo' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-emcee_likelihood.lo `test -f 'emcee_likelihood.cpp' || echo '$(srcdir)/'`emcee_likelihood.cpp
+#	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-ensemble_likelihood.lo `test -f 'ensemble_likelihood.cpp' || echo '$(srcdir)/'`ensemble_likelihood.cpp
 
-libimcmc_la-emcee_sampling.lo: emcee_sampling.cpp
-	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-emcee_sampling.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-emcee_sampling.Tpo -c -o libimcmc_la-emcee_sampling.lo `test -f 'emcee_sampling.cpp' || echo '$(srcdir)/'`emcee_sampling.cpp
-	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-emcee_sampling.Tpo $(DEPDIR)/libimcmc_la-emcee_sampling.Plo
-#	$(AM_V_CXX)source='emcee_sampling.cpp' object='libimcmc_la-emcee_sampling.lo' libtool=yes \
+libimcmc_la-ensemble_sampling.lo: ensemble_sampling.cpp
+	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-ensemble_sampling.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-ensemble_sampling.Tpo -c -o libimcmc_la-ensemble_sampling.lo `test -f 'ensemble_sampling.cpp' || echo '$(srcdir)/'`ensemble_sampling.cpp
+	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-ensemble_sampling.Tpo $(DEPDIR)/libimcmc_la-ensemble_sampling.Plo
+#	$(AM_V_CXX)source='ensemble_sampling.cpp' object='libimcmc_la-ensemble_sampling.lo' libtool=yes \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-emcee_sampling.lo `test -f 'emcee_sampling.cpp' || echo '$(srcdir)/'`emcee_sampling.cpp
+#	$(AM_V_CXX_no)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-ensemble_sampling.lo `test -f 'ensemble_sampling.cpp' || echo '$(srcdir)/'`ensemble_sampling.cpp
 
 libimcmc_la-parser++.lo: parser++.cpp
 	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-parser++.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-parser++.Tpo -c -o libimcmc_la-parser++.lo `test -f 'parser++.cpp' || echo '$(srcdir)/'`parser++.cpp
@@ -744,10 +746,10 @@ uninstall-am: uninstall-imcmcincHEADERS uninstall-libLTLIBRARIES
 
 #AM_CPPFLAGS = -I$(top_srcdir)/include
 
-#   pepp is used to post-process chains sampled by ParaEmcee, since the parameter orders might not
+#   pepp is used to post-process chains sampled by Paraensemble, since the parameter orders might not
 #   the same as we want, so we need to move the corresponding colums to their right places
 #bin_PROGRAMS = pepp
-#pepp_SOURCES = ParaEmcee_PostProcess.cpp
+#pepp_SOURCES = Paraensemble_PostProcess.cpp
 #pepp_CXXFLAGS= -I$(top_srcdir)/include
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

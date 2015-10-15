@@ -248,6 +248,7 @@ LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIPO = lipo
 LN_S = ln -s
 LTLIBOBJS =  ${LIBOBJDIR}lstat$U.lo
+LT_SYS_LIBRARY_PATH = 
 MAINT = #
 MAKEINFO = ${SHELL} /Users/xyh/GitHub/imcmc/missing makeinfo
 MANIFEST_TOOL = :
@@ -261,10 +262,10 @@ OTOOL64 = :
 PACKAGE = imcmc
 PACKAGE_BUGREPORT = yhxu@nao.cas.cn
 PACKAGE_NAME = imcmc
-PACKAGE_STRING = imcmc 0.0.2
+PACKAGE_STRING = imcmc 0.0.3
 PACKAGE_TARNAME = imcmc
 PACKAGE_URL = 
-PACKAGE_VERSION = 0.0.2
+PACKAGE_VERSION = 0.0.3
 PATH_SEPARATOR = :
 POW_LIB = 
 RANLIB = ranlib
@@ -272,7 +273,7 @@ SED = /usr/bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = strip
-VERSION = 0.0.2
+VERSION = 0.0.3
 abs_builddir = /Users/xyh/GitHub/imcmc
 abs_srcdir = /Users/xyh/GitHub/imcmc
 abs_top_builddir = /Users/xyh/GitHub/imcmc
@@ -327,17 +328,17 @@ top_build_prefix =
 top_builddir = .
 top_srcdir = .
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src tests
+SUBDIRS = src examples
 EXTRA_DIST = TODO                    \
 	            include                 \
-	            tests/gaussian.ini      \
-                tests/gaussian.py       \
-	            tests/rosenbrock.ini    \
-                tests/rosenbrock.py     \
-	            tests/himmelblau.ini    \
-                tests/himmelblau.py     \
-                tests/cmb.ini			\
-				tests/clean_tests
+	            examples/gaussian.ini      \
+                examples/gaussian.py       \
+	            examples/rosenbrock.ini    \
+                examples/rosenbrock.py     \
+	            examples/himmelblau.ini    \
+                examples/himmelblau.py     \
+                examples/cmb.ini			\
+				examples/clean_tests
 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
