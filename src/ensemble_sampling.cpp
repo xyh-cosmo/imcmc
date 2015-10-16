@@ -22,8 +22,11 @@ namespace imcmc{
         // make sure searching lndet_min and chisq_min will be done at least one time during burn-in
         _searched_lndet_min_chisq_min_ = false;
 
-        if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK )
-            std::cout << "ensemble_workspace::do_sampling(): start burning\n";
+        if( rank == ROOT_RANK ){
+            std::cout << "\n######################################################\n";
+            std::cout << "#  ensemble_workspace::do_sampling(): start burning\n";
+            std::cout << "######################################################\n\n";
+        }
 
         for( int j=0; j<burnin_loops; ++j )    //  Burn in
             update_walkers( false, j, burnin_loops );
@@ -39,12 +42,12 @@ namespace imcmc{
             else
                 chain_name = chain_root + "_" + Read::IntToString(i) + ".txt";
 
-            if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+            if( rank == ROOT_RANK ){
 
                 out_stream.open(chain_name.c_str(), std::ofstream::out);
 
                 if( !out_stream.good() )
-                    throw std::runtime_error("\nvoid ensemble_workspace::do_sampling() --> filed to open file: " + chain_name);
+                    throw std::runtime_error("\n@ void ensemble_workspace::do_sampling() --> filed to open file: " + chain_name);
 
                 //  write parameter names into the first line of the chain file
                 imcmc_vector_string_iterator it = output_param_name.begin();
@@ -72,29 +75,35 @@ namespace imcmc{
                 out_stream << "\n";
             }
 
-            if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK )
-                std::cout << "ensemble_workspace::do_sampling(): start sampling\n";
+            if( rank == ROOT_RANK ){
+                std::cout << "\n######################################################\n";
+                std::cout << "#  ensemble_workspace::do_sampling(): start sampling\n";
+                std::cout << "######################################################\n\n";
+            }
 
             for( int j=0; j<sampling_loops; ++j ){
                 update_walkers( true, j, sampling_loops );
 
-                if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK )
+                if( rank == ROOT_RANK )
                     write_walkers(out_stream);
             }
 
-            if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK )
+            if( rank == ROOT_RANK )
                 out_stream.close();
 
-            if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
-                std::cout << "\nensemble_workspace::do_sampling():\n"
-                    << ">\t" << total_accepts << " of " << total_accepts + total_rejects << " walkers been accepted ...\n"
-                    << ">\t" << total_rejects << " of " << total_accepts + total_rejects << " walkers been rejected ...\n"
-                    << ">\t" << "acceptance ratio = " << double(total_accepts)/(total_accepts + total_rejects) << "\n\n";
+            if( rank == ROOT_RANK ){
+                std::cout << "\n"
+                    << "#  ===========================================\n"
+                    << "#  summary of " << std::setw(3) << i << " -th chain:\n"
+                    << "#  " << total_accepts << " of " << total_accepts + total_rejects << " walkers been accepted ...\n"
+                    << "#  " << total_rejects << " of " << total_accepts + total_rejects << " walkers been rejected ...\n"
+                    << "#  " << "acceptance ratio = " << double(total_accepts)/(total_accepts + total_rejects) << "\n"
+                    << "#  ===========================================\n\n";
             }
 
         //    after one chain is finished, you can choose to skip some steps
             if( (skip_step > 0)  && (i < chain_num-1) ){
-                if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK )
+                if( rank == ROOT_RANK )
                     std::cout << "\n ****** skipping some chains, can be viewed as extra burn-in ******\n";
 
                 for( int j=0; j<skip_step; ++j )
@@ -526,7 +535,7 @@ namespace imcmc{
             delete[] walker_id;
         }
 
-        if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+        if( rank == ROOT_RANK ){
 
             for( int i=0; i<walker_num; ++i ){
                 accept_tot += accept[i];
@@ -548,8 +557,8 @@ namespace imcmc{
             }
 
             if( do_sampling == false ){
-                std::cout   << "ensemble:: " << std::setw(15) << "- burning - "
-                            << "[" << std::setw(5) << ith+1 << " of " << std::setw(5) << num << "] ==> "
+                std::cout   << "imcmc::ensemble " << std::setw(15) << "- burning - "
+                            << "[" << std::setw(5) << ith+1 << " of " << std::setw(5) << num << "] -> "
                             << std::setw(5) << accept_tot << " of " << std::setw(5) << walker_num
                             << " walkers accepted ...\n";
             }
@@ -557,8 +566,8 @@ namespace imcmc{
                 total_accepts += accept_tot;
                 total_rejects += (walker_num-accept_tot);
 
-                std::cout   << "ensemble:: " << std::setw(15) << "- sampling - "
-                            << "[" << std::setw(5) << ith+1 << " of " << std::setw(5) << num << "] ==> "
+                std::cout   << "imcmc::ensemble " << std::setw(15) << "- sampling - "
+                            << "[" << std::setw(5) << ith+1 << " of " << std::setw(5) << num << "] -> "
                             << std::setw(5) << accept_tot << " of " << std::setw(5) << walker_num
                             << " walkers accepted ...\n";
             }

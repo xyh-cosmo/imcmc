@@ -31,7 +31,7 @@ namespace imcmc{
     }
 
     //  return log(posterior) = -lndet - 0.5*chisq
-    double ensemble_workspace::likelihood_eval(    imcmc_double& full_param,
+    double ensemble_workspace::likelihood_eval( imcmc_double& full_param,
                                                 double& lndet,
                                                 double& chisq   ){
         double lndet_temp   = 0.0;

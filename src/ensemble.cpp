@@ -6,6 +6,7 @@ using namespace imcmc::parser;
 namespace imcmc{
 
     ensemble_workspace::ensemble_workspace(){
+
         rank_size           = 0;
         walker_num          = 0;
         burnin_step         = 0;
@@ -21,6 +22,7 @@ namespace imcmc{
 
         walker_initialized              = false;
         _searched_lndet_min_chisq_min_  = false;
+
     }
 
     ensemble_workspace::~ensemble_workspace(){
@@ -45,10 +47,18 @@ namespace imcmc{
                 delete likelihood[it_like];
         }
 
-        if( walker_initialized )
-            std::cout << "\n** ~ensemble_workspace(): sampling is over, clearing ensemble workspace ...\n\n";
-        else
-            std::cout << "\n** ~ensemble_workspace(): no sampling, normal quit ...\n\n";
+        if( rank == ROOT_RANK ){
+            std::cout << "###########################################################################\n";
+            std::cout << "#\n";
+
+            if( walker_initialized )
+                std::cout << "# ~ensemble_workspace(): sampling is over, clearing ensemble workspace ...\n";
+            else
+                std::cout << "# ~ensemble_workspace(): no sampling, normal quit ...\n";
+
+            std::cout << "#\n";
+            std::cout << "###########################################################################\n";
+        }
     }
 
 }

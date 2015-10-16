@@ -7,19 +7,22 @@ namespace imcmc{
 
     void ensemble_workspace::init( std::string paramfile ){
 
-        if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+        rank        = MPI::COMM_WORLD.Get_rank();
+        rank_size   = MPI::COMM_WORLD.Get_size();
+
+        if( rank == ROOT_RANK ){
             std::cout   << "\n"
-                        << "  ==========================================================\n"
-                        << "  ============         Welcome to imcmc         ============\n"
-                        << "  ==========================================================\n";
+                        << "  ##########################################################\n"
+                        << "  #                    Welcome to imcmc                    #\n"
+                        << "  #                                                        #\n"
+                        << "  #                  written by Youhua Xu                  #\n"
+                        << "  #                 E-mail: yhxu@nao.cas.cn                #\n"
+                        << "  ##########################################################\n";
         }
 
         srand(time(NULL));
 
         config_file = paramfile;
-
-        rank        = MPI::COMM_WORLD.Get_rank();
-        rank_size   = MPI::COMM_WORLD.Get_size();
 
         if( !Read::Has_File(paramfile) ){
             std::cout << "--->\tCannot open parameter file: " << paramfile << "\n\n";
@@ -103,7 +106,7 @@ namespace imcmc{
                                 first_number, 1, MPI::UNSIGNED_LONG,
                                 ROOT_RANK );
 
-        if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+        if( rank == ROOT_RANK ){
             std::string     seedfile = chain_root + ".used_seeds";
             std::ofstream    outfile( seedfile.c_str() );
             outfile << std::setw(10) << "#    rank " << std::setw(12) << "rng_name "
@@ -133,9 +136,9 @@ namespace imcmc{
 
     void ensemble_workspace::init_param(){    //    loop over FullParams
 
-        if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
-            std::cout   << "\nensemble_workspace::init_param():\n"
-                        << "\treading sampling parameters from: " + config_file << "\n";
+        if( rank == ROOT_RANK ){
+            std::cout   << "\n#  ensemble_workspace::init_param():\n"
+                        << "#  reading sampling parameters from: " + config_file << "\n";
             std::cout   << std::setw(15) << "params" << ": "
                         << std::setw(15) << "fid-value" << "  "
                         << std::setw(15) << "min-value" << "  "
@@ -176,7 +179,7 @@ namespace imcmc{
                         sampling_param_name.push_back(it->first);
                         ++sampling_param_num;
 
-                        if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+                        if( rank == ROOT_RANK ){
                             param_limits_os << std::left << std::setw(25) << "limits[" + it->first + "]"
                                             << " = "
                                             << std::setw(10) << par[1] << " "
@@ -198,7 +201,7 @@ namespace imcmc{
                                             -> Check parameter value setting for " + it->first );
                 }
 
-                if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+                if( rank == ROOT_RANK ){
                     std::cout   << std::setw(15) << it->first << ": "
                                 << std::setw(15) << full_param[it->first] << "  "
                                 << std::setw(15) << full_param_min[it->first] << "  "
@@ -221,16 +224,16 @@ namespace imcmc{
 
             if( nvalue == 0 ){
                 output_param_name = sampling_param_name;
-                if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+                if( rank == ROOT_RANK ){
                     std::cout << "\nensemble_workspace::init_param():\n"
                         << "\tkeyword : output_params found in " + config_file + ", but no parameters \
                             were listed, so all sampling parameters will be output.\n\n";
                 }
             }
             else{
-                if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
-                    std::cout << "\nensemble_workspace::init_param():\t"
-                        << nvalue << " parameters will be output:\n";
+                if( rank == ROOT_RANK ){
+                    std::cout << "\n#  ensemble_workspace::init_param():\n"
+                            << "#  " << nvalue << " parameters will be output:\n";
                 }
 
                 std::string *name = new std::string[nvalue];
@@ -262,7 +265,7 @@ namespace imcmc{
                     }
 
                     if ( count == 1 ){
-                        if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK )
+                        if( rank == ROOT_RANK )
                             std::cout << "*\tparam[" << std::setw(4) << i << "] : " << name[i] << "\n";
 
                         output_param_name.push_back( name[i] );
@@ -281,13 +284,13 @@ namespace imcmc{
         else{
             output_param_name = sampling_param_name;
 
-            if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK )
+            if( rank == ROOT_RANK )
                 std::cout << "\nensemble_workspace::init_param():\n"
                     << "\tno keyword : output_params found in " + config_file + ", so all sampling\n"
                     << "\tparameters will be output.\n\n";
         }
 
-        if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+        if( rank == ROOT_RANK ){
             std::string ofile = chain_root + ".params";
             std::ofstream outfile( ofile.c_str() );
 
@@ -347,7 +350,7 @@ namespace imcmc{
 
     void ensemble_workspace::init_walkers(){   //  NOTE: intialized walkers MUST lie in the valid prior!!!
 
-        if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+        if( rank == ROOT_RANK ){
             std::cout   << "imcmc::ensemble_workspace::init_walkers():\n"
                         << "\tinitializing walkers ...\n"
                         << "\tsearching _lndet_min_ & _chisq_min_ ...\n\n";
@@ -392,7 +395,7 @@ namespace imcmc{
             }
         }
         else{    //    rank_root will evaluate more likelihoods
-            if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+            if( rank == ROOT_RANK ){
                 i_start = 0;
                 i_end    = walker_num/rank_size + walker_num%rank_size - 1;
 
@@ -504,7 +507,7 @@ namespace imcmc{
                 _chisq_min_ = walker["Chisq"][i];
         }
 
-        if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+        if( rank == ROOT_RANK ){
 
             std::cout   << "\n\tsearched _lndet_min_: " << _lndet_min_ << "\n"
                         << "\tsearched _chisq_min_: " << _chisq_min_ << "\n"
@@ -524,7 +527,7 @@ namespace imcmc{
 
     void ensemble_workspace::reset_walkers(){  //  do similar stuff as ini_walkers(), no need to search _lndet_min_ & _chisq_min_
 
-        if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+        if( rank == ROOT_RANK ){
             std::cout   << "imcmc::ensemble_workspace::reset_walkers():\n"
                         << "\tresetting walkers ...\n\n";
         }
