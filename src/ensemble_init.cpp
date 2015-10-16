@@ -495,17 +495,17 @@ namespace imcmc{
                                     ROOT_RANK );
 
     //  broadcast walkers to each proc
-        MPI::COMM_WORLD.Bcast(     walker["LnPost"],
+        MPI::COMM_WORLD.Bcast(  walker["LnPost"],
                                 walker_num,
                                 MPI::DOUBLE,
                                 ROOT_RANK    );
 
-        MPI::COMM_WORLD.Bcast(     walker["LnDet"],
+        MPI::COMM_WORLD.Bcast(  walker["LnDet"],
                                 walker_num,
                                 MPI::DOUBLE,
                                 ROOT_RANK    );
 
-        MPI::COMM_WORLD.Bcast(     walker["Chisq"],
+        MPI::COMM_WORLD.Bcast(  walker["Chisq"],
                                 walker_num,
                                 MPI::DOUBLE,
                                 ROOT_RANK    );
@@ -553,15 +553,20 @@ namespace imcmc{
         imcmc_double    full_param_temp(full_param);
 
         for(int i=0; i<walker_num; ++i){
+
             double lndet=0, chisq=0;
 
             it = sampling_param_name.begin();
+
             while( it != sampling_param_name.end() ){
+
                 double mean_value   = 0.5*(full_param_min[*it]+full_param_max[*it]);
                 double value_width  = full_param_max[*it] - full_param_min[*it];
+
                 walker[*it][i]      = gsl_ran_flat( rand_seed,
                                                     mean_value - 0.1*value_width,
                                                     mean_value + 0.1*value_width );
+
                 full_param_temp[*it]     = walker[*it][i];
                 ++it;
             }
