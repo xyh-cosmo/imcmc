@@ -61,16 +61,6 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             }
 
             return is_commented;
-
-
-//    these are old and buggy ...
-//            const std::string comments("#;$%&*");
-//            std::string::size_type idx = line.find_first_not_of(" \t");
-//        //  first non-empty character should not one of "#;$%&*".
-//            if( comments.find(line[idx]) != std::string::npos )
-//                return true;
-//            else
-//                return false;
         }
 
     //    @2014-11-26
@@ -79,7 +69,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
         std::string Remove_Comments( std::string line ){
 
             if( Is_Commented(line) ){
-                Write::ErrorInfo("std::string Remove_Comments( std::string line )",
+                Info::ErrorInfo("std::string Remove_Comments( std::string line )",
                                 "the line: " + line + " is commented out !");
             }
 
@@ -147,7 +137,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             std::string::size_type idx = line.find_first_of("=") + 1;
 
             if( idx == std::string::npos ){
-                Write::ErrorInfo( "std::string::size_type Begin_of_Value( std::string line )", "no = found" );
+                Info::ErrorInfo( "std::string::size_type Begin_of_Value( std::string line )", "no = found" );
                 return std::string::npos;   //  this is actully not execuated
             }
             else{   //  values are sperated by spaces or comma
@@ -218,7 +208,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             else if(nkey == 1)
                 has_key = true;
             else if(nkey > 1){
-                Write::ErrorInfo("bool Has_Key( std::string line, std::string key )",
+                Info::ErrorInfo("bool Has_Key( std::string line, std::string key )",
                                  "more than one " + key + " ...");
             }
 
@@ -226,6 +216,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
         }
 
         bool Has_Key_in_File( std::string file, std::string key ){
+
             bool has = false;
             std::ifstream infile(file.c_str());
             std::string line;
@@ -246,7 +237,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                 has = true;
             }
             else{
-                Write::ErrorInfo("namespace IO::bool Has_Key_in_File( std::string file, std::string key )",
+                Info::ErrorInfo("namespace IO::bool Has_Key_in_File( std::string file, std::string key )",
                                  "more than one " + key + " in paramfile, ambiguous");
             }
             return has;
@@ -257,6 +248,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                             std::string::size_type begin,
                             std::string::size_type end,
                             std::string type ){
+
             int num_of_value    = 0;       //  at least one value
             std::string subline = line.substr( begin, end-begin+1 );
 
@@ -286,7 +278,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                 errmsg += "std::string::size_type end, ";
                 errmsg += "std::string type=\"string\" )";
 
-                Write::ErrorInfo(errmsg, "unrecognized data type");
+                Info::ErrorInfo(errmsg, "unrecognized data type");
             }
 
             return num_of_value;
@@ -295,14 +287,17 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
         int Num_of_Value_for_Key(   std::string infile,
                                     std::string key,
                                     std::string type    ){
+
             std::string line = Read_String_from_File(infile, key);
             std::string::size_type idx_begin = Begin_of_Value(line);
             std::string::size_type idx_end = End_of_Value(line);
+
             return Num_of_Value(line, idx_begin, idx_end, type );
         }
 
     //  added @2014-11-26
         bool Has_Value( std::string infile, std::string key, std::string type ){
+
             int value_num = 0;
 
             if( Has_Key_in_File( infile, key ) )
@@ -430,8 +425,8 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             return str_array;
         }
 
-//        int Get_Array_of_Int( std::string line, int *value_array  ){
         int* Read_Array_of_Int_from_Line( std::string line, int &size  ){
+
             int num_of_value = 0;
             std::vector<int> array;
 
@@ -458,8 +453,8 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             return value_array;
         }
 
-//        int Get_Array_of_Double( std::string line, double *value_array ){
         double *Read_Array_of_Double_from_Line( std::string line, int &size ){
+
             int num_of_value = 0;
             std::vector<double> array;
 
@@ -491,6 +486,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                                                 std::string str_array[],
                                                 int size,
                                                 bool warn   ){
+
             int num_of_value = 0;
             std::vector<std::string> array;
             std::string::size_type idx_begin = Begin_of_Value(line);
@@ -512,7 +508,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             if( size == num_of_value )
                 for(int i=0; i<num_of_value; ++i) str_array[i] = array[i];
             else if(warn)
-                Write::WarningInfo("void Read_Array_of_String_from_Line( std::string line, std::string str_array[], int size )",
+                Info::WarningInfo("void Read_Array_of_String_from_Line( std::string line, std::string str_array[], int size )",
                                     "number of values does not match");
         }
 
@@ -520,6 +516,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                                             int int_array[],
                                             int size,
                                             bool warn   ){
+
             int num_of_value = 0;
             std::vector<int> array;
 
@@ -542,7 +539,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             if( size == num_of_value )
                 for(int i=0; i<num_of_value; ++i) int_array[i] = array[i];
             else if(warn)
-                Write::WarningInfo("void Read_Array_of_Int_from_Line( std::string line, int array[], int size )",
+                Info::WarningInfo("void Read_Array_of_Int_from_Line( std::string line, int array[], int size )",
                                     "number of values does not match");
         }
 
@@ -550,6 +547,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                                                 double double_array[],
                                                 int size,
                                                 bool warn   ){
+
             int num_of_value = 0;
             std::vector<double> array;
 
@@ -572,7 +570,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             if( size == num_of_value )
                 for(int i=0; i<num_of_value; ++i) double_array[i] = array[i];
             else if(warn)
-                Write::WarningInfo("void Read_Array_of_Double_from_Line( std::string line, double double_array[], int size )",
+                Info::WarningInfo("void Read_Array_of_Double_from_Line( std::string line, double double_array[], int size )",
                                     "number of values does not match");
         }
 
@@ -586,6 +584,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
         void Read_Value_from_File(  std::string infile,
                                     std::string key,
                                     std::string &value  ){
+
             bool readed = false;
             std::string line;
             std::ifstream in(infile.c_str());
@@ -599,7 +598,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Write::ErrorInfo("void Read_Value_from_File( std::string infile, std::string key, std::string &value )",
+                Info::ErrorInfo("void Read_Value_from_File( std::string infile, std::string key, std::string &value )",
                                 "failed to read value for "+key);
         }
 
@@ -607,6 +606,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
         void Read_Value_from_File(  std::string infile,
                                     std::string key,
                                     int &value  ){
+
             bool readed = false;
             std::string line;
             std::ifstream in(infile.c_str());
@@ -620,13 +620,14 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Write::ErrorInfo("Rvoid Read_Value_from_File( std::string infile, std::string key, int &value )",
+                Info::ErrorInfo("Rvoid Read_Value_from_File( std::string infile, std::string key, int &value )",
                                 "failed to read value for "+key);
         }
 
         void Read_Value_from_File(  std::string infile,
                                     std::string key,
                                     double &value   ){
+
             bool readed = false;
             std::string line;
             std::ifstream in(infile.c_str());
@@ -640,7 +641,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Write::ErrorInfo("void Read_Value_from_File( std::string infile, std::string key, double &value )",
+                Info::ErrorInfo("void Read_Value_from_File( std::string infile, std::string key, double &value )",
                                  "failed to read value for "+key);
         }
 
@@ -648,6 +649,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
         bool BRead_Value_from_File( std::string infile,
                                     std::string key,
                                     std::string &value ){
+
             bool readed = false;
             std::string line;
             std::ifstream in(infile.c_str());
@@ -665,6 +667,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
     //  Now some overloaded functions of the above Read_Value
         bool BRead_Value_from_File( std::string infile, std::string key, int &value ){
+
             bool readed = false;
             std::string line;
             std::ifstream in(infile.c_str());
@@ -681,6 +684,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
         }
 
         bool BRead_Value_from_File( std::string infile, std::string key, double &value ){
+
             bool readed = false;
             std::string line;
             std::ifstream in(infile.c_str());
@@ -697,6 +701,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
         }
 
         std::string Read_String_from_File( std::string infile, std::string key ){
+
             bool readed = false;
             std::string value;
             std::string line;
@@ -711,12 +716,13 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Write::ErrorInfo("std::string Read_String_from_File( std::string infile, std::string key )",
+                Info::ErrorInfo("std::string Read_String_from_File( std::string infile, std::string key )",
                                 "failed to read value for "+key);
             return value;
         }
 
         bool Read_Bool_from_File( std::string infile, std::string key ){
+
             bool readed = false;
             bool bool_value = false;
             std::string value;
@@ -734,7 +740,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                 in.close();
 
                 if( !readed ){
-                    Write::WarningInfo( "int Read_Bool_from_File( std::string infile, std::string key )",
+                    Info::WarningInfo( "int Read_Bool_from_File( std::string infile, std::string key )",
                                         "failed to read value for "+key+", so false is return");
                     bool_value = false;
                 }
@@ -748,7 +754,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                     else if( value == "F" || value == "FALSE" || value == "" )
                         bool_value = false;
                     else{
-                        Write::ErrorInfo("int Read_Bool_from_File( std::string infile, std::string key )",
+                        Info::ErrorInfo("int Read_Bool_from_File( std::string infile, std::string key )",
                                          "unrecognized bool value:" + value);
                     }
                 }
@@ -758,6 +764,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
         }
 
         int Read_Int_from_File( std::string infile, std::string key ){
+
             bool readed = false;
             int value;
             std::string line;
@@ -772,12 +779,13 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Write::ErrorInfo("int Read_Int_from_File( std::string infile, std::string key )",
+                Info::ErrorInfo("int Read_Int_from_File( std::string infile, std::string key )",
                                 "failed to read value for "+key);
             return value;
         }
 
         double Read_Double_from_File( std::string infile, std::string key ){
+
             bool readed = false;
             double value;
             std::string line;
@@ -792,7 +800,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Write::ErrorInfo("double Read_Double_from_File( std::string infile, std::string key )",
+                Info::ErrorInfo("double Read_Double_from_File( std::string infile, std::string key )",
                                 "failed to read value for "+key);
             return value;
         }
@@ -801,6 +809,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
     //  Key-Value ( array of values )
     //  ===================================
         std::string* Read_Array_of_String_from_File( std::string infile, std::string key, int &array_size ){
+
             bool readed = false;
             std::string line;
             std::string *array = NULL;
@@ -815,7 +824,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed ){
-                Write::WarningInfo("Read::Read_Array_of_String()", "failed to read value for "+key);
+                Info::WarningInfo("Read::Read_Array_of_String()", "failed to read value for "+key);
                 return NULL;
             }
             else
@@ -823,6 +832,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
         }
 
         int* Read_Array_of_Int_from_File( std::string infile, std::string key, int &array_size ){
+
             bool readed = false;
             std::string line;
             int *array = NULL;
@@ -837,7 +847,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed ){
-                Write::WarningInfo("Read::Read_Array_of_Int()", "failed to read value for "+key);
+                Info::WarningInfo("Read::Read_Array_of_Int()", "failed to read value for "+key);
                 return NULL;
             }
             else
@@ -845,6 +855,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
         }
 
         double* Read_Array_of_Double_from_File( std::string infile, std::string key, int &array_size ){
+
             bool readed = false;
             std::string line;
             double *array = NULL;
@@ -859,7 +870,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed ){
-                Write::WarningInfo("Read::Read_Array_of_Double()", "failed to read value for "+key);
+                Info::WarningInfo("Read::Read_Array_of_Double()", "failed to read value for "+key);
                 return NULL;
             }
             else
@@ -868,6 +879,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
     //  the following are different version, for known size of array
         void Read_Array_of_String_from_File( std::string infile, std::string key, std::string str_array[], int array_size ){
+
             bool readed = false;
             std::string line;
             std::ifstream in(infile.c_str());
@@ -880,11 +892,12 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             }
             in.close();
             if( !readed )
-                Write::ErrorInfo("void Read_Array_of_String_from_File( std::string infile, std::string key, std::string str_array[], int array_size )",
+                Info::ErrorInfo("void Read_Array_of_String_from_File( std::string infile, std::string key, std::string str_array[], int array_size )",
                                 "failed to read str_array[] for "+key);
         }
 
         void Read_Array_of_Int_from_File( std::string infile, std::string key, int int_array[], int array_size ){
+
             bool readed = false;
             std::string line;
             std::ifstream in(infile.c_str());
@@ -898,11 +911,12 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Write::ErrorInfo("void Read_Array_of_Int_from_File( std::string infile, std::string key, int int_array[], int array_size )",
+                Info::ErrorInfo("void Read_Array_of_Int_from_File( std::string infile, std::string key, int int_array[], int array_size )",
                                 "failed to read int_array[] for "+key);
         }
 
         void Read_Array_of_Double_from_File( std::string infile, std::string key, double double_array[], int array_size ){
+
             bool readed = false;
             std::string line;
 //            double *array;
@@ -917,7 +931,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Write::ErrorInfo("void Read_Array_of_Int_from_File( std::string infile, std::string key, double double_array[], int array_size )",
+                Info::ErrorInfo("void Read_Array_of_Int_from_File( std::string infile, std::string key, double double_array[], int array_size )",
                                 "failed to read double_array[] for "+key);
         }
 
@@ -935,6 +949,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
 
         bool BRead_Array_from_File(std::string infile, std::string key, std::string array[], int array_size){
+
             bool readed = false;
             std::string line;
             std::ifstream in(infile.c_str());
@@ -950,6 +965,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
         }
 
         bool BRead_Array_from_File(std::string infile, std::string key, int array[], int array_size){
+
             bool readed = false;
             std::string line;
             std::ifstream in(infile.c_str());
@@ -965,6 +981,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
         }
 
         bool BRead_Array_from_File(std::string infile, std::string key, double array[], int array_size){
+
             bool readed = false;
             std::string line;
             std::ifstream in(infile.c_str());
@@ -981,12 +998,20 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
     }
 
-//    to be renamed to namespace Info
-    namespace Write{
+
+    namespace Info{
+
     //  print warning information, but will not stop execution unless stop=true
         void WarningInfo( std::string funcname, std::string warninginfo, bool stop ){
-            std::cout   << "Warning: " << funcname << "\n"
-                        << "---->\t" << warninginfo << "\n";
+
+            std::cout << "Warning: " << funcname << "\n"
+                      << "---->\t" << warninginfo << "\n";
+
+            std::cout << "\nThe following warning information is about source file:\n"
+                      << "#--- File Name: " << __FILE__ << "\n"
+                      << "#--- Line    #: " << __LINE__ << "\n"
+                      << "#--- Func Name: " << __FUNCTION__ << "\n";
+
             if(stop){
                 std::cout << "---->\tExit from " << funcname << "\n";
                 exit(0);
@@ -995,8 +1020,15 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
     //  print error information and stop
         void ErrorInfo( std::string funcname, std::string errorinfo ){
-            std::cout   << "Error happened in " << funcname << "\n"
-                        << "---->\t" << errorinfo << "\n";
+
+            std::cout << "Error happened in " << funcname << "\n"
+                      << "---->\t" << errorinfo << "\n";
+
+            std::cout << "\nThe following warning information is about source file:\n"
+                      << "#--- File Name: " << __FILE__ << "\n"
+                      << "#--- Line    #: " << __LINE__ << "\n"
+                      << "#--- Func Name: " << __FUNCTION__ << "\n";
+
             exit(0);
         }
     }

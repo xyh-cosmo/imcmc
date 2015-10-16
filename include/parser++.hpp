@@ -23,9 +23,11 @@
 
 namespace imcmc{
 namespace parser{
+
     namespace Read{
-        bool Has_File( std::string paramfile );           //  test whether a file exist
-        bool Is_Commented( std::string line );            //  check whether the given line is commented, if commented, true will be return
+
+        bool Has_File( std::string paramfile );   //  test whether a file exist
+        bool Is_Commented( std::string line );    //  check whether the given line is commented, if commented, true will be return
 
         std::string Remove_Comments( std::string line );  //    extract un-commented parts of a line
         void        Remove_TabSpace( std::string& value, bool info=false );
@@ -184,7 +186,7 @@ namespace parser{
                                     int         array_size );
     }
 
-    namespace Write{
+    namespace Info{
         void WarningInfo( std::string funcname, std::string warninginfo, bool stop=false );
         void ErrorInfo( std::string funcname, std::string errorinfo );
     }

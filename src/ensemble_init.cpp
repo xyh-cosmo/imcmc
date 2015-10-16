@@ -30,6 +30,7 @@ namespace imcmc{
         }
 
         if( Read::Has_Key_in_File( paramfile, "walker_num" ) ){
+
             Read::Read_Value_from_File(paramfile, "walker_num", walker_num);
 
             if( rank_size == 1 )
@@ -351,16 +352,18 @@ namespace imcmc{
     void ensemble_workspace::init_walkers(){   //  NOTE: intialized walkers MUST lie in the valid prior!!!
 
         if( rank == ROOT_RANK ){
-            std::cout   << "imcmc::ensemble_workspace::init_walkers():\n"
-                        << "\tinitializing walkers ...\n"
-                        << "\tsearching _lndet_min_ & _chisq_min_ ...\n\n";
+
+            std::cout << "#  imcmc::ensemble_workspace::init_walkers():\n"
+                      << "#  initializing walkers ...\n"
+                      << "#  searching _lndet_min_ & _chisq_min_ ...\n\n";
 
             //  _lndet_min_, _chisq_min_ are used only when writing probability into chains.
 
-            std::cout    << "\t********    NOTE    ********\n"
-                        << "\tthis version of init_walkers() has been optimized to support parallel initialization,\n"
-                        << "\tso that the time used to finish the initialization will be greatly reduced especially\n"
-                        << "\twhen the likelihoods need long time to compute.\n";
+            std::cout << "#  =====================================    NOTE    =====================================\n"
+                      << "#  this version of init_walkers() has been optimized to support parallel initialization,\n"
+                      << "#  so that the time used to finish the initialization will be greatly reduced especially\n"
+                      << "#  when the likelihoods need long time to compute.\n"
+                      << "#  ======================================================================================\n";
         }
 
         imcmc_vector_string_iterator it = sampling_param_name.begin();
@@ -385,6 +388,7 @@ namespace imcmc{
         int i_start, i_end;
 
         if( (walker_num % rank_size) == 0 ){    //    each rank will evaluate the likelihood(s) for same times
+
             i_start = ( walker_num / rank_size ) * rank;
             i_end    = i_start + ( walker_num / rank_size ) - 1;
 
@@ -395,24 +399,32 @@ namespace imcmc{
             }
         }
         else{    //    rank_root will evaluate more likelihoods
-            if( rank == ROOT_RANK ){
-                i_start = 0;
-                i_end    = walker_num/rank_size + walker_num%rank_size - 1;
 
-                sendcounts[0]    = (i_end - i_start) + 1;
-                recvcounts[0]    = sendcounts[0];
-                displace[0]        = 0;
-            }
-            else{
-                i_start    = walker_num/rank_size + walker_num%rank_size + (rank-1)*(walker_num/rank_size);
-                i_end    = i_start + walker_num/rank_size - 1;
+        //  set for root rank
+            i_start         = 0;
+            i_end           = walker_num/rank_size + walker_num%rank_size - 1;
 
-                for( int i=1; i<rank_size; ++i ){
-                    sendcounts[i]    = (i_end - i_start) + 1;
-                    recvcounts[i]    = sendcounts[i];
-                    displace[i]        = sendcounts[0] + (i-1) * ( walker_num / rank_size );
-                }
+            sendcounts[0]   = (i_end - i_start) + 1;
+            recvcounts[0]   = sendcounts[0];
+            displace[0]     = 0;
+
+        //  set for the remaining ranks
+            for( int i=1; i<rank_size; ++i ){
+
+                i_start         = walker_num/rank_size + walker_num%rank_size + (i-1)*(walker_num/rank_size);
+                i_end           = i_start + (walker_num/rank_size - 1);
+
+                sendcounts[i]   = (i_end - i_start) + 1;
+                recvcounts[i]   = sendcounts[i];
+                displace[i]     = sendcounts[0] + (i-1) * ( walker_num / rank_size );
             }
+
+        //  debug info:
+            // std::cout << "This is rank : " << rank << " rank_size = " << rank_size << "\n"
+            //           << "@@ sendcounts[0] = " << sendcounts[rank] << "\n"
+            //           << "@@ recvcounts[0] = " << recvcounts[rank] << "\n"
+            //           << "@@ displace[0]   = " << displace[rank] << "\n";
+
         }
 
         for(int i=i_start; i<=i_end; ++i){
@@ -423,13 +435,17 @@ namespace imcmc{
             it = sampling_param_name.begin();
 
             while( it != sampling_param_name.end() ){
+
                 double mean_value   = 0.5*(full_param_min[*it]+full_param_max[*it]);
                 double value_width  = full_param_max[*it] - full_param_min[*it];
 
+            //  ==============================================================================
             //  just give the walkers some reasonable values...
+            //  0.25 can be replaced by other values whoes absolute values are less than 0.5
+            //  ==============================================================================
                 walker[*it][i]      = gsl_ran_flat( rand_seed,
-                                                    mean_value - 0.1*value_width,
-                                                    mean_value + 0.1*value_width );
+                                                    mean_value - 0.25*value_width,
+                                                    mean_value + 0.25*value_width );
 
                 full_param_temp[*it]     = walker[*it][i];
                 ++it;
@@ -452,7 +468,7 @@ namespace imcmc{
                                         recvcounts, displace, MPI::DOUBLE,
                                         ROOT_RANK );
 
-            MPI::COMM_WORLD.Bcast(     walker[*it],
+            MPI::COMM_WORLD.Bcast(  walker[*it],
                                     walker_num,
                                     MPI::DOUBLE,
                                     ROOT_RANK    );

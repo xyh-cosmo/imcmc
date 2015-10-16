@@ -188,6 +188,7 @@ namespace imcmc{
     }
 
     void ensemble_workspace::update_walkers( bool do_sampling, int ith, int num ){   //  do_sampling = true means start to sample
+
         imcmc_double    full_param_temp(full_param);     //  make a copy
 
         int *accept = new int[walker_num];
@@ -198,6 +199,7 @@ namespace imcmc{
 
         if( parallel_mode == 0 ){   //  serial mode
             int id;
+
             for( int i=0; i<walker_num; ++i ){
                 do{    //    randomly select a walker in the complementary set of walkers
                     id    = gsl_rng_get(rand_seed) % walker_num;
@@ -208,7 +210,7 @@ namespace imcmc{
         }
         else{   //  opempi-parallel mode
 
-            int    rank = MPI::COMM_WORLD.Get_rank();
+            int rank = MPI::COMM_WORLD.Get_rank();
             int size = MPI::COMM_WORLD.Get_size();
 
             int num_each_proc;
@@ -233,6 +235,7 @@ namespace imcmc{
             if( parallel_mode == 1 ){
 
                 if( walker_num_half%size == 0 ){ //  each proc will handle same number of walkers
+
                     num_each_proc   = walker_num_half / size;
 
                     for( int i=0; i<size; ++i ){
@@ -245,6 +248,7 @@ namespace imcmc{
                     }
                 }
                 else{
+
                     id_width[0]    = walker_num_half - (walker_num_half/size + 1)*(size-1);
 
                     if( id_width[0] <= 0 ){
