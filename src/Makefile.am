@@ -3,7 +3,8 @@ EXTRA_DIST =
 lib_LTLIBRARIES = libimcmc.la
 libimcmc_la_CXXFLAGS = $(OPENMP_CFLAGS) -I$(top_srcdir)/include
 libimcmc_la_LDFLAGS = $(OPENMP_CFLAGS)
-libimcmc_la_SOURCES =   ensemble.cpp               \
+libimcmc_la_SOURCES =   imcmc.cpp                  \
+                        ensemble.cpp               \
                         ensemble_init.cpp          \
                         ensemble_io.cpp            \
                         ensemble_prior.cpp         \

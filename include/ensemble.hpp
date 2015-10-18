@@ -47,8 +47,8 @@ namespace imcmc{
             //    2: parallel version with large number of cores
             int    parallel_mode;
             int    rank_size, rank;
-            int    burnin_step, skip_step, chain_num, chain_size;
-            int    walker_num;
+            int    burnin_step, skip_step, sample_step;
+            int    walker_num, chain_num;
 
             //    name of current writing chain
             std::string     chain_root;
@@ -56,7 +56,7 @@ namespace imcmc{
             std::ofstream   out_stream;
 
             //    whether use cosmomc standard form? "weight like param1 param2 param3 ..."
-            bool    use_cosmomc_std_format;    //    default: false. NOTE: like is actually -2*ln(L) = chisq
+            bool    use_cosmomc_format;             //    default: false. NOTE: like is actually -2*ln(L) = chisq
             bool    write_params_as_chain_header;   //  default: true
 
             //  filename of the parameters' limits
@@ -69,7 +69,11 @@ namespace imcmc{
             //    efficient controling parameter
             double  efficient_a;
 
+            //  radius of the initialization "ball", default value: 0.5
+            double  init_ball_radius;
+
             //    state of acception or rejection, 1 or 0
+            int     *accept;    // = new int[walker_num];
             int    total_accepts;
             int    total_rejects;
 
@@ -82,8 +86,10 @@ namespace imcmc{
 
             //  Walkers
             imcmc_double_pointer    walker;                 //  includes LnPost, LnDet and Chisq
-            imcmc_vector_string     sampling_param_name;    //    hold the names of parameters being sampled
+            imcmc_vector_string     sampling_param_name;    //  hold the names of parameters being sampled
             imcmc_vector_string     output_param_name;      //  if not set, then output_param_name = sampling_param_name
+
+            imcmc_double_pointer    walker_io;  //  this is acutally a backup of walker, and it will be used to write chains into files.
 
             //    Likelihoof functions , contains MODEL and DATA
             std::vector<likelihood_*>   likelihood;
@@ -124,8 +130,10 @@ namespace imcmc{
 
             int     update_a_walker( imcmc_double& full_param, int current_id, int rand_id );
             void    update_walkers( bool do_sampling, int ith, int num );   //    Update walkers
+            void    update_walkers_io();                                    //  needed when use_cosmomc_format == true
             void    write_walkers( std::ofstream& of );                     //    Write walkers into text files
             void    do_sampling();
+
 
             //    TODO: add some new methods
             //    1) save walker state

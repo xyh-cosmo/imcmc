@@ -9,6 +9,7 @@ namespace imcmc{
                                           imcmc_vector_string     modelparam,
                                           void                     *model,
                                           void                    *data    ){
+
         likelihood_ *like   = new likelihood_;
         like->loglike       = loglike;
         like->model         = model;
@@ -34,6 +35,7 @@ namespace imcmc{
     double ensemble_workspace::likelihood_eval( imcmc_double& full_param,
                                                 double& lndet,
                                                 double& chisq   ){
+
         double lndet_temp   = 0.0;
         double chisq_temp   = 0.0;
         double ln_post      = 0.0;

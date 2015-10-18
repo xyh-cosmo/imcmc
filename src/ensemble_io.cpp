@@ -2,39 +2,99 @@
 
 namespace imcmc{
 
+//    void ensemble_workspace::write_walkers( std::ofstream& of, bool last ){
     void ensemble_workspace::write_walkers( std::ofstream& of ){
 
         imcmc_vector_string_iterator it;
 
-        for( int i=0; i<walker_num; ++i ){
+        if( use_cosmomc_format ){
 
-            it = output_param_name.begin();
+            for( int i=0; i<walker_num; ++i ){
 
-            if( use_cosmomc_std_format ){    //    just set all the elements of the first column to 1
+                if( accept[i] == 0 ){
+                    //  this old walker stays where it was, so we just increase its weight by 1.0
+                    walker_io["Weight"][i] += 1.0;
 
-                of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
-                    << 1.0 << ""
-                    << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
-                    << walker["Chisq"][i] << "";
+//                    if( last ){
+//                        of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
+//                            << walker_io["Weight"][i] << ""
+//                            << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
+//                            << walker_io["Chisq"][i] << "";
 
+//                        //  update weight, lnpost, lndet and chisq
+//                        walker_io["Weight"][i] = 1.0;  //  reset to 1.0
+//                        walker_io["LnPost"][i] = walker["LnPost"][i];
+//                        walker_io["LnDet"][i]  = walker["LnDet"][i];
+//                        walker_io["Chisq"][i]  = walker["Chisq"][i];
+
+//                        it = output_param_name.begin();
+
+//                        while( it != output_param_name.end() ){
+
+//                            of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
+//                                << walker_io[*it][i] << "";
+
+//                            //  update to new walker
+//                            walker_io[*it][i] = walker[*it][i];
+//                            ++it;
+//                        }
+//                        
+//                        of << "\n";
+//                    }
+                }
+                else if( accept[i] == 1 ){
+                    //  this old walker has been replaced by a new one, so we have to output it and update walker_io
+
+                    of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
+                        << walker_io["Weight"][i] << ""
+                        << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
+                        << walker_io["Chisq"][i] << "";
+
+                    //  update weight, lnpost, lndet and chisq
+                    walker_io["Weight"][i] = 1.0;  //  reset to 1.0
+                    walker_io["LnPost"][i] = walker["LnPost"][i];
+                    walker_io["LnDet"][i]  = walker["LnDet"][i];
+                    walker_io["Chisq"][i]  = walker["Chisq"][i];
+
+                    it = output_param_name.begin();
+
+                    while( it != output_param_name.end() ){
+
+                        of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
+                            << walker_io[*it][i] << "";
+
+                        //  update to new walker
+                        walker_io[*it][i] = walker[*it][i];
+                        ++it;
+                    }
+                    
+                    of << "\n";
+                }
+                else{
+                    imcmc_runtime_error("unknown accept value, must be 0 or 1!");
+                }
             }
-            else{
+        }
+        else{
+
+            for( int i=0; i<walker_num; ++i ){
 
                 of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
                     << exp(walker["LnPost"][i] + _lndet_min_ + 0.5*_chisq_min_ ) << ""
                     << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
                     << walker["Chisq"][i] << "";
 
-            }
+                it = output_param_name.begin();
+                while( it != output_param_name.end() ){
+                    of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
+                        << walker[*it][i] << "";
+                    ++it;
+                }
 
-            while( it != output_param_name.end() ){
-                of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
-                    << walker[*it][i] << "";
-                ++it;
+                of << "\n";
             }
-
-            of << "\n";
         }
+
     }
 
     void ensemble_workspace::save_walker_state( std::ofstream& of ){

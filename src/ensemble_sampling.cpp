@@ -14,10 +14,10 @@ namespace imcmc{
         else
             burnin_loops    = burnin_step/walker_num + 1;
 
-        if( chain_size  % walker_num == 0 )
-            sampling_loops  = chain_size/walker_num;
+        if( sample_step  % walker_num == 0 )
+            sampling_loops  = sample_step/walker_num;
         else
-            sampling_loops  = chain_size/walker_num + 1;
+            sampling_loops  = sample_step/walker_num + 1;
 
         // make sure searching lndet_min and chisq_min will be done at least one time during burn-in
         _searched_lndet_min_chisq_min_ = false;
@@ -28,8 +28,13 @@ namespace imcmc{
             std::cout << "######################################################\n\n";
         }
 
-        for( int j=0; j<burnin_loops; ++j )    //  Burn in
+        for( int j=0; j<burnin_loops; ++j ){    //  Burn in
+        
             update_walkers( false, j, burnin_loops );
+
+            if( use_cosmomc_format )   //  need to update walker_io
+                update_walkers_io();            
+        }
 
         _searched_lndet_min_chisq_min_ = true;  //  once search during the burning, change its state to TRUE.
 
@@ -53,7 +58,7 @@ namespace imcmc{
                 imcmc_vector_string_iterator it = output_param_name.begin();
 
                 //  Write the first line
-                if( use_cosmomc_std_format && write_params_as_chain_header ){
+                if( use_cosmomc_format && write_params_as_chain_header ){
                     out_stream << "# standard cosmomc format\n";
                     out_stream << "#";
                     out_stream << std::setw(_OUT_WIDTH_-1) << "weight" << std::setw(_OUT_WIDTH_) << "-2log(L)";
@@ -146,6 +151,7 @@ namespace imcmc{
     }
 
     int ensemble_workspace::update_a_walker( imcmc_double& full_param_temp, int current_id, int rand_id ){
+
         double z = ensemble_workspace::gz();
 
         imcmc_vector_string_iterator it = sampling_param_name.begin();
@@ -160,6 +166,7 @@ namespace imcmc{
         if( !prior(full_param_temp) )    //  run out of prior
             state = 0;
         else{
+
             double lnpost_current   = walker["LnPost"][current_id];
             double lnpost_new       = likelihood_eval( full_param_temp, lndet, chisq );
             double dlnpost          = lnpost_new - lnpost_current;
@@ -167,6 +174,7 @@ namespace imcmc{
             double ran              = gsl_ran_flat(rand_seed, 0, 1);
 
             if( ran <= alpha ){
+
                 state = 1;
 
                 walker["LnPost"][current_id]    = lnpost_new;
@@ -191,7 +199,8 @@ namespace imcmc{
 
         imcmc_double    full_param_temp(full_param);     //  make a copy
 
-        int *accept = new int[walker_num];
+        // int *accept = new int[walker_num];
+
         for( int i=0; i<walker_num; ++i )
             accept[i] = 0;
 
@@ -223,7 +232,7 @@ namespace imcmc{
             int *displace   = new int[size];
 
             int *walker_id = new int[walker_num];
-            int walker_num_half = walker_num / 2;
+            int walker_num_half = walker_num / 2;   //  walker_num should be an even number.
 
             for( int i=0; i<walker_num_half; ++i ){
                 walker_id[i]                    = gsl_rng_get(rand_seed) % walker_num_half + walker_num_half;
@@ -291,7 +300,7 @@ namespace imcmc{
                                                 recvcounts, displace, MPI::DOUBLE,
                                                 ROOT_RANK );
 
-                    MPI::COMM_WORLD.Bcast(     walker[*it],
+                    MPI::COMM_WORLD.Bcast(  walker[*it],
                                             walker_num,
                                             MPI::DOUBLE,
                                             ROOT_RANK    );
@@ -577,7 +586,43 @@ namespace imcmc{
             }
         }
 
-        delete[] accept;
+        // delete[] accept;
         MPI::COMM_WORLD.Barrier();
     }
+
+    void ensemble_workspace::update_walkers_io(){
+
+        imcmc_vector_string_iterator it;
+
+        if( rank == ROOT_RANK ){    //  only root rank need to do this
+
+            for( int i=0; i<walker_num; ++i ){
+
+                if( accept[i] == 0 ){
+                    //  this old walker stays where it was, so we just increase its weight by 1.0
+                    walker_io["Weight"][i] += 1.0;
+                }
+                else if( accept[i] == 1 ){  //  this old walker has been replaced by a new one, so we have to output it and update walker_io
+                    
+                    //  update weight, lnpost, lndet and chisq
+                    walker_io["Weight"][i] = 1.0;  //  reset to 1.0
+                    walker_io["LnPost"][i] = walker["LnPost"][i];
+                    walker_io["LnDet"][i]  = walker["LnDet"][i];
+                    walker_io["Chisq"][i]  = walker["Chisq"][i];
+
+                    it = output_param_name.begin();
+
+                    while( it != output_param_name.end() ){ //  update to new walker
+
+                        walker_io[*it][i] = walker[*it][i];
+                        ++it;
+                    }
+                }
+                else{
+                    imcmc_runtime_error("unknown accept value, must be 0 or 1!");
+                }
+            }
+        }
+    }
+
 }

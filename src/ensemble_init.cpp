@@ -33,6 +33,10 @@ namespace imcmc{
 
             Read::Read_Value_from_File(paramfile, "walker_num", walker_num);
 
+            if( (walker_num%2) != 0 ){
+                imcmc_runtime_warning("We strongly suggest to use even number of walkers, while you set a odd number, so we increase it by 1.");
+            }
+
             if( rank_size == 1 )
                 parallel_mode   = 0;
             else if( rank_size < (walker_num/2) )
@@ -43,6 +47,8 @@ namespace imcmc{
                 std::cout << "ensemble_workspace::Init() --> you have lots of cores, set the number of \
                              walkers to twice of number of ranks\n";
             }
+
+            accept = new int[walker_num];
         }
 
         if( Read::Has_Key_in_File( paramfile, "burnin_step" ) ){
@@ -60,12 +66,27 @@ namespace imcmc{
             Read::Read_Value_from_File(paramfile, "chain_num", chain_num);
         }
 
-        if( Read::Has_Key_in_File( paramfile, "chain_size" ) ){
-            Read::Read_Value_from_File(paramfile, "chain_size", chain_size);
+        if( Read::Has_Key_in_File( paramfile, "sample_step" ) ){
+            Read::Read_Value_from_File(paramfile, "sample_step", sample_step);
         }
 
         if( Read::Has_Key_in_File( paramfile, "efficient_a" ) ){
             Read::Read_Value_from_File(paramfile, "efficient_a", efficient_a);
+        }
+        else{
+            imcmc_runtime_warning("no efficient_a found, keep the default value 2.0");
+        }
+
+        if( Read::Has_Key_in_File( paramfile, "init_ball_radius" ) ){
+            Read::Read_Value_from_File(paramfile, "init_ball_radius", init_ball_radius);
+
+            if( init_ball_radius <=0.0 || init_ball_radius >= 0.9999 ){
+                // imcmc_runtime_error("init_ball_radius should be greater than 0.0 and samller than 1.0");
+                imcmc_runtime_warning("init_ball_radius should be greater than 0.0 and samller than 1.0, so I reset it to default value 0.5");
+            }
+        }
+        else{
+            init_ball_radius    = 0.5;  //  set to default value 0.5
         }
 
         if( Read::Has_Key_in_File( paramfile, "chain_root" ) ){
@@ -73,16 +94,12 @@ namespace imcmc{
             param_limits = chain_root + ".param_limits";
         }
 
-        if( Read::Has_Key_in_File( paramfile, "use_cosmomc_std_format" ) ){
-            use_cosmomc_std_format    = Read::Read_Bool_from_File(paramfile, "use_cosmomc_std_format");
-
-            if( Read::Has_Key_in_File( paramfile, "write_params_as_chain_header" ) ){
-                write_params_as_chain_header = Read::Read_Bool_from_File(paramfile, "write_params_as_chain_header");
-            }
+        if( Read::Has_Key_in_File( paramfile, "use_cosmomc_format" ) ){
+            use_cosmomc_format    = Read::Read_Bool_from_File(paramfile, "use_cosmomc_format");
         }
-        else{
-            use_cosmomc_std_format          = false;
-            write_params_as_chain_header    = false;
+
+        if( Read::Has_Key_in_File( paramfile, "write_params_as_chain_header" ) ){
+            write_params_as_chain_header = Read::Read_Bool_from_File(paramfile, "write_params_as_chain_header");
         }
 
     //  setup seeds for the random number generators
@@ -108,6 +125,7 @@ namespace imcmc{
                                 ROOT_RANK );
 
         if( rank == ROOT_RANK ){
+
             std::string     seedfile = chain_root + ".used_seeds";
             std::ofstream    outfile( seedfile.c_str() );
             outfile << std::setw(10) << "#    rank " << std::setw(12) << "rng_name "
@@ -140,6 +158,7 @@ namespace imcmc{
         if( rank == ROOT_RANK ){
             std::cout   << "\n#  ensemble_workspace::init_param():\n"
                         << "#  reading sampling parameters from: " + config_file << "\n";
+
             std::cout   << std::setw(15) << "params" << ": "
                         << std::setw(15) << "fid-value" << "  "
                         << std::setw(15) << "min-value" << "  "
@@ -188,7 +207,7 @@ namespace imcmc{
                         }
                     }
                     else if( fabs(par[1]-par[2]) < 1E-15 ){ //  not do MCMC, be careful here
-                        full_param[it->first]          = par[0];
+                        full_param[it->first]       = par[0];
                         full_param_min[it->first]   = par[1];
                         full_param_max[it->first]   = par[1];
                     }
@@ -232,6 +251,7 @@ namespace imcmc{
                 }
             }
             else{
+
                 if( rank == ROOT_RANK ){
                     std::cout << "\n#  ensemble_workspace::init_param():\n"
                             << "#  " << nvalue << " parameters will be output:\n";
@@ -369,7 +389,13 @@ namespace imcmc{
         imcmc_vector_string_iterator it = sampling_param_name.begin();
 
         while( it != sampling_param_name.end() ){
+        
             walker[*it] = new double[walker_num];
+
+            if( use_cosmomc_format ){
+                walker_io[*it] = new double[walker_num];
+            }
+
             ++it;
         }
 
@@ -378,24 +404,32 @@ namespace imcmc{
         walker["LnDet"]     = new double[walker_num];
         walker["Chisq"]     = new double[walker_num];
 
+        if( use_cosmomc_format ){
+            walker_io["Weight"] = new double[walker_num];
+            walker_io["LnPost"] = new double[walker_num];
+            walker_io["LnDet"]  = new double[walker_num];
+            walker_io["Chisq"]  = new double[walker_num];
+        }
+
         //  Now initialize
         imcmc_double    full_param_temp(full_param);
 
-        int *sendcounts    = new int[rank_size];
-        int *recvcounts    = new int[rank_size];
-        int *displace    = new int[rank_size];
+        int *sendcounts = new int[rank_size];
+        int *recvcounts = new int[rank_size];
+        int *displace   = new int[rank_size];
 
+        //  each rank will only calculate some of the likelihoods of the walkers.
         int i_start, i_end;
 
-        if( (walker_num % rank_size) == 0 ){    //    each rank will evaluate the likelihood(s) for same times
+        if( (walker_num % rank_size) == 0 ){    //    each rank will evaluate the same number of likelihoods
 
             i_start = ( walker_num / rank_size ) * rank;
-            i_end    = i_start + ( walker_num / rank_size ) - 1;
+            i_end   = i_start + ( walker_num / rank_size ) - 1;
 
             for( int i=0; i<rank_size; ++i ){
                 sendcounts[i]    = (i_end - i_start) + 1;
                 recvcounts[i]    = sendcounts[i];
-                displace[i]        = i * ( walker_num / rank_size );
+                displace[i]      = i * ( walker_num / rank_size );
             }
         }
         else{    //    rank_root will evaluate more likelihoods
@@ -510,10 +544,30 @@ namespace imcmc{
                                 MPI::DOUBLE,
                                 ROOT_RANK    );
 
+        // copy walker into walker_io.
+        if( use_cosmomc_format && (rank == ROOT_RANK) ){
+
+            for( int i=0; i<walker_num; ++i ){  // set all initial weights to 1.0
+                walker_io["Weight"][i] = 1.0;   //  because these walkers were born for then first time
+                walker_io["LnPost"][i] = walker["LnPost"][i];
+                walker_io["LnDet"][i]  = walker["LnDet"][i];
+                walker_io["Chisq"][i]  = walker["Chisq"][i];
+            }
+
+            it = sampling_param_name.begin();
+
+            while( it != sampling_param_name.end() ){
+
+                for( int i=0; i<walker_num; ++i )
+                    walker_io[*it][i] = walker[*it][i];
+
+                ++it;
+            }
+        }
 
     //    search the _lndet_min_ & _chisq_min_
-        _lndet_min_ = 1.e99;
-        _chisq_min_ = 1.e99;
+        _lndet_min_ = 1.0E99;
+        _chisq_min_ = 1.0E99;
 
         for( int i=0; i<walker_num; ++i ){
             if( walker["LnDet"][i] < _lndet_min_ )

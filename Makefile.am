@@ -1,4 +1,4 @@
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS = -I m4 -Wall
 SUBDIRS = src examples
 
 EXTRA_DIST  =   TODO                    \
