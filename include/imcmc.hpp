@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <stdexcept>
 
 #define _OUT_WIDTH_ 18  //  the width of the outputs of the chains.
 
