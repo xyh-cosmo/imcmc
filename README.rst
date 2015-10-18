@@ -2,7 +2,7 @@
 imcmc
 ===================
 :imcmc: A C++ implemented MCMC library
-:Version: 0.0.3
+:Version: 0.0.4
 :Author: Youhua Xu
 :Homepage: http://lss.bao.ac.cn/~xyh/
 
@@ -15,4 +15,4 @@ library, for example the classical Metropolis-Hastings and Hamiltonian Monte Car
 Dependence
 ============
 1) OpenMPI
-2) GSL (use GSL's random number generator)
+2) GSL (using only GSL's random number generator)
