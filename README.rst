@@ -14,9 +14,7 @@ library, for example the classical Metropolis-Hastings and Hamiltonian Monte Car
 
 Updates
 =========
-**** 18-Oct-2015 ****
-1) Updated the output format, the same as CosmoMC . 
-2) keyword 'chain_size' is replaced by sample_step.
+@ 18-Oct-2015 : 1) Updated the output format, the same as CosmoMC;  2) keyword 'chain_size' is replaced by sample_step.
 
 Dependence
 ============
