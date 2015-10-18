@@ -40,7 +40,7 @@ namespace imcmc{
 
 //    TODO: add a diagnosis check of the burn in process, to see whether the samplers have been in equilibrium or not
 
-        for( int i=0; i<chain_num; ++i ){
+        for( int i=1; i<=chain_num; ++i ){
 
             if( chain_num == 1)
                 chain_name = chain_root + ".txt";
