@@ -187,8 +187,8 @@ namespace parser{
     }
 
     namespace Info{
-        void WarningInfo( std::string funcname, std::string warninginfo, bool stop=false );
-        void ErrorInfo( std::string funcname, std::string errorinfo );
+        void WarningInfo( std::string warninginfo, bool stop=false );
+        void ErrorInfo( std::string errorinfo );
     }
 }
 

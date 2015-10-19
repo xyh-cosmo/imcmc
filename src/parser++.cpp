@@ -69,8 +69,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
         std::string Remove_Comments( std::string line ){
 
             if( Is_Commented(line) ){
-                Info::ErrorInfo("std::string Remove_Comments( std::string line )",
-                                "the line: " + line + " is commented out !");
+                Info::ErrorInfo( "the line: " + line + " is commented out !");
             }
 
             std::string::size_type idx_of_comments = line.find_first_of("#;$%&*");
@@ -137,8 +136,8 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             std::string::size_type idx = line.find_first_of("=") + 1;
 
             if( idx == std::string::npos ){
-                Info::ErrorInfo( "std::string::size_type Begin_of_Value( std::string line )", "no = found" );
-                return std::string::npos;   //  this is actully not execuated
+                Info::WarningInfo( "no \'=\' found" );
+                return std::string::npos;
             }
             else{   //  values are sperated by spaces or comma
                 while( line[idx] == ' ' || line[idx] == ',' || line[idx] == '\t' ) ++idx;
@@ -208,8 +207,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             else if(nkey == 1)
                 has_key = true;
             else if(nkey > 1){
-                Info::ErrorInfo("bool Has_Key( std::string line, std::string key )",
-                                 "more than one " + key + " ...");
+                Info::ErrorInfo( "more than one " + key + " ..." );
             }
 
             return has_key;
@@ -237,8 +235,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                 has = true;
             }
             else{
-                Info::ErrorInfo("namespace IO::bool Has_Key_in_File( std::string file, std::string key )",
-                                 "more than one " + key + " in paramfile, ambiguous");
+                Info::ErrorInfo( "more than one " + key + " in paramfile, ambiguous" );
             }
             return has;
         }
@@ -271,15 +268,8 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                 double value;
                 while( stream >> value ) ++num_of_value;
             }
-            else{   //the error message is too long, so break it into pieces...
-                std::string errmsg = "int Num_of_String_Value( ";
-                errmsg += "std::string line, ";
-                errmsg += "std::string::size_type begin, ";
-                errmsg += "std::string::size_type end, ";
-                errmsg += "std::string type=\"string\" )";
-
-                Info::ErrorInfo(errmsg, "unrecognized data type");
-            }
+            else
+                Info::ErrorInfo( "unrecognized data type" );
 
             return num_of_value;
         }
@@ -505,11 +495,12 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                 ++num_of_value;
             }
 
-            if( size == num_of_value )
-                for(int i=0; i<num_of_value; ++i) str_array[i] = array[i];
+            if( size == num_of_value ){
+                for(int i=0; i<num_of_value; ++i)
+                    str_array[i] = array[i];
+            }
             else if(warn)
-                Info::WarningInfo("void Read_Array_of_String_from_Line( std::string line, std::string str_array[], int size )",
-                                    "number of values does not match");
+                Info::WarningInfo( "number of values does not match" );
         }
 
         void Read_Array_of_Int_from_Line(   std::string line,
@@ -536,11 +527,12 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                 ++num_of_value;
             }
 
-            if( size == num_of_value )
-                for(int i=0; i<num_of_value; ++i) int_array[i] = array[i];
+            if( size == num_of_value ){
+                for(int i=0; i<num_of_value; ++i)
+                    int_array[i] = array[i];
+            }
             else if(warn)
-                Info::WarningInfo("void Read_Array_of_Int_from_Line( std::string line, int array[], int size )",
-                                    "number of values does not match");
+                Info::WarningInfo( "number of values does not match" );
         }
 
         void Read_Array_of_Double_from_Line(    std::string line,
@@ -567,11 +559,12 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                 ++num_of_value;
             }
 
-            if( size == num_of_value )
-                for(int i=0; i<num_of_value; ++i) double_array[i] = array[i];
+            if( size == num_of_value ){
+                for(int i=0; i<num_of_value; ++i)
+                    double_array[i] = array[i];
+            }
             else if(warn)
-                Info::WarningInfo("void Read_Array_of_Double_from_Line( std::string line, double double_array[], int size )",
-                                    "number of values does not match");
+                Info::WarningInfo( "number of values does not match" );
         }
 
     //  ====================================
@@ -598,8 +591,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Info::ErrorInfo("void Read_Value_from_File( std::string infile, std::string key, std::string &value )",
-                                "failed to read value for "+key);
+                Info::ErrorInfo( "Failed to read value for " + key );
         }
 
     //  Now some overloaded functions of the above Read_Value
@@ -620,8 +612,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Info::ErrorInfo("Rvoid Read_Value_from_File( std::string infile, std::string key, int &value )",
-                                "failed to read value for "+key);
+                Info::ErrorInfo( "Failed to read value for " + key );
         }
 
         void Read_Value_from_File(  std::string infile,
@@ -641,8 +632,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Info::ErrorInfo("void Read_Value_from_File( std::string infile, std::string key, double &value )",
-                                 "failed to read value for "+key);
+                Info::ErrorInfo( "Failed to read value for " + key );
         }
 
     //  bool version
@@ -716,8 +706,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Info::ErrorInfo("std::string Read_String_from_File( std::string infile, std::string key )",
-                                "failed to read value for "+key);
+                Info::ErrorInfo( "Failed to read value for " + key );
             return value;
         }
 
@@ -740,8 +729,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                 in.close();
 
                 if( !readed ){
-                    Info::WarningInfo( "int Read_Bool_from_File( std::string infile, std::string key )",
-                                        "failed to read value for "+key+", so false is return");
+                    Info::WarningInfo( "Failed to read value for "+key+", so false is return");
                     bool_value = false;
                 }
                 else{
@@ -754,8 +742,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                     else if( value == "F" || value == "FALSE" || value == "" )
                         bool_value = false;
                     else{
-                        Info::ErrorInfo("int Read_Bool_from_File( std::string infile, std::string key )",
-                                         "unrecognized bool value:" + value);
+                        Info::ErrorInfo( "unrecognized bool value: " + value );
                     }
                 }
             }
@@ -779,8 +766,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Info::ErrorInfo("int Read_Int_from_File( std::string infile, std::string key )",
-                                "failed to read value for "+key);
+                Info::ErrorInfo( "Failed to read value for " + key );
             return value;
         }
 
@@ -800,8 +786,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Info::ErrorInfo("double Read_Double_from_File( std::string infile, std::string key )",
-                                "failed to read value for "+key);
+                Info::ErrorInfo( "Failed to read value for " + key );
             return value;
         }
 
@@ -824,7 +809,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed ){
-                Info::WarningInfo("Read::Read_Array_of_String()", "failed to read value for "+key);
+                Info::WarningInfo("Failed to read value for "+key);
                 return NULL;
             }
             else
@@ -847,7 +832,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed ){
-                Info::WarningInfo("Read::Read_Array_of_Int()", "failed to read value for "+key);
+                Info::WarningInfo("Failed to read value for "+key);
                 return NULL;
             }
             else
@@ -870,7 +855,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed ){
-                Info::WarningInfo("Read::Read_Array_of_Double()", "failed to read value for "+key);
+                Info::WarningInfo("Failed to read value for "+key);
                 return NULL;
             }
             else
@@ -892,8 +877,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             }
             in.close();
             if( !readed )
-                Info::ErrorInfo("void Read_Array_of_String_from_File( std::string infile, std::string key, std::string str_array[], int array_size )",
-                                "failed to read str_array[] for "+key);
+                Info::ErrorInfo( "Failed to read str_array[] for " + key );
         }
 
         void Read_Array_of_Int_from_File( std::string infile, std::string key, int int_array[], int array_size ){
@@ -911,8 +895,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Info::ErrorInfo("void Read_Array_of_Int_from_File( std::string infile, std::string key, int int_array[], int array_size )",
-                                "failed to read int_array[] for "+key);
+                Info::ErrorInfo( "Failed to read int_array[] for " + key );
         }
 
         void Read_Array_of_Double_from_File( std::string infile, std::string key, double double_array[], int array_size ){
@@ -931,8 +914,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
             in.close();
             if( !readed )
-                Info::ErrorInfo("void Read_Array_of_Int_from_File( std::string infile, std::string key, double double_array[], int array_size )",
-                                "failed to read double_array[] for "+key);
+                Info::ErrorInfo( "Failed to read double_array[] for " + key );
         }
 
         void Read_Array_from_File(std::string infile, std::string key, std::string array[], int array_size){
@@ -999,37 +981,35 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
     }
 
 
-    namespace Info{
+    namespace Info{ 
+    //  Though imcmc has two functions similar to the follwings, I still keep them here, because these
+    //  two are used inside parser only, and NO imcmc function were used here, so this parser is actually
+    //  completely independent and can be used anywhere else directly (don't forget the header)
 
     //  print warning information, but will not stop execution unless stop=true
-        void WarningInfo( std::string funcname, std::string warninginfo, bool stop ){
+        void WarningInfo( std::string warninginfo, bool stop ){
 
-            std::cout << "Warning: " << funcname << "\n"
-                      << "---->\t" << warninginfo << "\n";
-
-            std::cout << "\nThe following warning information is about source file:\n"
+            std::cout << "\n#########################################################\n"
                       << "#--- File Name: " << __FILE__ << "\n"
                       << "#--- Line    #: " << __LINE__ << "\n"
-                      << "#--- Func Name: " << __FUNCTION__ << "\n";
+                      << "#--- Func Name: " << __FUNCTION__ << "\n"
+                      << "#--- Warning Infomation: " << warninginfo << "\n\n";
 
             if(stop){
-                std::cout << "---->\tExit from " << funcname << "\n";
-                exit(0);
+                std::cout << "---->\tExit from " << __FUNCTION__ << "\n";
+                throw std::runtime_error( "you requested to stop here!\n" );
             }
         }
 
     //  print error information and stop
-        void ErrorInfo( std::string funcname, std::string errorinfo ){
+        void ErrorInfo( std::string errorinfo ){
 
-            std::cout << "Error happened in " << funcname << "\n"
-                      << "---->\t" << errorinfo << "\n";
-
-            std::cout << "\nThe following warning information is about source file:\n"
+            std::cout << "\n#########################################################\n"
                       << "#--- File Name: " << __FILE__ << "\n"
                       << "#--- Line    #: " << __LINE__ << "\n"
                       << "#--- Func Name: " << __FUNCTION__ << "\n";
 
-            exit(0);
+            throw std::runtime_error( errorinfo + "\n" );
         }
     }
 }

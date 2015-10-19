@@ -64,6 +64,10 @@ namespace imcmc{
 
         if( Read::Has_Key_in_File( paramfile, "chain_num" ) ){
             Read::Read_Value_from_File(paramfile, "chain_num", chain_num);
+
+            if( chain_num <= 0 ){
+                Info::ErrorInfo( "chain_num is <= 0, which means you do want any chains, so quit..." );
+            }
         }
 
         if( Read::Has_Key_in_File( paramfile, "sample_step" ) ){
