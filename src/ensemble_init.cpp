@@ -106,6 +106,10 @@ namespace imcmc{
             write_params_as_chain_header = Read::Read_Bool_from_File(paramfile, "write_params_as_chain_header");
         }
 
+        if( Read::Has_Key_in_File( paramfile, "save_burned_ashes" ) ){
+            save_burned_ashes   = Read::Read_Bool_from_File(paramfile, "save_burned_ashes");
+        }
+
     //  setup seeds for the random number generators
         unsigned long seed, rand_num;
         unsigned long *random_seeds = new unsigned long[rank_size];

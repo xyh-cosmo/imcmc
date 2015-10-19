@@ -28,6 +28,7 @@ namespace imcmc{
 
         use_cosmomc_format              = true; //  default use CosmoMC format
         write_params_as_chain_header    = true; //  default true
+        save_burned_ashes               = true;
     }
 
     ensemble_workspace::~ensemble_workspace(){

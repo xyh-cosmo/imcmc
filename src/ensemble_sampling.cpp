@@ -28,13 +28,56 @@ namespace imcmc{
             std::cout << "######################################################\n\n";
         }
 
+        if( save_burned_ashes && (rank == ROOT_RANK ) ){
+
+            chain_name = chain_root + "_ashes.txt";
+
+            out_stream.open(chain_name.c_str(), std::ofstream::out);
+
+            if( !out_stream.good() )
+                imcmc_runtime_error( "Filed to open file: " + chain_name );
+
+            //  write parameter names into the first line of the chain file
+            imcmc_vector_string_iterator it = output_param_name.begin();
+
+            //  Write the first line
+            if( use_cosmomc_format && write_params_as_chain_header ){
+                out_stream << "# standard cosmomc format.  This is the burned ashes ...\n";
+                out_stream << "#";
+                out_stream << std::setw(_OUT_WIDTH_-1) << "weight" << std::setw(_OUT_WIDTH_) << "-2log(L)";
+            }
+            else{
+                out_stream << "# ensemble format, exactly the same with MultiNest\n";
+                out_stream << "#";
+                out_stream << std::setw(_OUT_WIDTH_-1) << "probability" << std::setw(_OUT_WIDTH_) << "chisq";
+            }
+
+            //  Write the second line
+            if( write_params_as_chain_header ){
+                while( it != output_param_name.end() ){   //  updates only the sampling parameters
+                    out_stream << std::setw(_OUT_WIDTH_) << *it << "";
+                    ++it;
+                }
+            }
+
+            out_stream << "\n";
+        }
+
         for( int j=0; j<burnin_loops; ++j ){    //  Burn in
         
             update_walkers( false, j, burnin_loops );
 
-            if( use_cosmomc_format )   //  need to update walker_io
-                update_walkers_io();            
+            if( use_cosmomc_format ){   //  need to update walker_io
+
+                if( save_burned_ashes && (rank == ROOT_RANK) )
+                    write_walkers(out_stream);
+                else
+                    update_walkers_io();
+            }
         }
+
+        if( rank == ROOT_RANK ) //  DONT forget to close out_stream before start REAL sampling
+            out_stream.close();
 
         _searched_lndet_min_chisq_min_ = true;  //  once search during the burning, change its state to TRUE.
 
@@ -87,6 +130,7 @@ namespace imcmc{
             }
 
             for( int j=0; j<sampling_loops; ++j ){
+
                 update_walkers( true, j, sampling_loops );
 
                 if( rank == ROOT_RANK )
@@ -108,6 +152,7 @@ namespace imcmc{
 
         //    after one chain is finished, you can choose to skip some steps
             if( (skip_step > 0)  && (i < chain_num-1) ){
+
                 if( rank == ROOT_RANK )
                     std::cout << "\n ****** skipping some chains, can be viewed as extra burn-in ******\n";
 

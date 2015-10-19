@@ -12,45 +12,18 @@ namespace imcmc{
             for( int i=0; i<walker_num; ++i ){
 
                 if( accept[i] == 0 ){
-                    //  this old walker stays where it was, so we just increase its weight by 1.0
+                //  this old walker stays where it was, so we just increase its weight by 1.0
                     walker_io["Weight"][i] += 1.0;
-
-//                    if( last ){
-//                        of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
-//                            << walker_io["Weight"][i] << ""
-//                            << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
-//                            << walker_io["Chisq"][i] << "";
-
-//                        //  update weight, lnpost, lndet and chisq
-//                        walker_io["Weight"][i] = 1.0;  //  reset to 1.0
-//                        walker_io["LnPost"][i] = walker["LnPost"][i];
-//                        walker_io["LnDet"][i]  = walker["LnDet"][i];
-//                        walker_io["Chisq"][i]  = walker["Chisq"][i];
-
-//                        it = output_param_name.begin();
-
-//                        while( it != output_param_name.end() ){
-
-//                            of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
-//                                << walker_io[*it][i] << "";
-
-//                            //  update to new walker
-//                            walker_io[*it][i] = walker[*it][i];
-//                            ++it;
-//                        }
-//                        
-//                        of << "\n";
-//                    }
                 }
                 else if( accept[i] == 1 ){
-                    //  this old walker has been replaced by a new one, so we have to output it and update walker_io
+                //  this old walker has been replaced by a new one, so we have to output it and update walker_io
 
                     of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
                         << walker_io["Weight"][i] << ""
                         << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
                         << walker_io["Chisq"][i] << "";
 
-                    //  update weight, lnpost, lndet and chisq
+                //  update weight, lnpost, lndet and chisq
                     walker_io["Weight"][i] = 1.0;  //  reset to 1.0
                     walker_io["LnPost"][i] = walker["LnPost"][i];
                     walker_io["LnDet"][i]  = walker["LnDet"][i];
@@ -63,7 +36,7 @@ namespace imcmc{
                         of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
                             << walker_io[*it][i] << "";
 
-                        //  update to new walker
+                    //  update to new walker
                         walker_io[*it][i] = walker[*it][i];
                         ++it;
                     }
