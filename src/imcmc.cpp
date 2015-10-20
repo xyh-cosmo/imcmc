@@ -7,11 +7,13 @@ namespace imcmc{
 
         int rank = MPI::COMM_WORLD.Get_rank();
 
-        std::cout << "# ===========  Error Message from rank: " << rank << "  ========== #\n";
-        std::cout << "FileName: " << __FILE__ << "\n";
-        std::cout << "Line Num: " << __LINE__ << "\n";
-        std::cout << "Fun Name: " << __FUNCTION__ << "\n";
-        std::cout << "####> ";
+        if( rank == ROOT_RANK ){
+            std::cout << "# ===========  Error Message  ========== #\n";
+            std::cout << "FileName: " << __FILE__ << "\n";
+            std::cout << "Line Num: " << __LINE__ << "\n";
+            std::cout << "Fun Name: " << __FUNCTION__ << "\n";
+            std::cout << "####> ";
+        }
 
         throw std::runtime_error(err_info);
     }
@@ -20,12 +22,14 @@ namespace imcmc{
 
         int rank = MPI::COMM_WORLD.Get_rank();
 
-        std::cout << "# ==========  Warning Message from rank: << " << rank << "  ========== #\n";
-        std::cout << "FileName: " << __FILE__ << "\n";
-        std::cout << "Line Num: " << __LINE__ << "\n";
-        std::cout << "Fun Name: " << __FUNCTION__ << "\n";
-        std::cout << "----> ";
-        std::cout << warn_info << std::endl;
+        if( rank == ROOT_RANK ){
+            std::cout << "# ==========  Warning Message  ========= #\n";
+            std::cout << "FileName: " << __FILE__ << "\n";
+            std::cout << "Line Num: " << __LINE__ << "\n";
+            std::cout << "Fun Name: " << __FUNCTION__ << "\n";
+            std::cout << "----> ";
+            std::cout << warn_info << std::endl;
+        }
     }
 
 }
