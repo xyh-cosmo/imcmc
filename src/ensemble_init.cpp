@@ -53,6 +53,15 @@ namespace imcmc{
 
         if( Read::Has_Key_in_File( paramfile, "burnin_step" ) ){
             Read::Read_Value_from_File(paramfile, "burnin_step", burnin_step);
+
+            if( burnin_step <=0 ){
+                burnin_step = 10;
+                imcmc_runtime_warning("No burnin_step is found in:" + paramfile + ", so we set it to default value 10.");
+            }
+        }
+        else{
+            burnin_step = 10;   //  this period is necessary, cannot be ignored.
+            imcmc_runtime_warning("No burnin_step is found in:" + paramfile + ", so we set it to default value 10.");
         }
 
         if( Read::Has_Key_in_File( paramfile, "skip_step" ) ){
@@ -60,6 +69,7 @@ namespace imcmc{
         }
         else{    //    set to default value 10
             skip_step = 10;
+            imcmc_runtime_warning("No skip_step is found in: " + paramfile + ", so we set it to default value 10.");
         }
 
         if( Read::Has_Key_in_File( paramfile, "chain_num" ) ){
@@ -78,7 +88,7 @@ namespace imcmc{
             Read::Read_Value_from_File(paramfile, "efficient_a", efficient_a);
         }
         else{
-            imcmc_runtime_warning("no efficient_a found, keep the default value 2.0");
+            imcmc_runtime_warning("no efficient_a found, so the default value 2.0 will be used.");
         }
 
         if( Read::Has_Key_in_File( paramfile, "init_ball_radius" ) ){
@@ -95,7 +105,7 @@ namespace imcmc{
 
         if( Read::Has_Key_in_File( paramfile, "chain_root" ) ){
             Read::Read_Value_from_File(paramfile, "chain_root", chain_root);
-            param_limits = chain_root + ".param_limits";
+            param_limits = chain_root + ".ranges";
         }
 
         if( Read::Has_Key_in_File( paramfile, "use_cosmomc_format" ) ){
@@ -328,7 +338,8 @@ namespace imcmc{
             }
 
             //  write the full parameters ...
-            outfile << "\n#====================== full parameter names ========================\n";
+            outfile << "\n# ============================ full parameter names =========================\n";
+
             imcmc_double_iterator it        = full_param.begin();
             imcmc_double_iterator it_min    = full_param_min.begin();
             imcmc_double_iterator it_max    = full_param_max.begin();
@@ -353,7 +364,7 @@ namespace imcmc{
                 ++it_max;
             }
 
-            outfile << "\n#==================== full parameters being sampled =================\n";
+            outfile << "\n# ======================== full parameters being sampled ====================\n";
             imcmc_vector_string_iterator itx = sampling_param_name.begin();
 
             while( itx != sampling_param_name.end() ){
@@ -361,7 +372,7 @@ namespace imcmc{
                 ++itx;
             }
 
-            outfile << "\n#====================== parameters to output ========================\n";
+            outfile << "\n# ============================ parameters to output =========================\n";
             imcmc_vector_string_iterator itxx = output_param_name.begin();
 
             while( itxx != output_param_name.end() ){
@@ -381,7 +392,8 @@ namespace imcmc{
 
         if( rank == ROOT_RANK ){
 
-            std::cout << "#  imcmc::ensemble_workspace::init_walkers():\n"
+            std::cout << "#  ============================================"
+                      << "#  imcmc::ensemble_workspace::init_walkers():\n"
                       << "#  initializing walkers ...\n"
                       << "#  searching _lndet_min_ & _chisq_min_ ...\n\n";
 
@@ -397,7 +409,7 @@ namespace imcmc{
         imcmc_vector_string_iterator it = sampling_param_name.begin();
 
         while( it != sampling_param_name.end() ){
-        
+
             walker[*it] = new double[walker_num];
 
             if( use_cosmomc_format ){

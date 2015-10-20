@@ -9,23 +9,17 @@ namespace imcmc{
 
         int burnin_loops, sampling_loops;
 
-        if( burnin_step % walker_num == 0 )
-            burnin_loops    = burnin_step/walker_num;
-        else
-            burnin_loops    = burnin_step/walker_num + 1;
-
-        if( sample_step  % walker_num == 0 )
-            sampling_loops  = sample_step/walker_num;
-        else
-            sampling_loops  = sample_step/walker_num + 1;
+        burnin_loops    = burnin_step;  //  must >= 5, otherwise meaningless
+        sampling_loops  = sample_step;
 
         // make sure searching lndet_min and chisq_min will be done at least one time during burn-in
         _searched_lndet_min_chisq_min_ = false;
 
         if( rank == ROOT_RANK ){
-            std::cout << "\n######################################################\n";
+            std::cout << "\n=====================================================\n";
             std::cout << "#  ensemble_workspace::do_sampling(): start burning\n";
-            std::cout << "######################################################\n\n";
+            std::cout << "#  total evaluations: " << burnin_loops*walker_num << "\n";
+            std::cout << "=====================================================\n\n";
         }
 
         if( save_burned_ashes && (rank == ROOT_RANK ) ){
@@ -64,7 +58,7 @@ namespace imcmc{
         }
 
         for( int j=0; j<burnin_loops; ++j ){    //  Burn in
-        
+
             update_walkers( false, j, burnin_loops );
 
             if( use_cosmomc_format ){   //  need to update walker_io
@@ -137,21 +131,21 @@ namespace imcmc{
                     write_walkers(out_stream);
             }
 
-            if( rank == ROOT_RANK )
+            if( rank == ROOT_RANK ){
+
                 out_stream.close();
 
-            if( rank == ROOT_RANK ){
                 std::cout << "\n"
-                    << "#  ===========================================\n"
+                    << "#  ===============================================\n"
                     << "#  summary of " << std::setw(3) << i << " -th chain:\n"
                     << "#  " << total_accepts << " of " << total_accepts + total_rejects << " walkers been accepted ...\n"
                     << "#  " << total_rejects << " of " << total_accepts + total_rejects << " walkers been rejected ...\n"
                     << "#  " << "acceptance ratio = " << double(total_accepts)/(total_accepts + total_rejects) << "\n"
-                    << "#  ===========================================\n\n";
+                    << "#  ===============================================\n\n";
             }
 
         //    after one chain is finished, you can choose to skip some steps
-            if( (skip_step > 0)  && (i < chain_num-1) ){
+            if( (skip_step > 0)  && (i < chain_num) ){
 
                 if( rank == ROOT_RANK )
                     std::cout << "\n ****** skipping some chains, can be viewed as extra burn-in ******\n";
@@ -163,8 +157,9 @@ namespace imcmc{
     }
 
     void ensemble_workspace::set_efficient_a( double a ){
+
         if( a <= 0 )
-            throw std::runtime_error("\nensemble_workspace::set_efficient_a():\n a must be a positive number !");
+            imcmc_runtime_error("\nensemble_workspace::set_efficient_a():\n a must be a positive number !");
         else if( a < 1.0 )
             efficient_a = 1.0 / a;
         else
@@ -181,6 +176,7 @@ namespace imcmc{
     }
 
     double ensemble_workspace::gz(){
+
         double z;
         double zmin = 1./efficient_a;
         double zmax = efficient_a;
@@ -648,7 +644,7 @@ namespace imcmc{
                     walker_io["Weight"][i] += 1.0;
                 }
                 else if( accept[i] == 1 ){  //  this old walker has been replaced by a new one, so we have to output it and update walker_io
-                    
+
                     //  update weight, lnpost, lndet and chisq
                     walker_io["Weight"][i] = 1.0;  //  reset to 1.0
                     walker_io["LnPost"][i] = walker["LnPost"][i];
