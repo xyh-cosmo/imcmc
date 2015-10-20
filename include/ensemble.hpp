@@ -25,8 +25,6 @@ extern "C"{
 #include "parser++.hpp"
 #include "imcmc.hpp"
 
-#define ROOT_RANK    0
-
 namespace imcmc{
 
 //    TODO: finish the walker_state structure

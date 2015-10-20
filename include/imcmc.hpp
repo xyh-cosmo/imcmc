@@ -7,9 +7,10 @@
 #include <map>
 #include <stdexcept>
 
-#define _OUT_WIDTH_ 18  //  the width of the outputs of the chains.
-
 namespace imcmc{
+
+    #define _OUT_WIDTH_ 18  //  the width of the outputs of the chains.
+    #define ROOT_RANK    0
 
     typedef std::map<std::string, double>       imcmc_double;
     typedef std::map<std::string, double*>      imcmc_double_pointer;   //  used to construct walkers
