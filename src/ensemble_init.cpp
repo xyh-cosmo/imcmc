@@ -392,7 +392,7 @@ namespace imcmc{
 
         if( rank == ROOT_RANK ){
 
-            std::cout << "#  ============================================"
+            std::cout << "#  ============================================\n"
                       << "#  imcmc::ensemble_workspace::init_walkers():\n"
                       << "#  initializing walkers ...\n"
                       << "#  searching _lndet_min_ & _chisq_min_ ...\n\n";
