@@ -6,10 +6,10 @@ Feb-16-2015
   How about writing a paper on the design of the structure of imcmc?
 
 Mar-19-2015
-  Add support for derived parameters.
+  Add support for derived parameters. [not finished]
 
 Mar-27-2015
-  Add convergence check/diagnosis
+  Add convergence check/diagnosis [not finished]
 
 Oct-10-2015
   Planned to add other algorithms, i.e., the traditional Metropolis-Hastings,
@@ -17,3 +17,12 @@ Hamiltonian Monte Carlo and an interface to MultiNest.
 
 Oct-12-2015
   Write a document.
+
+Oct-21-2015
+    add the option to restart the sampling from some place. also add the option to adjust the number
+    of CPUs in use, i.e., after testing (burning) using very few cores, one can immediately first
+    stop the sampling and then change the settings in ini-file and re-run the job submission.
+
+    void ensemble_workspace::restart(***);
+
+    inside this function, the number of walkers should not be changed!!!
