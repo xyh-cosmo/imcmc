@@ -7,6 +7,21 @@
 #include <map>
 #include <stdexcept>
 
+//  Version information
+#ifndef __IMCMC_VERSION__
+    #define __IMCMC_VERSION__   "0.0.5"
+#endif
+
+//  Author
+#ifndef __IMCMC_AUTHOR__
+    #define __IMCMC_AUTHOR__    "Youhua Xu"
+#endif
+
+//  E-mail
+#ifndef __IMCMC_EMAIL__
+    #define __IMCMC_EMAIL__     "yhxu@nao.cas.cn"
+#endif
+
 namespace imcmc{
 
     #define _OUT_WIDTH_ 18  //  the width of the outputs of the chains.
