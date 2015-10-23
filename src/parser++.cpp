@@ -49,13 +49,13 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
     //  Determine whether the line is commented out
         bool Is_Commented( std::string line ){
             bool is_commented = false;
-            const std::string comments("#;$%&*");
+            const std::string comments("#;");
             std::string::size_type idx = line.find_first_not_of(" \t");
 
         //    @2015-4-30: found a bug here, I should first check that idx is NOT std::string::npos, which
         //    amounts to check whether line is empty or not.
             if( idx != std::string::npos ){
-                //  first non-empty character should not one of "#;$%&*".
+                //  first non-empty character should not one of "#;"
                 if( comments.find(line[idx]) != std::string::npos )
                     is_commented = true;
             }
@@ -72,7 +72,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
                 Info::ErrorInfo( "the line: " + line + " is commented out !");
             }
 
-            std::string::size_type idx_of_comments = line.find_first_of("#;$%&*");
+            std::string::size_type idx_of_comments = line.find_first_of("#;");
 
             return line.substr(0, idx_of_comments);
         }
