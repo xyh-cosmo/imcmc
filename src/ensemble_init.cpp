@@ -1,3 +1,4 @@
+#include "imcmc.hpp"
 #include "ensemble.hpp"
 #include "parser++.hpp"
 
@@ -13,10 +14,11 @@ namespace imcmc{
         if( rank == ROOT_RANK ){
             std::cout   << "\n"
                         << "  ##########################################################\n"
-                        << "  #                    Welcome to imcmc                    #\n"
-                        << "  #                                                        #\n"
-                        << "  #                  written by Youhua Xu                  #\n"
-                        << "  #                 E-mail: yhxu@nao.cas.cn                #\n"
+                        << "  #                    Welcome to imcmc \n"
+                        << "  #\n"
+                        << "  #                Version: " << __IMCMC_VERSION__ << "\n"
+                        << "  #                Author : " << __IMCMC_AUTHOR__ << "\n"
+                        << "  #                E-mail : " << __IMCMC_EMAIL__ << "\n"
                         << "  ##########################################################\n";
         }
 

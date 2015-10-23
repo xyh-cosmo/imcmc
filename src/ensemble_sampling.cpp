@@ -41,7 +41,7 @@ namespace imcmc{
                 out_stream << std::setw(_OUT_WIDTH_-1) << "weight" << std::setw(_OUT_WIDTH_) << "-2log(L)";
             }
             else{
-                out_stream << "# ensemble format, exactly the same with MultiNest\n";
+                out_stream << "# using MultiNest, the first column is exp(-0.5*chisq)\n";
                 out_stream << "#";
                 out_stream << std::setw(_OUT_WIDTH_-1) << "probability" << std::setw(_OUT_WIDTH_) << "chisq";
             }
