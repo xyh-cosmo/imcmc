@@ -121,8 +121,11 @@ namespace imcmc{
             //  return log(posterior) = -lndet - 0.5*chisq
             //  det is the determinat in the denominator of the prefactor, plus some constant
             double  likelihood_eval( imcmc_double& full_param, double& lndet, double& chisq );
+            
+        //  TODO: add error control option, will replace likelihood_eval(**)
+            double  likelihood_eval( imcmc_double& full_param, double& lndet, double& chisq, void *err_info );
 
-            //  these two numbers will be used to re-scale the probability, in which case the chisq is too large
+            //  these two numbers will be used to re-scale the probability, in case that the chisq might be too large
             //  so that exp(-lndet-0.5*chisq) --> 0
             double  _lndet_min_, _chisq_min_;
             bool    _searched_lndet_min_chisq_min_;
