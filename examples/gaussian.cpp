@@ -34,7 +34,11 @@ struct Gaussian{   //  test model
     }
 };
 
-double TestLike( imcmc_double& full_param, double& lndet, double& chisq, void* model, void* data ){
+double TestLike( imcmc_double& full_param, double& lndet, double& chisq, void* model, void* data, imcmc_likelihood_state& state ){
+
+    state.this_like_is_ok = true;
+    state.store_mesg("nothing happened!");
+
     Gaussian *g = static_cast<Gaussian *>(model);
     g->Update(full_param);  //  now the model is workable
 

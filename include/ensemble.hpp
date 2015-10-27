@@ -87,6 +87,7 @@ namespace imcmc{
             imcmc_double_pointer    walker;                 //  includes LnPost, LnDet and Chisq
             imcmc_vector_string     sampling_param_name;    //  hold the names of parameters being sampled
             imcmc_vector_string     output_param_name;      //  if not set, then output_param_name = sampling_param_name
+            imcmc_likelihood_state  likelihood_state;       //  save likelihood state, i.e., possible error information
 
             imcmc_double_pointer    walker_io;  //  this is acutally a backup of walker, and it will be used to write chains into files.
 
@@ -116,14 +117,16 @@ namespace imcmc{
                                  void                *model,
                                  void                *data );
 
+            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
+                                 imcmc_vector_string modelparam,
+                                 void                *model,
+                                 void                *data );
+
             bool    prior( imcmc_double& full_param );    //    check Samplingparams, if out of prior range, return false
 
             //  return log(posterior) = -lndet - 0.5*chisq
             //  det is the determinat in the denominator of the prefactor, plus some constant
             double  likelihood_eval( imcmc_double& full_param, double& lndet, double& chisq );
-            
-        //  TODO: add error control option, will replace likelihood_eval(**)
-            double  likelihood_eval( imcmc_double& full_param, double& lndet, double& chisq, void *err_info );
 
             //  these two numbers will be used to re-scale the probability, in case that the chisq might be too large
             //  so that exp(-lndet-0.5*chisq) --> 0

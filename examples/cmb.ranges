@@ -1,8 +1,0 @@
-# This file contains parameters' limits, which might be useful when using CosmoMC::getdist
-# to process the sampled chains and make interesting plots
-
-# Just copy the following into getdist parameter files (some *ini file)
-
-limits[H0]                = 50         80        
-limits[Omegab]            = 0.01       0.1       
-limits[Omegam]            = 0.01       0.5       

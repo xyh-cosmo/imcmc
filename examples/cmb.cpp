@@ -128,7 +128,11 @@ struct LCDM{
 	}
 };
 
-double Like_CMB( imcmc_double& full_param, double& lndet, double& chisq, void* model, void* data){
+double Like_CMB( imcmc_double& full_param, double& lndet, double& chisq, void* model, void* data, imcmc_likelihood_state& state){
+
+    state.this_like_is_ok = true;
+    state.store_mesg("nothing happened!");
+
     LCDM *lcdm = static_cast<LCDM *>(model);
     lcdm->Update(full_param);
 

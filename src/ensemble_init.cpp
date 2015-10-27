@@ -122,6 +122,10 @@ namespace imcmc{
             save_burned_ashes   = Read::Read_Bool_from_File(paramfile, "save_burned_ashes");
         }
 
+        if( Read::Has_Key_in_File( paramfile, "stop_on_error" ) ){
+            likelihood_state.stop_on_error = Read::Read_Bool_from_File(paramfile, "stop_on_error");
+        }
+
     //  setup seeds for the random number generators
         unsigned long seed, rand_num;
         unsigned long *random_seeds = new unsigned long[rank_size];
@@ -401,11 +405,12 @@ namespace imcmc{
 
             //  _lndet_min_, _chisq_min_ are used only when writing probability into chains.
 
-            std::cout << "#  =====================================    NOTE    =====================================\n"
-                      << "#  this version of init_walkers() has been optimized to support parallel initialization,\n"
-                      << "#  so that the time used to finish the initialization will be greatly reduced especially\n"
-                      << "#  when the likelihoods need long time to compute.\n"
-                      << "#  ======================================================================================\n";
+            std::cout << "#  ==============================    NOTE    ==============================\n"
+                      << "#  this version of init_walkers() has been optimized to support parallel \n"
+                      << "#  initialization, so that the time used to finish the initialization will \n"
+                      << "#  be greatly reduced especially when the likelihoods need long time to \n"
+                      << "#  compute."
+                      << "#  ========================================================================\n";
         }
 
         imcmc_vector_string_iterator it = sampling_param_name.begin();

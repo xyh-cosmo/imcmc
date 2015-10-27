@@ -28,7 +28,16 @@
 
 #ifndef ROOT_RANK
     #define ROOT_RANK    0
-ROOT_RANK
+#endif
+
+//  Maximum length of error information passed to imcmc_likelihood_state.
+#ifndef _IMCMC_mesg_lenth_
+    #define _IMCMC_MESG_LENGTH_ 1024
+#endif
+
+#ifndef _IMCMC_INF_
+    #define _IMCMC_INF_ 1.0E99
+#endif
 
 namespace imcmc{
 
@@ -46,13 +55,30 @@ namespace imcmc{
     typedef std::vector<double>::iterator       imcmc_vector_double_iterator;
     typedef std::vector<std::string>::iterator  imcmc_vector_string_iterator;
 
+    struct imcmc_likelihood_state{  //  this will be used by user, so there is no suffix '_'
+        bool this_like_is_ok;
+        bool stop_on_error;
+        char errmesg[_IMCMC_MESG_LENGTH_];
+
+        void store_mesg( std::string& why );
+        void store_mesg( char *why );
+        void what_happened();
+
+        imcmc_likelihood_state();
+    };
+
+    // struct imcmc_derived_params{    // support for derived parameters
+    //
+    // };
+
     struct likelihood_{
         void   *data;
         void   *model;
 
     //  use the name 'logpost' might be better
     //  double (*logpost)( imcmc_double&, double&, double&, void*, void* );
-        double (*loglike)( imcmc_double&, double&, double&, void*, void* );
+        // double (*loglike)( imcmc_double&, double&, double&, void*, void* );
+        double (*loglike)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& );
 
         ~likelihood_(){
             data    = NULL;

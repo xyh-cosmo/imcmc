@@ -14,7 +14,7 @@ hostname = mac.local
 uname -m = x86_64
 uname -r = 15.0.0
 uname -s = Darwin
-uname -v = Darwin Kernel Version 15.0.0: Wed Aug 26 16:57:32 PDT 2015; root:xnu-3247.1.106~1/RELEASE_X86_64
+uname -v = Darwin Kernel Version 15.0.0: Sat Sep 19 15:53:46 PDT 2015; root:xnu-3247.10.11~1/RELEASE_X86_64
 
 /usr/bin/uname -p = i386
 /bin/uname -X     = unknown
@@ -23,19 +23,20 @@ uname -v = Darwin Kernel Version 15.0.0: Wed Aug 26 16:57:32 PDT 2015; root:xnu-
 /usr/bin/arch -k       = unknown
 /usr/convex/getsysinfo = unknown
 /usr/bin/hostinfo      = Mach kernel version:
-	 Darwin Kernel Version 15.0.0: Wed Aug 26 16:57:32 PDT 2015; root:xnu-3247.1.106~1/RELEASE_X86_64
+	 Darwin Kernel Version 15.0.0: Sat Sep 19 15:53:46 PDT 2015; root:xnu-3247.10.11~1/RELEASE_X86_64
 Kernel configured for up to 4 processors.
 2 processors are physically available.
 4 processors are logically available.
 Processor type: x86_64h (Intel x86-64h Haswell)
 Processors active: 0 1 2 3
 Primary memory available: 4.00 gigabytes
-Default processor set: 268 tasks, 1172 threads, 4 processors
-Load average: 1.35, Mach factor: 2.64
+Default processor set: 288 tasks, 1089 threads, 4 processors
+Load average: 2.07, Mach factor: 1.92
 /bin/machine           = unknown
 /usr/bin/oslevel       = unknown
 /bin/universe          = unknown
 
+PATH: /Users/xyh/Public/plc-2.0/bin
 PATH: /opt/local/bin
 PATH: /opt/local/sbin
 PATH: /usr/local/bin
@@ -82,14 +83,14 @@ configure:3534: found /usr/bin/gcc
 configure:3545: result: gcc
 configure:3774: checking for C compiler version
 configure:3783: gcc --version >&5
-Apple LLVM version 7.0.0 (clang-700.0.72)
+Apple LLVM version 7.0.0 (clang-700.1.76)
 Target: x86_64-apple-darwin15.0.0
 Thread model: posix
 Configured with: --prefix=/Library/Developer/CommandLineTools/usr --with-gxx-include-dir=/usr/include/c++/4.2.1
 configure:3794: $? = 0
 configure:3783: gcc -v >&5
 Configured with: --prefix=/Library/Developer/CommandLineTools/usr --with-gxx-include-dir=/usr/include/c++/4.2.1
-Apple LLVM version 7.0.0 (clang-700.0.72)
+Apple LLVM version 7.0.0 (clang-700.1.76)
 Target: x86_64-apple-darwin15.0.0
 Thread model: posix
 configure:3794: $? = 0
@@ -375,14 +376,14 @@ configure:12407: checking for gcc
 configure:12434: result: gcc
 configure:12663: checking for C compiler version
 configure:12672: gcc --version >&5
-Apple LLVM version 7.0.0 (clang-700.0.72)
+Apple LLVM version 7.0.0 (clang-700.1.76)
 Target: x86_64-apple-darwin15.0.0
 Thread model: posix
 Configured with: --prefix=/Library/Developer/CommandLineTools/usr --with-gxx-include-dir=/usr/include/c++/4.2.1
 configure:12683: $? = 0
 configure:12672: gcc -v >&5
 Configured with: --prefix=/Library/Developer/CommandLineTools/usr --with-gxx-include-dir=/usr/include/c++/4.2.1
-Apple LLVM version 7.0.0 (clang-700.0.72)
+Apple LLVM version 7.0.0 (clang-700.1.76)
 Target: x86_64-apple-darwin15.0.0
 Thread model: posix
 configure:12683: $? = 0
@@ -409,14 +410,14 @@ configure:13159: found /usr/local/bin/mpic++
 configure:13170: result: mpic++
 configure:13197: checking for C++ compiler version
 configure:13206: mpic++ --version >&5
-Apple LLVM version 7.0.0 (clang-700.0.72)
+Apple LLVM version 7.0.0 (clang-700.1.76)
 Target: x86_64-apple-darwin15.0.0
 Thread model: posix
 Configured with: --prefix=/Library/Developer/CommandLineTools/usr --with-gxx-include-dir=/usr/include/c++/4.2.1
 configure:13217: $? = 0
 configure:13206: mpic++ -v >&5
 Configured with: --prefix=/Library/Developer/CommandLineTools/usr --with-gxx-include-dir=/usr/include/c++/4.2.1
-Apple LLVM version 7.0.0 (clang-700.0.72)
+Apple LLVM version 7.0.0 (clang-700.1.76)
 Target: x86_64-apple-darwin15.0.0
 Thread model: posix
 configure:13217: $? = 0
@@ -1036,7 +1037,7 @@ configure:17672: checking for _doprnt
 configure:17672: mpic++ -o conftest -g -O2   conftest.cpp  >&5
 Undefined symbols for architecture x86_64:
   "__doprnt", referenced from:
-      _main in conftest-f4f5e3.o
+      _main in conftest-c364de.o
 ld: symbol(s) not found for architecture x86_64
 clang: error: linker command failed with exit code 1 (use -v to see invocation)
 configure:17672: $? = 1
@@ -1221,6 +1222,7 @@ config.status:1169: creating Makefile
 config.status:1169: creating src/Makefile
 config.status:1169: creating examples/Makefile
 config.status:1169: creating config.h
+config.status:1350: config.h is unchanged
 config.status:1398: executing depfiles commands
 config.status:1398: executing libtool commands
 

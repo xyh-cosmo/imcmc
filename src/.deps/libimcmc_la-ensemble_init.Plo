@@ -1,4 +1,4 @@
-libimcmc_la-ensemble_init.lo: ensemble_init.cpp ../include/ensemble.hpp \
+libimcmc_la-ensemble_init.lo: ensemble_init.cpp ../include/imcmc.hpp \
   /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/iostream \
   /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/__config \
   /usr/include/unistd.h /usr/include/_types.h /usr/include/sys/_types.h \
@@ -132,16 +132,17 @@ libimcmc_la-ensemble_init.lo: ensemble_init.cpp ../include/ensemble.hpp \
   /usr/include/sys/_types/_fsfilcnt_t.h /usr/include/_types/_nl_item.h \
   /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/bitset \
   /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/__bit_reference \
+  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/vector \
+  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/__split_buffer \
+  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/map \
+  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/__tree \
+  ../include/ensemble.hpp \
   /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/fstream \
   /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/sstream \
   /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/iomanip \
-  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/map \
-  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/__tree \
   /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/cmath \
-  /usr/include/math.h \
-  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/vector \
-  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/__split_buffer \
-  /usr/local/include/mpi.h /usr/local/include/mpi_portable_platform.h \
+  /usr/include/math.h /usr/local/include/mpi.h \
+  /usr/local/include/mpi_portable_platform.h \
   /usr/local/include/openmpi/ompi/mpi/cxx/mpicxx.h \
   /usr/local/include/openmpi/ompi/mpi/cxx/constants.h \
   /usr/local/include/openmpi/ompi/mpi/cxx/functions.h \
@@ -182,10 +183,9 @@ libimcmc_la-ensemble_init.lo: ensemble_init.cpp ../include/ensemble.hpp \
   /usr/local/include/gsl/gsl_pow_int.h \
   /usr/local/include/gsl/gsl_minmax.h /usr/local/include/gsl/gsl_rng.h \
   /usr/local/include/gsl/gsl_errno.h \
-  /usr/local/include/gsl/gsl_randist.h ../include/parser++.hpp \
-  ../include/imcmc.hpp
+  /usr/local/include/gsl/gsl_randist.h ../include/parser++.hpp
 
-../include/ensemble.hpp:
+../include/imcmc.hpp:
 
 /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/iostream:
 
@@ -577,23 +577,25 @@ libimcmc_la-ensemble_init.lo: ensemble_init.cpp ../include/ensemble.hpp \
 
 /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/__bit_reference:
 
+/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/vector:
+
+/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/__split_buffer:
+
+/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/map:
+
+/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/__tree:
+
+../include/ensemble.hpp:
+
 /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/fstream:
 
 /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/sstream:
 
 /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/iomanip:
 
-/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/map:
-
-/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/__tree:
-
 /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/cmath:
 
 /usr/include/math.h:
-
-/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/vector:
-
-/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/__split_buffer:
 
 /usr/local/include/mpi.h:
 
@@ -688,5 +690,3 @@ libimcmc_la-ensemble_init.lo: ensemble_init.cpp ../include/ensemble.hpp \
 /usr/local/include/gsl/gsl_randist.h:
 
 ../include/parser++.hpp:
-
-../include/imcmc.hpp:
