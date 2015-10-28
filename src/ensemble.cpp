@@ -26,9 +26,9 @@ namespace imcmc{
         walker_initialized              = false;
         _searched_lndet_min_chisq_min_  = false;
 
-        use_cosmomc_format              = true; //  default use CosmoMC format
-        write_params_as_chain_header    = true; //  default true
-        save_burned_ashes               = true;
+        use_cosmomc_format  = true; //  default use CosmoMC format
+        write_chain_header  = true; //  default true
+        save_burned_ashes   = true;
     }
 
     ensemble_workspace::~ensemble_workspace(){
@@ -73,16 +73,14 @@ namespace imcmc{
 
         if( rank == ROOT_RANK ){
 
-            std::cout << "###########################################################################\n";
-            std::cout << "#\n";
+            std::cout << "#  ========================================================================\n";
 
             if( walker_initialized )
-                std::cout << "# ~ensemble_workspace(): sampling is over, clearing ensemble workspace ...\n";
+                std::cout << "#  ~ensemble_workspace(): sampling is over, clearing ensemble workspace ...\n";
             else
-                std::cout << "# ~ensemble_workspace(): no sampling, normal quit ...\n";
+                std::cout << "#  ~ensemble_workspace(): no sampling, normal quit ...\n";
 
-            std::cout << "#\n";
-            std::cout << "###########################################################################\n";
+            std::cout << "#  ========================================================================\n";
         }
     }
 

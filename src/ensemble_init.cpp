@@ -13,13 +13,13 @@ namespace imcmc{
 
         if( rank == ROOT_RANK ){
             std::cout   << "\n"
-                        << "  ##########################################################\n"
+                        << "  #  =======================================================\n"
                         << "  #                    Welcome to imcmc \n"
                         << "  #\n"
                         << "  #                Version: " << __IMCMC_VERSION__ << "\n"
                         << "  #                Author : " << __IMCMC_AUTHOR__ << "\n"
                         << "  #                E-mail : " << __IMCMC_EMAIL__ << "\n"
-                        << "  ##########################################################\n";
+                        << "  #  =======================================================\n";
         }
 
         srand(time(NULL));
@@ -27,8 +27,7 @@ namespace imcmc{
         config_file = paramfile;
 
         if( !Read::Has_File(paramfile) ){
-            std::cout << "--->\tCannot open parameter file: " << paramfile << "\n\n";
-            MPI::COMM_WORLD.Abort(-110);
+            imcmc_runtime_error("Cannot open parameter file: " + paramfile + " !");
         }
 
         if( Read::Has_Key_in_File( paramfile, "walker_num" ) ){
@@ -52,18 +51,20 @@ namespace imcmc{
 
             accept = new int[walker_num];
         }
+        else
+            imcmc_runtime_error("\'walker_num\' not found in:" + paramfile + " !");
 
         if( Read::Has_Key_in_File( paramfile, "burnin_step" ) ){
             Read::Read_Value_from_File(paramfile, "burnin_step", burnin_step);
 
             if( burnin_step <=0 ){
                 burnin_step = 10;
-                imcmc_runtime_warning("No burnin_step is found in:" + paramfile + ", so we set it to default value 10.");
+                imcmc_runtime_warning("\'burnin_step\' not found in:" + paramfile + ", so we set it to default value 10.");
             }
         }
         else{
             burnin_step = 10;   //  this period is necessary, cannot be ignored.
-            imcmc_runtime_warning("No burnin_step is found in:" + paramfile + ", so we set it to default value 10.");
+            imcmc_runtime_warning("\'burnin_step\' not found in:" + paramfile + ", so we set it to default value 10.");
         }
 
         if( Read::Has_Key_in_File( paramfile, "skip_step" ) ){
@@ -71,7 +72,7 @@ namespace imcmc{
         }
         else{    //    set to default value 10
             skip_step = 10;
-            imcmc_runtime_warning("No skip_step is found in: " + paramfile + ", so we set it to default value 10.");
+            imcmc_runtime_warning("\'skip_step\' not found in: " + paramfile + ", so we set it to default value 10.");
         }
 
         if( Read::Has_Key_in_File( paramfile, "chain_num" ) ){
@@ -90,7 +91,7 @@ namespace imcmc{
             Read::Read_Value_from_File(paramfile, "efficient_a", efficient_a);
         }
         else{
-            imcmc_runtime_warning("no efficient_a found, so the default value 2.0 will be used.");
+            imcmc_runtime_warning("\'efficient_a\' not found, so the default value 2.0 will be used.");
         }
 
         if( Read::Has_Key_in_File( paramfile, "init_ball_radius" ) ){
@@ -114,8 +115,8 @@ namespace imcmc{
             use_cosmomc_format    = Read::Read_Bool_from_File(paramfile, "use_cosmomc_format");
         }
 
-        if( Read::Has_Key_in_File( paramfile, "write_params_as_chain_header" ) ){
-            write_params_as_chain_header = Read::Read_Bool_from_File(paramfile, "write_params_as_chain_header");
+        if( Read::Has_Key_in_File( paramfile, "write_chain_header" ) ){
+            write_chain_header = Read::Read_Bool_from_File(paramfile, "write_chain_header");
         }
 
         if( Read::Has_Key_in_File( paramfile, "save_burned_ashes" ) ){
@@ -134,11 +135,15 @@ namespace imcmc{
 //        rand_seed = gsl_rng_alloc(gsl_rng_taus2);
         rand_seed = gsl_rng_alloc(gsl_rng_mt19937);
 
-        for( int i=0; i<=rank*2015; ++i )    //  just make each proc has a different seed
-            seed = rand() + rand() % (rank+2015);
 
-        gsl_rng_set( rand_seed, seed );
-        rand_num = gsl_rng_get(rand_seed);
+        seed = rand();  //  inital seed
+
+        for( int i=0; i<=rank; ++i ){ //  make sure differen ranks use differen random number seed
+            gsl_rng_set( rand_seed, seed );
+            seed = gsl_rng_get(rand_seed);
+        }
+
+        rand_num = gsl_rng_get(rand_seed);  // get the first random number for this rank
 
         MPI::COMM_WORLD.Gather( &seed, 1, MPI::UNSIGNED_LONG,
                                 random_seeds, 1, MPI::UNSIGNED_LONG,
@@ -180,13 +185,14 @@ namespace imcmc{
     void ensemble_workspace::init_param(){    //    loop over FullParams
 
         if( rank == ROOT_RANK ){
-            std::cout   << "\n#  ensemble_workspace::init_param():\n"
-                        << "#  reading sampling parameters from: " + config_file << "\n";
+            std::cout << "\n#  =============================================================\n"
+                      << "#  ensemble_workspace::init_param():\n"
+                      << "#  reading sampling parameters from: " + config_file << "\n";
 
-            std::cout   << std::setw(15) << "params" << ": "
-                        << std::setw(15) << "fid-value" << "  "
-                        << std::setw(15) << "min-value" << "  "
-                        << std::setw(15) << "max-value" << "\n";
+            std::cout << std::setw(15) << "params" << ": "
+                      << std::setw(15) << "fid-value" << "  "
+                      << std::setw(15) << "min-value" << "  "
+                      << std::setw(15) << "max-value" << "\n";
 
             param_limits_os.open(param_limits.c_str());
 
@@ -269,16 +275,18 @@ namespace imcmc{
             if( nvalue == 0 ){
                 output_param_name = sampling_param_name;
                 if( rank == ROOT_RANK ){
-                    std::cout << "\nensemble_workspace::init_param():\n"
-                        << "\tkeyword : output_params found in " + config_file + ", but no parameters \
-                            were listed, so all sampling parameters will be output.\n\n";
+                    std::cout << "\n#  =============================================================\n"
+                              << "#  ensemble_workspace::init_param():\n"
+                              << "#  keyword : output_params found in " + config_file + ", but no parameters\n"
+                              << "#  were listed, so all sampling parameters will be output.\n";
                 }
             }
             else{
 
                 if( rank == ROOT_RANK ){
-                    std::cout << "\n#  ensemble_workspace::init_param():\n"
-                            << "#  " << nvalue << " parameters will be output:\n";
+                    std::cout << "\n#  ==============================================\n"
+                              << "#  ensemble_workspace::init_param():\n"
+                              << "#  " << nvalue << " parameters will be output:\n";
                 }
 
                 std::string *name = new std::string[nvalue];
@@ -398,18 +406,19 @@ namespace imcmc{
 
         if( rank == ROOT_RANK ){
 
-            std::cout << "#  ============================================\n"
+            std::cout << "\n#  ============================================\n"
                       << "#  imcmc::ensemble_workspace::init_walkers():\n"
                       << "#  initializing walkers ...\n"
-                      << "#  searching _lndet_min_ & _chisq_min_ ...\n\n";
+                      << "#  searching _lndet_min_ & _chisq_min_ ...\n"
+                      << "#  ============================================\n";
 
             //  _lndet_min_, _chisq_min_ are used only when writing probability into chains.
 
-            std::cout << "#  ==============================    NOTE    ==============================\n"
+            std::cout << "\n#  ==============================    NOTE    ==============================\n"
                       << "#  this version of init_walkers() has been optimized to support parallel \n"
                       << "#  initialization, so that the time used to finish the initialization will \n"
                       << "#  be greatly reduced especially when the likelihoods need long time to \n"
-                      << "#  compute."
+                      << "#  compute.\n"
                       << "#  ========================================================================\n";
         }
 
@@ -606,11 +615,13 @@ namespace imcmc{
 
         if( rank == ROOT_RANK ){
 
-            std::cout   << "\n\tsearched _lndet_min_: " << _lndet_min_ << "\n"
-                        << "\tsearched _chisq_min_: " << _chisq_min_ << "\n"
-                        << "\tthey will be updated again in the burn-in process\n\n";
+            std::cout << "\n#  =============================================================\n"
+                      << ">  searched _lndet_min_: " << _lndet_min_ << "\n"
+                      << ">  searched _chisq_min_: " << _chisq_min_ << "\n"
+                      << "#  they will be updated again in the burn-in process\n\n";
 
-            std::cout   << "\n***  Note that this searching will be done only once  ***\n\n";
+            std::cout << "#  ***  Note that this searching will be done only once  ***\n"
+                      << "#  =============================================================\n";
             //  _lndet_min_, _chisq_min_ are used only when writing probability into chains.
         }
 

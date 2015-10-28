@@ -18,23 +18,22 @@ namespace imcmc{
 
     void imcmc_likelihood_state::what_happened(){
         int rank = MPI::COMM_WORLD.Get_rank();
-        std::cout << "\n# ===========  Likelihood Error  ========== #\n"
-                  << "# we captured the following error:\n"
+        std::cout << "\n#  ===============  Likelihood Error  ============== #\n"
+                  << ">  we captured the following error:\n"
                   << errmesg << "\n\n";
-        std::cout << "# =========================================\n";
+        std::cout << "#  =============================================\n";
     }
 
     void imcmc_runtime_error( std::string err_info ){
 
         int rank = MPI::COMM_WORLD.Get_rank();
 
-        if( rank == ROOT_RANK ){
-            std::cout << "\n# ===========  Error Message  ========== #\n";
-            std::cout << "---@ FileName: " << __FILE__ << "\n";
-            std::cout << "---@ Line Num: " << __LINE__ << "\n";
-            std::cout << "---@ Fun Name: " << __FUNCTION__ << "\n";
-            std::cout << "+++> ";
-        }
+        std::cout << "\n #    ===============  Error Message  ============== #\n";
+        std::cout << " ---@ Rank Num: " << rank << "\n";
+        std::cout << " ---@ FileName: " << __FILE__ << "\n";
+        std::cout << " ---@ Line Num: " << __LINE__ << "\n";
+        std::cout << " ---@ Fun Name: " << __FUNCTION__ << "\n";
+        std::cout << " +++> ";
 
         throw std::runtime_error(err_info);
     }
@@ -43,14 +42,13 @@ namespace imcmc{
 
         int rank = MPI::COMM_WORLD.Get_rank();
 
-        if( rank == ROOT_RANK ){
-            std::cout << "\n# ==========  Warning Message  ========= #\n";
-            std::cout << "---@ FileName: " << __FILE__ << "\n";
-            std::cout << "---@ Line Num: " << __LINE__ << "\n";
-            std::cout << "---@ Fun Name: " << __FUNCTION__ << "\n";
-            std::cout << "---> ";
-            std::cout << warn_info << std::endl;
-        }
+        std::cout << "\n #    ==============  Warning Message  ============= #\n";
+        std::cout << " ---@ Rank Num: " << rank << "\n";
+        std::cout << " ---@ FileName: " << __FILE__ << "\n";
+        std::cout << " ---@ Line Num: " << __LINE__ << "\n";
+        std::cout << " ---@ Fun Name: " << __FUNCTION__ << "\n";
+        std::cout << " ---> ";
+        std::cout << warn_info << std::endl;
     }
 
 }

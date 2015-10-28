@@ -7,6 +7,10 @@
 #include <map>
 #include <stdexcept>
 
+#ifndef __IMCMC_YEAR__
+    #define __IMCMC_YEAR__  2015
+#endif
+
 //  Version information
 #ifndef __IMCMC_VERSION__
     #define __IMCMC_VERSION__   "0.0.5"
@@ -67,6 +71,8 @@ namespace imcmc{
         imcmc_likelihood_state();
     };
 
+    typedef struct imcmc_likelihood_state istate;
+
     // struct imcmc_derived_params{    // support for derived parameters
     //
     // };
@@ -86,6 +92,8 @@ namespace imcmc{
             loglike = NULL;
         }
     };
+
+    void init_random_seed();
 
     void imcmc_runtime_error( std::string err_info );
     void imcmc_runtime_warning( std::string warn_info );

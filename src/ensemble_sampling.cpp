@@ -16,10 +16,10 @@ namespace imcmc{
         _searched_lndet_min_chisq_min_ = false;
 
         if( rank == ROOT_RANK ){
-            std::cout << "\n=====================================================\n";
+            std::cout << "\n#  =====================================================\n";
             std::cout << "#  ensemble_workspace::do_sampling(): start burning\n";
             std::cout << "#  total evaluations: " << burnin_loops*walker_num << "\n";
-            std::cout << "=====================================================\n\n";
+            std::cout << "#  =====================================================\n\n";
         }
 
         if( save_burned_ashes && (rank == ROOT_RANK ) ){
@@ -35,7 +35,7 @@ namespace imcmc{
             imcmc_vector_string_iterator it = output_param_name.begin();
 
             //  Write the first line
-            if( use_cosmomc_format && write_params_as_chain_header ){
+            if( use_cosmomc_format && write_chain_header ){
                 out_stream << "# standard cosmomc format.  This is the burned ashes ...\n";
                 out_stream << "#";
                 out_stream << std::setw(_OUT_WIDTH_-1) << "weight" << std::setw(_OUT_WIDTH_) << "-2log(L)";
@@ -47,7 +47,7 @@ namespace imcmc{
             }
 
             //  Write the second line
-            if( write_params_as_chain_header ){
+            if( write_chain_header ){
                 while( it != output_param_name.end() ){   //  updates only the sampling parameters
                     out_stream << std::setw(_OUT_WIDTH_) << *it << "";
                     ++it;
@@ -95,7 +95,7 @@ namespace imcmc{
                 imcmc_vector_string_iterator it = output_param_name.begin();
 
                 //  Write the first line
-                if( use_cosmomc_format && write_params_as_chain_header ){
+                if( use_cosmomc_format && write_chain_header ){
                     out_stream << "# standard cosmomc format\n";
                     out_stream << "#";
                     out_stream << std::setw(_OUT_WIDTH_-1) << "weight" << std::setw(_OUT_WIDTH_) << "-2log(L)";
@@ -107,7 +107,7 @@ namespace imcmc{
                 }
 
                 //  Write the second line
-                if( write_params_as_chain_header ){
+                if( write_chain_header ){
                     while( it != output_param_name.end() ){   //  updates only the sampling parameters
                         out_stream << std::setw(_OUT_WIDTH_) << *it << "";
                         ++it;
@@ -118,9 +118,9 @@ namespace imcmc{
             }
 
             if( rank == ROOT_RANK ){
-                std::cout << "\n######################################################\n";
+                std::cout << "\n#  ===================================================\n";
                 std::cout << "#  ensemble_workspace::do_sampling(): start sampling\n";
-                std::cout << "######################################################\n\n";
+                std::cout << "#  ===================================================\n\n";
             }
 
             for( int j=0; j<sampling_loops; ++j ){
@@ -191,6 +191,7 @@ namespace imcmc{
         return z;
     }
 
+//  TODO: add likelihood internal error controling options.
     int ensemble_workspace::update_a_walker( imcmc_double& full_param_temp, int current_id, int rand_id ){
 
         double z = ensemble_workspace::gz();

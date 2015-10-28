@@ -5,7 +5,7 @@ using namespace imcmc::parser;
 
 namespace imcmc{
 
-    void ensemble_workspace::add_likelihood( double (*loglike)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
+    void ensemble_workspace::add_likelihood( double (*loglike)( imcmc_double&, double&, double&, void*, void*, istate& ),
                                              imcmc_vector_string     modelparam,
                                              void                     *model,
                                              void                    *data    ){
