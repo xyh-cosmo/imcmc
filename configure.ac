@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 #AC_PREREQ(2.59)
-AC_INIT([imcmc], [0.0.5], [yhxu@nao.cas.cn])
+AC_INIT([imcmc], [0.1.0], [yhxu@nao.cas.cn])
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE([disable])
 #LT_PREREQ([2.2])
