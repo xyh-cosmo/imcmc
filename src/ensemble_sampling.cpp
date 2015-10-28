@@ -191,7 +191,7 @@ namespace imcmc{
         return z;
     }
 
-//  TODO: add likelihood internal error controling options.
+
     int ensemble_workspace::update_a_walker( imcmc_double& full_param_temp, int current_id, int rand_id ){
 
         double z = ensemble_workspace::gz();
@@ -223,9 +223,16 @@ namespace imcmc{
                 walker["LnDet"][current_id]     = lndet;
                 walker["Chisq"][current_id]     = chisq;
 
-                imcmc_vector_string_iterator it = sampling_param_name.begin();
+                imcmc_vector_string_iterator it;
 
+                it = sampling_param_name.begin();
                 while( it != sampling_param_name.end() ){
+                    walker[*it][current_id] = full_param_temp[*it];
+                    ++it;
+                }
+
+                it = derived_param_name.begin();
+                while( it != derived_param_name.end() ){
                     walker[*it][current_id] = full_param_temp[*it];
                     ++it;
                 }
@@ -241,14 +248,13 @@ namespace imcmc{
 
         imcmc_double    full_param_temp(full_param);     //  make a copy
 
-        // int *accept = new int[walker_num];
-
         for( int i=0; i<walker_num; ++i )
             accept[i] = 0;
 
         int accept_tot = 0;
 
         if( parallel_mode == 0 ){   //  serial mode
+
             int id;
 
             for( int i=0; i<walker_num; ++i ){
@@ -332,9 +338,33 @@ namespace imcmc{
                 for( int i=id_min[rank]; i<=id_max[rank]; ++i )
                     accept[i] = update_a_walker( full_param_temp, i, walker_id[i] );
 
+            //  ==============================
+            //  collecting sampling parameters
+            //  ==============================
                 it = sampling_param_name.begin();
 
                 while( it != sampling_param_name.end() ){
+
+                    MPI::COMM_WORLD.Gatherv(    &walker[*it][id_min[rank]],
+                                                sendcounts[rank], MPI::DOUBLE,
+                                                walker[*it],
+                                                recvcounts, displace, MPI::DOUBLE,
+                                                ROOT_RANK );
+
+                    MPI::COMM_WORLD.Bcast(  walker[*it],
+                                            walker_num,
+                                            MPI::DOUBLE,
+                                            ROOT_RANK    );
+
+                    ++it;
+                }
+
+            //  =============================
+            //  collecting derived parameters
+            //  =============================
+                it = derived_param_name.begin();
+
+                while( it != derived_param_name.end() ){
 
                     MPI::COMM_WORLD.Gatherv(    &walker[*it][id_min[rank]],
                                                 sendcounts[rank], MPI::DOUBLE,
@@ -403,8 +433,35 @@ namespace imcmc{
                 for( int i=id_min[rank]; i<=id_max[rank]; ++i )
                     accept[i] = update_a_walker( full_param_temp, i, walker_id[i] );
 
+            //  ==============================
+            //  collecting sampling parameters
+            //  ==============================
                 it = sampling_param_name.begin();
+
                 while( it != sampling_param_name.end() ){
+
+                    MPI::COMM_WORLD.Gatherv(    &walker[*it][id_min[rank]],
+                                                sendcounts[rank], MPI::DOUBLE,
+                                                walker[*it],
+                                                recvcounts, displace, MPI::DOUBLE,
+                                                ROOT_RANK );
+
+                    MPI::COMM_WORLD.Bcast(  walker[*it],
+                                            walker_num,
+                                            MPI::DOUBLE,
+                                            ROOT_RANK    );
+
+                    ++it;
+                }
+
+            //  =============================
+            //  collecting derived parameters
+            //  =============================
+
+                it = derived_param_name.begin();
+
+                while( it != derived_param_name.end() ){
+
                     MPI::COMM_WORLD.Gatherv(    &walker[*it][id_min[rank]],
                                                 sendcounts[rank], MPI::DOUBLE,
                                                 walker[*it],
@@ -465,8 +522,34 @@ namespace imcmc{
             //  update first half
                 accept[rank] = update_a_walker( full_param_temp, rank, walker_id[rank] );
 
+
+            //  ==============================
+            //  collecting sampling parameters
+            //  ==============================
                 it = sampling_param_name.begin();
+
                 while( it != sampling_param_name.end() ){
+
+                    MPI::COMM_WORLD.Gather( &walker[*it][rank],
+                                            1, MPI::DOUBLE,
+                                            walker[*it],
+                                            1, MPI::DOUBLE,
+                                            ROOT_RANK );
+
+                    MPI::COMM_WORLD.Bcast(  walker[*it],
+                                            walker_num,
+                                            MPI::DOUBLE,
+                                            ROOT_RANK    );
+                    ++it;
+                }
+
+            //  ==============================
+            //  collecting derived parameters
+            //  ==============================
+                it = derived_param_name.begin();
+
+                while( it != derived_param_name.end() ){
+
                     MPI::COMM_WORLD.Gather( &walker[*it][rank],
                                             1, MPI::DOUBLE,
                                             walker[*it],
@@ -526,8 +609,34 @@ namespace imcmc{
                 int rankx = rank + walker_num_half;
                 accept[rankx] = update_a_walker( full_param_temp, rankx, walker_id[rankx] );
 
+            //  ==============================
+            //  collecting sampling parameters
+            //  ==============================
                 it = sampling_param_name.begin();
+
                 while( it != sampling_param_name.end() ){
+
+                    MPI::COMM_WORLD.Gather( &walker[*it][rankx],
+                                            1, MPI::DOUBLE,
+                                            walker[*it],
+                                            1, MPI::DOUBLE,
+                                            ROOT_RANK );
+
+                    MPI::COMM_WORLD.Bcast(  walker[*it],
+                                            walker_num,
+                                            MPI::DOUBLE,
+                                            ROOT_RANK    );
+
+                    ++it;
+                }
+
+            //  ==============================
+            //  collecting sampling parameters
+            //  ==============================
+                it = derived_param_name.begin();
+
+                while( it != derived_param_name.end() ){
+
                     MPI::COMM_WORLD.Gather( &walker[*it][rankx],
                                             1, MPI::DOUBLE,
                                             walker[*it],
@@ -628,7 +737,6 @@ namespace imcmc{
             }
         }
 
-        // delete[] accept;
         MPI::COMM_WORLD.Barrier();
     }
 
@@ -640,8 +748,7 @@ namespace imcmc{
 
             for( int i=0; i<walker_num; ++i ){
 
-                if( accept[i] == 0 ){
-                    //  this old walker stays where it was, so we just increase its weight by 1.0
+                if( accept[i] == 0 ){   //  this old walker stays where it was, so we just increase its weight by 1.0
                     walker_io["Weight"][i] += 1.0;
                 }
                 else if( accept[i] == 1 ){  //  this old walker has been replaced by a new one, so we have to output it and update walker_io
@@ -655,7 +762,6 @@ namespace imcmc{
                     it = output_param_name.begin();
 
                     while( it != output_param_name.end() ){ //  update to new walker
-
                         walker_io[*it][i] = walker[*it][i];
                         ++it;
                     }

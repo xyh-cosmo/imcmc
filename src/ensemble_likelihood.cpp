@@ -6,9 +6,9 @@ using namespace imcmc::parser;
 namespace imcmc{
 
     void ensemble_workspace::add_likelihood( double (*loglike)( imcmc_double&, double&, double&, void*, void*, istate& ),
-                                             imcmc_vector_string     modelparam,
-                                             void                     *model,
-                                             void                    *data    ){
+                                             imcmc_vector_string    modelparam,
+                                             void*                  model,
+                                             void*                  data ){
 
         likelihood_ *like   = new likelihood_;
         like->loglike       = loglike;
@@ -24,6 +24,44 @@ namespace imcmc{
                 full_param[*it]        = -9999;
                 full_param_min[*it]    = -9999;
                 full_param_max[*it]    = -9999;
+            }
+            ++it;
+        }
+
+        MPI::COMM_WORLD.Barrier();
+    }
+
+    void ensemble_workspace::add_likelihood( double (*loglike)( imcmc_double&, double&, double&, void*, void*, istate& ),
+                                             imcmc_vector_string    modelparam,
+                                             imcmc_vector_string    derivedparam,
+                                             void*                  model,
+                                             void*                  data ){
+
+        likelihood_ *like   = new likelihood_;
+        like->loglike       = loglike;
+        like->model         = model;
+        like->data          = data;
+
+        likelihood.push_back( like );
+
+        imcmc_vector_string_iterator it = modelparam.begin();
+
+        while( it != modelparam.end() ){
+            if( full_param.count(*it) == 0 ){    //    if not found
+                full_param[*it]     = -9999;
+                full_param_min[*it] = -9999;
+                full_param_max[*it] = -9999;
+            }
+            ++it;
+        }
+
+        it = derivedparam.begin();
+
+    //  explicitly adding derived parameters from the input argument derivedparam
+        while( it != derivedparam.end() ){
+            if( derived_param.count(*it) == 0 ){
+                derived_param[*it]     = 0.0;  //  initialize to zeros
+                derived_param_name.push_back(*it);
             }
             ++it;
         }

@@ -1,3 +1,13 @@
+/*  ============================================================================
+    -----
+    NEWS:
+    -----
+1)  Oct-28-2015: add derived_param_names, and the derived parameters will also 
+    be strored in full_param, but these derived parameters, will be calculated 
+    only in user-provied likelihoods, so these functionality actually depends 
+    on the users.
+    ============================================================================*/
+
 #ifndef __ensemble__
 #define __ensemble__
 
@@ -76,32 +86,39 @@ namespace imcmc{
             int    total_accepts;
             int    total_rejects;
 
-            int    full_param_num;            //    number of full parameters
-            int    sampling_param_num;        //    number of sampling parameters
+            int full_param_num;     // number of full parameters
+            int sampling_param_num; // number of sampling parameters
+            int derived_param_num;  //  number of derived parameters
 
             imcmc_double    full_param;
-            imcmc_double    full_param_min;        //    max values
-            imcmc_double    full_param_max;        //    min values
+            imcmc_double    full_param_min; // max values
+            imcmc_double    full_param_max; // min values
+
+            imcmc_double    derived_param;  //  just for adding
 
             //  Walkers
             imcmc_double_pointer    walker;                 //  includes LnPost, LnDet and Chisq
             imcmc_vector_string     sampling_param_name;    //  hold the names of parameters being sampled
+            imcmc_vector_string     derived_param_name;     //  hold the names of derived parameters
             imcmc_vector_string     output_param_name;      //  if not set, then output_param_name = sampling_param_name
             imcmc_likelihood_state  likelihood_state;       //  save likelihood state, i.e., possible error information
 
+
             imcmc_double_pointer    walker_io;  //  this is acutally a backup of walker, and it will be used to write chains into files.
 
-            //    Likelihoof functions , contains MODEL and DATA
+            //    Likelihoof functions , include both MODELs and DATA
             std::vector<likelihood_*>   likelihood;
 
-            void set_efficient_a( double a );    //    control the range of Z, narrower Z range will increase the acceptance ratio.
+            void set_efficient_a( double a );   //    control the range of Z, narrower Z range will increase the acceptance ratio.
 
             //    used to generate random variable 'Z'
             inline double  g( double z );
             inline double  gz();
 
-            void init( std::string infile );    //    read initialization & other settings from the input *ini file
-            void init_param();                  //    initialize relavant parameters, some might be set to default values.
+            void init( std::string infile );    // read initialization & other settings from the input *ini file
+            void init_param();                  // initialize relavant parameters, some might be set to default values.
+            void add_derived_param();   // derived parameters are calculated inside likelihoods written by users, so I needed to modify 
+                                        // add_likelihood(*****)
 
             bool walker_initialized;    //    inidicate whether the walkers are initialized.
             void init_walkers();        //    initialize the walkers.
@@ -112,13 +129,20 @@ namespace imcmc{
             //    combine those likelihood functions into a BIGGER one, and adding some flags to control which likelihood functions will
             //    be used.  This is quite common when someone is trying to constraining model parameters using different combinations of
             //    data sets.
-            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void* ),
+
+//            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void* ),
+//                                 imcmc_vector_string modelparam,
+//                                 void                *model,
+//                                 void                *data );
+
+            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
                                  imcmc_vector_string modelparam,
                                  void                *model,
                                  void                *data );
 
             void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
                                  imcmc_vector_string modelparam,
+                                 imcmc_vector_string derivedparam,
                                  void                *model,
                                  void                *data );
 

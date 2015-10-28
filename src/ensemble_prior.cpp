@@ -5,7 +5,7 @@ using namespace imcmc::parser;
 
 namespace imcmc{
 
-    bool ensemble_workspace::prior( imcmc_double& full_param_temp ){    //    return 0 or GSL_NEGINF
+    bool ensemble_workspace::prior( imcmc_double& full_param_temp ){
 
         bool status = true;
 

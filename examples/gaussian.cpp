@@ -34,7 +34,14 @@ struct Gaussian{   //  test model
     }
 };
 
-double TestLike( imcmc_double& full_param, double& lndet, double& chisq, void* model, void* data, imcmc_likelihood_state& state ){
+double TestLike( imcmc_double&  full_param, 
+                 double&        lndet, 
+                 double&        chisq, 
+                 void*          model, 
+                 void*          data, 
+                 istate&        state ){
+
+    full_param["x+y"] = full_param["x"] + full_param["y"];  //  new added for test derived parameters
 
     state.this_like_is_ok = true;
     state.store_mesg("nothing happened!");
@@ -57,10 +64,14 @@ int main( int argc, char *argv[] )
     param.push_back("y");
     param.push_back("z");
 
+    imcmc_vector_string dparam;
+    dparam.push_back("x+y");
+
     Gaussian g;
     g.AddParam(param);
 
-    ew.add_likelihood( TestLike, param, &g, NULL );
+//    ew.add_likelihood( TestLike, param, &g, NULL );
+    ew.add_likelihood( TestLike, param, dparam, &g, NULL );
     ew.init("gaussian.ini");
     ew.do_sampling();
 

@@ -50,9 +50,22 @@ namespace imcmc{
                 delete[] walker_io["Chisq"];
             }
 
-            imcmc_vector_string_iterator it = sampling_param_name.begin();
+            imcmc_vector_string_iterator it;
+
+            it = sampling_param_name.begin();
 
             while( it != sampling_param_name.end() ){
+                delete[] walker[*it];
+
+                if( use_cosmomc_format )
+                    delete[] walker_io[*it];
+
+                ++it;
+            }
+
+            it = derived_param_name.begin();
+
+            while( it != derived_param_name.end() ){
                 delete[] walker[*it];
 
                 if( use_cosmomc_format )

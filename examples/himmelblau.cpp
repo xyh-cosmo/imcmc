@@ -32,7 +32,13 @@ struct Himmelblau{
     }
 };
 
-double TestLike( imcmc_double& full_param, double& lndet, double& chisq, void* model, void* data, imcmc_likelihood_state& state ){
+double TestLike( imcmc_double&  full_param, 
+                 double&        lndet, 
+                 double&        chisq, 
+                 void*          model, 
+                 void*          data, 
+                 istate&        state ){
+
     state.this_like_is_ok = true;
     state.store_mesg("nothing happened!");
 

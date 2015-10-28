@@ -174,6 +174,7 @@ namespace imcmc{
         delete[] first_number;
 
         init_param();
+
         init_walkers();
 
         walker_initialized = true;
@@ -257,6 +258,7 @@ namespace imcmc{
                                 << std::setw(15) << full_param_min[it->first] << "  "
                                 << std::setw(15) << full_param_max[it->first] << "\n";
                 }
+
                 delete[] par;
             }
             else{
@@ -269,11 +271,24 @@ namespace imcmc{
 
         param_limits_os.close();
 
+        //  add derived parameters into full_param
+        imcmc_double_iterator itd = derived_param.begin();
+
+        while( itd != derived_param.end() ){
+            if( full_param.count(itd->first) == 0 ){    // make sure that the derived parameter is NOT in full_param
+                full_param[itd->first]    = itd->second;
+            }
+            ++itd;
+        }
+
         if( Read::Has_Key_in_File( config_file, "output_params" ) ){
+
             int nvalue = Read::Num_of_Value_for_Key( config_file, "output_params" );
 
             if( nvalue == 0 ){
+
                 output_param_name = sampling_param_name;
+
                 if( rank == ROOT_RANK ){
                     std::cout << "\n#  =============================================================\n"
                               << "#  ensemble_workspace::init_param():\n"
@@ -337,13 +352,21 @@ namespace imcmc{
         else{
             output_param_name = sampling_param_name;
 
+            imcmc_vector_string_iterator it = derived_param_name.begin();
+
+            while( it != derived_param_name.end() ){ // all names in derived_param_name have been checked that no duplicate exists
+                output_param_name.push_back(*it);
+                ++it;
+            }
+
             if( rank == ROOT_RANK )
                 std::cout << "\nensemble_workspace::init_param():\n"
                     << "\tno keyword : output_params found in " + config_file + ", so all sampling\n"
-                    << "\tparameters will be output.\n\n";
+                    << "\tparameters will be output (including all derived parameters).\n\n";
         }
 
         if( rank == ROOT_RANK ){
+
             std::string ofile = chain_root + ".params";
             std::ofstream outfile( ofile.c_str() );
 
@@ -355,8 +378,6 @@ namespace imcmc{
             outfile << "\n# ============================ full parameter names =========================\n";
 
             imcmc_double_iterator it        = full_param.begin();
-            imcmc_double_iterator it_min    = full_param_min.begin();
-            imcmc_double_iterator it_max    = full_param_max.begin();
 
             outfile << std::setw(15) << "params" << ":"
                     << std::setw(15) << "min-value" << "  "
@@ -364,18 +385,29 @@ namespace imcmc{
                     << std::setw(15) << "do sampling?" << "\n";
 
             while( it != full_param.end() ){
-                outfile << std::setw(15) << it->first << " "
-                        << std::setw(15) << it_min->second << "  "
-                        << std::setw(15) << it_max->second << "  ";
 
-                if( fabs(it_min->second - it_max->second) < 1.e-15 ) // be careful here, be consistent with line 143 !!!
-                    outfile << std::setw(15) << " no  " << "\n";
-                else
-                    outfile << std::setw(15) << " yes " << "\n";
+
+                if( (full_param_min.count(it->first) == 1) && (full_param_max.count(it->first) == 1) ){
+
+                    outfile << std::setw(15) << it->first << " "
+                            << std::setw(15) << full_param_min[it->first] << "  "
+                            << std::setw(15) << full_param_max[it->first] << "  ";
+
+                    if( fabs(full_param_min[it->first] - full_param_max[it->first]) < 1.E-15 )
+                        outfile << std::setw(15) << std::right << "no\n";
+                    else
+                        outfile << std::setw(15) << std::right << "yes\n";
+                }
+                else{
+
+                    outfile << std::setw(15) << it->first  << " "
+                            << std::setw(15) << std::right << "--" << "  "
+                            << std::setw(15) << std::right << "--" << "  ";
+
+                    outfile << std::setw(15) << std::right << "derived\n"; 
+                }
 
                 ++it;
-                ++it_min;
-                ++it_max;
             }
 
             outfile << "\n# ======================== full parameters being sampled ====================\n";
@@ -400,7 +432,6 @@ namespace imcmc{
         MPI::COMM_WORLD.Barrier();
     }
 
-//    @TODO: parallelize this init_walkers(), so the initialization will be accelerated if the calculation of likelihood is very expansive.
 
     void ensemble_workspace::init_walkers(){   //  NOTE: intialized walkers MUST lie in the valid prior!!!
 
@@ -422,7 +453,9 @@ namespace imcmc{
                       << "#  ========================================================================\n";
         }
 
-        imcmc_vector_string_iterator it = sampling_param_name.begin();
+
+        imcmc_vector_string_iterator it         = sampling_param_name.begin();
+        imcmc_vector_string_iterator it_derived = derived_param_name.begin();
 
         while( it != sampling_param_name.end() ){
 
@@ -434,6 +467,24 @@ namespace imcmc{
 
             ++it;
         }
+
+        while( it_derived != derived_param_name.end() ){
+
+            walker[*it_derived] = new double[walker_num];
+
+            for( int i=0; i<walker_num; ++i )
+                walker[*it_derived][i] = 0.0;
+
+            if( use_cosmomc_format ){
+                walker_io[*it_derived] = new double[walker_num];
+
+                for( int i=0; i<walker_num; ++i )
+                    walker_io[*it_derived][i] = 0.0;
+            }
+
+            ++it_derived;
+        }
+
 
         //  add LnPost, LnDet, and Chisq to walkers
         walker["LnPost"]    = new double[walker_num];
@@ -470,7 +521,7 @@ namespace imcmc{
         }
         else{    //    rank_root will evaluate more likelihoods
 
-        //  set for root rank
+            //  set for root rank
             i_start         = 0;
             i_end           = walker_num/rank_size + walker_num%rank_size - 1;
 
@@ -478,8 +529,7 @@ namespace imcmc{
             recvcounts[0]   = sendcounts[0];
             displace[0]     = 0;
 
-        //  set for the remaining ranks
-            for( int i=1; i<rank_size; ++i ){
+            for( int i=1; i<rank_size; ++i ){   //  set for the remaining ranks
 
                 i_start         = walker_num/rank_size + walker_num%rank_size + (i-1)*(walker_num/rank_size);
                 i_end           = i_start + (walker_num/rank_size - 1);
@@ -488,20 +538,13 @@ namespace imcmc{
                 recvcounts[i]   = sendcounts[i];
                 displace[i]     = sendcounts[0] + (i-1) * ( walker_num / rank_size );
             }
-
-        //  debug info:
-            // std::cout << "This is rank : " << rank << " rank_size = " << rank_size << "\n"
-            //           << "@@ sendcounts[0] = " << sendcounts[rank] << "\n"
-            //           << "@@ recvcounts[0] = " << recvcounts[rank] << "\n"
-            //           << "@@ displace[0]   = " << displace[rank] << "\n";
-
         }
 
         for(int i=i_start; i<=i_end; ++i){
 
             double lndet, chisq;
 
-            //  update full_param
+            //  initialize full_param randomly. Note that full_param includes sampling parameters, fixed parameters and derived parameters
             it = sampling_param_name.begin();
 
             while( it != sampling_param_name.end() ){
@@ -517,7 +560,7 @@ namespace imcmc{
                                                     mean_value - 0.25*value_width,
                                                     mean_value + 0.25*value_width );
 
-                full_param_temp[*it]     = walker[*it][i];
+                full_param_temp[*it] = walker[*it][i];
                 ++it;
             }
 
@@ -526,11 +569,35 @@ namespace imcmc{
             walker["Chisq"][i]  = chisq;
         }
 
-    //    collect all the results
+        //  ===================================
+        //  collecting all sampling parameters
+        //  ===================================
 
         it = sampling_param_name.begin();
 
         while( it != sampling_param_name.end() ){
+
+            MPI::COMM_WORLD.Gatherv(    &walker[*it][i_start],
+                                        sendcounts[rank], MPI::DOUBLE,
+                                        walker[*it],
+                                        recvcounts, displace, MPI::DOUBLE,
+                                        ROOT_RANK );
+
+            MPI::COMM_WORLD.Bcast(  walker[*it],
+                                    walker_num,
+                                    MPI::DOUBLE,
+                                    ROOT_RANK    );
+
+            ++it;
+        }
+
+        //  ===================================
+        //  collecting all derived parameters
+        //  ===================================
+
+        it = derived_param_name.begin();
+
+        while( it != derived_param_name.end() ){
 
             MPI::COMM_WORLD.Gatherv(    &walker[*it][i_start],
                                         sendcounts[rank], MPI::DOUBLE,
@@ -590,10 +657,24 @@ namespace imcmc{
                 walker_io["Chisq"][i]  = walker["Chisq"][i];
             }
 
+
+        //  =====================
+        //  initialize walker_io
+        //  =====================
+
             it = sampling_param_name.begin();
 
             while( it != sampling_param_name.end() ){
 
+                for( int i=0; i<walker_num; ++i )
+                    walker_io[*it][i] = walker[*it][i];
+
+                ++it;
+            }
+
+            it = derived_param_name.begin();
+
+            while( it != derived_param_name.end() ){
                 for( int i=0; i<walker_num; ++i )
                     walker_io[*it][i] = walker[*it][i];
 
@@ -659,7 +740,7 @@ namespace imcmc{
                                                     mean_value - 0.1*value_width,
                                                     mean_value + 0.1*value_width );
 
-                full_param_temp[*it]     = walker[*it][i];
+                full_param_temp[*it] = walker[*it][i];
                 ++it;
             }
 
