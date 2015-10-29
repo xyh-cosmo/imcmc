@@ -24,6 +24,8 @@ namespace imcmc{
                       << " >  we captured the following error @ rank " << rank << ":\n"
                       << " " << errmesg << "\n"
                       << " #  ========================================================= #\n";
+
+            throw std::runtime_error(" #  ---> Likelihood Error Ecountered\n");
         }
         else{
             std::cout << "\n #  ===================  Likelihood Warning  ================== #\n"

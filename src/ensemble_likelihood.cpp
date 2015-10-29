@@ -129,11 +129,12 @@ namespace imcmc{
             else{
                 if( likelihood_state.stop_on_error ){
                     likelihood_state.what_happened();
-                    throw std::runtime_error("######## fatal error happened, see message printed above! ########");
+//                    throw std::runtime_error("######## fatal error happened, see message printed above! ########");
                 }
                 else{// still going on the sampling, but will print the error information
                     likelihood_state.what_happened();
                     ln_post = _IMCMC_NEGINF_;
+                    chisq   = _IMCMC_INF_;
                     break;  //  jump out the loop
                 }
             }

@@ -57,7 +57,7 @@ namespace imcmc{
             std::cout << "#  =====================================================\n\n";
         }
 
-        if( save_burned_ashes && (rank == ROOT_RANK ) ){
+        if( save_burned_ashes && (rank == ROOT_RANK) ){
 
             chain_name = chain_root + "_ashes.txt";
 
