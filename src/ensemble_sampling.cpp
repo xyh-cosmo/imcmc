@@ -176,6 +176,7 @@ namespace imcmc{
                     << "#  " << total_accepts << " of " << total_accepts + total_rejects << " walkers been accepted ...\n"
                     << "#  " << total_rejects << " of " << total_accepts + total_rejects << " walkers been rejected ...\n"
                     << "#  " << "acceptance ratio = " << double(total_accepts)/(total_accepts + total_rejects) << "\n"
+                    << "#  " << "total number of likelihood erros: " << total_errors << "\n"
                     << "#  ===============================================\n\n";
             }
 
@@ -258,6 +259,7 @@ namespace imcmc{
             accept[i] = 0;
 
         int accept_tot = 0;
+        int error_tot = 0;
 
         if( parallel_mode == 0 ){   //  serial mode
 
@@ -269,6 +271,11 @@ namespace imcmc{
                 } while( id == i );
 
                 accept[i] = update_a_walker( full_param_temp, i, id );
+
+                if( likelihood_state.this_like_is_ok )
+                    error[i] = 0;
+                else
+                    error[i] = 1;
             }
         }
         else{   //  opempi-parallel mode
@@ -341,8 +348,14 @@ namespace imcmc{
 
                 //  start to update walkers
                 //  update the first half
-                for( int i=id_min[rank]; i<=id_max[rank]; ++i )
+                for( int i=id_min[rank]; i<=id_max[rank]; ++i ){
                     accept[i] = update_a_walker( full_param_temp, i, walker_id[i] );
+
+                    if( likelihood_state.this_like_is_ok )
+                        error[i] = 0;
+                    else
+                        error[i] = 1;
+                }
 
             //  ==============================
             //  collecting sampling parameters
@@ -386,9 +399,17 @@ namespace imcmc{
                     ++it;
                 }
 
+            //  count accepts
                 MPI::COMM_WORLD.Gatherv(    &accept[id_min[rank]],
                                             sendcounts[rank], MPI::INT,
                                             accept,
+                                            recvcounts, displace, MPI::INT,
+                                            ROOT_RANK );
+
+            //  count likelihood errors
+                MPI::COMM_WORLD.Gatherv(    &error[id_min[rank]],
+                                            sendcounts[rank], MPI::INT,
+                                            error,
                                             recvcounts, displace, MPI::INT,
                                             ROOT_RANK );
 
@@ -436,8 +457,14 @@ namespace imcmc{
                 for( int i=0; i<size; ++i )
                     displace[i] += walker_num_half;
 
-                for( int i=id_min[rank]; i<=id_max[rank]; ++i )
+                for( int i=id_min[rank]; i<=id_max[rank]; ++i ){
                     accept[i] = update_a_walker( full_param_temp, i, walker_id[i] );
+
+                    if( likelihood_state.this_like_is_ok )
+                        error[i] = 0;
+                    else
+                        error[i] = 1;
+                }
 
             //  ==============================
             //  collecting sampling parameters
@@ -482,9 +509,17 @@ namespace imcmc{
                     ++it;
                 }
 
+            //  count accepts
                 MPI::COMM_WORLD.Gatherv(    &accept[id_min[rank]],
                                             sendcounts[rank], MPI::INT,
                                             accept,
+                                            recvcounts, displace, MPI::INT,
+                                            ROOT_RANK );
+
+            //  count likelihood errors
+                MPI::COMM_WORLD.Gatherv(    &error[id_min[rank]],
+                                            sendcounts[rank], MPI::INT,
+                                            error,
                                             recvcounts, displace, MPI::INT,
                                             ROOT_RANK );
 
@@ -525,9 +560,14 @@ namespace imcmc{
                 MPI::COMM_WORLD.Barrier();
             }
             else if( parallel_mode == 2 ){
+
             //  update first half
                 accept[rank] = update_a_walker( full_param_temp, rank, walker_id[rank] );
 
+                if( likelihood_state.this_like_is_ok )
+                    error[rank] = 0;
+                else
+                    error[rank] = 1;
 
             //  ==============================
             //  collecting sampling parameters
@@ -575,6 +615,12 @@ namespace imcmc{
                                         1, MPI::INT,
                                         ROOT_RANK );
 
+                MPI::COMM_WORLD.Gather( &error[rank],
+                                        1, MPI::INT,
+                                        error,
+                                        1, MPI::INT,
+                                        ROOT_RANK );
+
                 MPI::COMM_WORLD.Gather( &walker["LnPost"][rank],
                                         1, MPI::DOUBLE,
                                         walker["LnPost"],
@@ -614,6 +660,11 @@ namespace imcmc{
             //  update second half
                 int rankx = rank + walker_num_half;
                 accept[rankx] = update_a_walker( full_param_temp, rankx, walker_id[rankx] );
+
+                if( likelihood_state.this_like_is_ok )
+                    error[rankx] = 0;
+                else
+                    error[rankx] = 1;
 
             //  ==============================
             //  collecting sampling parameters
@@ -663,6 +714,12 @@ namespace imcmc{
                                         1, MPI::INT,
                                         ROOT_RANK );
 
+                MPI::COMM_WORLD.Gather( &error[rankx],
+                                        1, MPI::INT,
+                                        error,
+                                        1, MPI::INT,
+                                        ROOT_RANK );
+
                 MPI::COMM_WORLD.Gather( &walker["LnPost"][rankx],
                                         1, MPI::DOUBLE,
                                         walker["LnPost"],
@@ -707,22 +764,20 @@ namespace imcmc{
 
         if( rank == ROOT_RANK ){
 
+            total_errors = 0;
+
             for( int i=0; i<walker_num; ++i ){
                 accept_tot += accept[i];
+                error_tot += error[i];
 
             //  continue to search for _lndet_min_ & _chisq_min_
                 if( (do_sampling == false) && (_searched_lndet_min_chisq_min_==false) ){
 
-                    if( walker["LnDet"][i] < _lndet_min_ ){
+                    if( walker["LnDet"][i] < _lndet_min_ )
                         _lndet_min_ = walker["LnDet"][i];
-//                        std::cout << "\nensemble:: -->  updated _lndet_min_ = " << _lndet_min_ << "\n\n";
-                    }
 
-                    if( walker["Chisq"][i] < _chisq_min_ ){
+                    if( walker["Chisq"][i] < _chisq_min_ )
                         _chisq_min_ = walker["Chisq"][i];
-//                        std::cout << "\nensemble:: -->  updated _chisq_min_ = " << _chisq_min_ << "\n\n";
-                    }
-
                 }
             }
 
@@ -730,16 +785,19 @@ namespace imcmc{
                 std::cout   << "imcmc::ensemble " << std::setw(15) << "- burning - "
                             << "[" << std::setw(5) << ith+1 << " of " << std::setw(5) << num << "] -> "
                             << std::setw(5) << accept_tot << " of " << std::setw(5) << walker_num
-                            << " walkers accepted ...\n";
+                            << " walkers accepted ...\n"
+                            << " --> " << error_tot << " likelihood errors happened ..\n";
             }
             else{
                 total_accepts += accept_tot;
                 total_rejects += (walker_num-accept_tot);
+                total_errors += error_tot;
 
                 std::cout   << "imcmc::ensemble " << std::setw(15) << "- sampling - "
                             << "[" << std::setw(5) << ith+1 << " of " << std::setw(5) << num << "] -> "
                             << std::setw(5) << accept_tot << " of " << std::setw(5) << walker_num
-                            << " walkers accepted ...\n";
+                            << " walkers accepted ...\n"
+                            << " --> " << error_tot << " likelihood errors happened ..\n";
             }
         }
 

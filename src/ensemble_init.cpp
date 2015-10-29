@@ -49,7 +49,8 @@ namespace imcmc{
                              walkers to twice of number of ranks\n";
             }
 
-            accept = new int[walker_num];
+            accept  = new int[walker_num];
+            error   = new int[walker_num];
         }
         else
             imcmc_runtime_error("\'walker_num\' not found in:" + paramfile + " !");
@@ -570,6 +571,12 @@ namespace imcmc{
             walker["LnPost"][i] = likelihood_eval( full_param_temp, lndet, chisq );
             walker["LnDet"][i]  = lndet;
             walker["Chisq"][i]  = chisq;
+
+            if( likelihood_state.this_like_is_ok ){
+                error[i] = 0;
+            }
+            else
+                error[i] = 1;
         }
 
         //  ===================================
@@ -634,6 +641,12 @@ namespace imcmc{
                                     recvcounts, displace, MPI::DOUBLE,
                                     ROOT_RANK );
 
+        MPI::COMM_WORLD.Gatherv(    &error[i_start],
+                                    sendcounts[rank], MPI::INT,
+                                    error,
+                                    recvcounts, displace, MPI::INT,
+                                    ROOT_RANK );
+
     //  broadcast walkers to each proc
         MPI::COMM_WORLD.Bcast(  walker["LnPost"],
                                 walker_num,
@@ -689,12 +702,16 @@ namespace imcmc{
         _lndet_min_ = 1.0E99;
         _chisq_min_ = 1.0E99;
 
+        total_errors = 0;
+
         for( int i=0; i<walker_num; ++i ){
             if( walker["LnDet"][i] < _lndet_min_ )
                 _lndet_min_ = walker["LnDet"][i];
 
             if( walker["Chisq"][i] < _chisq_min_ )
                 _chisq_min_ = walker["Chisq"][i];
+
+            total_errors += error[i];
         }
 
         if( rank == ROOT_RANK ){

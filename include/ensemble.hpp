@@ -82,9 +82,11 @@ namespace imcmc{
             double  init_ball_radius;
 
             //    state of acception or rejection, 1 or 0
-            int     *accept;    // = new int[walker_num];
-            int    total_accepts;
-            int    total_rejects;
+            int *accept;    // = new int[walker_num];
+            int *error;  
+            int total_accepts;
+            int total_rejects;
+            int total_errors;       // record how many likelihood error happens
 
             int full_param_num;     // number of full parameters
             int sampling_param_num; // number of sampling parameters

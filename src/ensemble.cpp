@@ -42,6 +42,7 @@ namespace imcmc{
             delete[] walker["Chisq"];
 
             delete[] accept;
+            delete[] error;
 
             if( use_cosmomc_format ){
                 delete[] walker_io["Weight"];
