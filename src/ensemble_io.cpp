@@ -18,12 +18,19 @@ namespace imcmc{
                 else if( accept[i] == 1 ){
                 //  this old walker has been replaced by a new one, so we have to output it and update walker_io
 
-                    if( error[i] != 1 ){
+                    if( walker_io["Chisq"][i] < _IMCMC_CHISQ_MAX_ ){
                         of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
                             << walker_io["Weight"][i] << ""
                             << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
                             << walker_io["Chisq"][i] << "";
                     }
+					else{
+						of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
+							<< 0.0 << "" //	set weight to zero.
+							<< std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
+							<< walker_io["Chisq"][i] << "";
+					}
+
 
                 //  update weight, lnpost, lndet and chisq
                     walker_io["Weight"][i] = 1.0;  //  reset to 1.0
@@ -35,18 +42,15 @@ namespace imcmc{
 
                     while( it != output_param_name.end() ){
 
-                        if( error[i] != 1 ){
-                            of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
-                                << walker_io[*it][i] << "";
-                        }
+                        of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
+                            << walker_io[*it][i] << "";
 
                     //  update to new walker
                         walker_io[*it][i] = walker[*it][i];
                         ++it;
                     }
 
-                    if( error[i] != 1 )                    
-                        of << "\n";
+                    of << "\n";
                 }
                 else{
                     imcmc_runtime_error("unknown accept value, must be 0 or 1!");

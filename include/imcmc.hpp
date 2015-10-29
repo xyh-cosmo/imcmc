@@ -51,6 +51,12 @@
     #define _IMCMC_NEGINF_ GSL_POSINF
 #endif
 
+//	when chisq is too large, usually means that this sampling point should not be used. 
+#ifndef _IMCMC_CHISQ_MAX_
+	#define _IMCMC_CHISQ_MAX_ 1.0E20
+#endif
+
+
 namespace imcmc{
 
 //  imcmc key-value(s) date type

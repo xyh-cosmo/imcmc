@@ -702,7 +702,7 @@ namespace imcmc{
         _lndet_min_ = 1.0E99;
         _chisq_min_ = 1.0E99;
 
-        total_errors = 0;
+        int error_tot = 0;
 
         for( int i=0; i<walker_num; ++i ){
             if( walker["LnDet"][i] < _lndet_min_ )
@@ -711,7 +711,7 @@ namespace imcmc{
             if( walker["Chisq"][i] < _chisq_min_ )
                 _chisq_min_ = walker["Chisq"][i];
 
-            total_errors += error[i];
+            error_tot += error[i];
         }
 
         if( rank == ROOT_RANK ){
@@ -724,6 +724,8 @@ namespace imcmc{
             std::cout << "#  ***  Note that this searching will be done only once  ***\n"
                       << "#  =============================================================\n";
             //  _lndet_min_, _chisq_min_ are used only when writing probability into chains.
+            //
+            std::cout << "#	 *** " << error_tot << " likelihood errors encountered ...\n";
         }
 
         MPI::COMM_WORLD.Barrier();
