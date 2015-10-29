@@ -43,8 +43,14 @@ double TestLike( imcmc_double&  full_param,
 
     full_param["x+y"] = full_param["x"] + full_param["y"];  //  new added for test derived parameters
 
-    state.this_like_is_ok = true;
-    state.store_mesg("nothing happened!");
+    // state.this_like_is_ok = true;
+    // state.store_mesg("nothing happened!");
+
+    //	how to pass error information to imcmc::ensemble_workspace
+    if( full_param["x"] < -5 ){
+    	state.this_like_is_ok = false;
+    	state.store_mesg("   x is less than -5, this should not happen!");
+    }
 
     Gaussian *g = static_cast<Gaussian *>(model);
     g->Update(full_param);  //  now the model is workable

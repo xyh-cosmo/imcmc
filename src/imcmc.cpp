@@ -18,17 +18,27 @@ namespace imcmc{
 
     void imcmc_likelihood_state::what_happened(){
         int rank = MPI::COMM_WORLD.Get_rank();
-        std::cout << "\n#  ===============  Likelihood Error  ============== #\n"
-                  << ">  we captured the following error:\n"
-                  << errmesg << "\n\n";
-        std::cout << "#  =============================================\n";
+
+        if( stop_on_error ){
+            std::cout << "\n #  ===================  Likelihood Error  ================== #\n"
+                      << " >  we captured the following error @ rank " << rank << ":\n"
+                      << " " << errmesg << "\n"
+                      << " #  ========================================================= #\n";
+        }
+        else{
+            std::cout << "\n #  ===================  Likelihood Warning  ================== #\n"
+                      << " >  we captured the following Warning @ rank " << rank << ":\n"
+                      << " " << errmesg << "\n"
+                      << " #  =========================================================== #\n";
+        }
     }
 
     void imcmc_runtime_error( std::string err_info ){
 
         int rank = MPI::COMM_WORLD.Get_rank();
 
-        std::cout << "\n #    ===============  Error Message  ============== #\n";
+        std::cout << "\n #    ====================================================== #\n";
+        std::cout << " #    +++++++++++++++++++  Error Message  ++++++++++++++++++ #\n";
         std::cout << " ---@ Rank Num: " << rank << "\n";
         std::cout << " ---@ FileName: " << __FILE__ << "\n";
         std::cout << " ---@ Line Num: " << __LINE__ << "\n";
@@ -42,13 +52,15 @@ namespace imcmc{
 
         int rank = MPI::COMM_WORLD.Get_rank();
 
-        std::cout << "\n #    ==============  Warning Message  ============= #\n";
+        std::cout << "\n #    ====================================================== #\n";
+        std::cout << " #    ------------------  Warning Message  ----------------- #\n";
         std::cout << " ---@ Rank Num: " << rank << "\n";
         std::cout << " ---@ FileName: " << __FILE__ << "\n";
         std::cout << " ---@ Line Num: " << __LINE__ << "\n";
         std::cout << " ---@ Fun Name: " << __FUNCTION__ << "\n";
         std::cout << " ---> ";
         std::cout << warn_info << std::endl;
+        std::cout << " #    ------------------------------------------------------ #\n";
     }
 
 }

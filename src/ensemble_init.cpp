@@ -125,6 +125,9 @@ namespace imcmc{
 
         if( Read::Has_Key_in_File( paramfile, "stop_on_error" ) ){
             likelihood_state.stop_on_error = Read::Read_Bool_from_File(paramfile, "stop_on_error");
+            
+            if( likelihood_state.stop_on_error )
+                imcmc_runtime_warning("your sampling will stop when error(s) encountered inside likelihoods!");
         }
 
     //  setup seeds for the random number generators

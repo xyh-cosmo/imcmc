@@ -113,6 +113,7 @@ namespace imcmc{
         std::vector<likelihood_>::size_type it_like;
 
         for( it_like = 0; it_like !=likelihood.size(); ++it_like ){
+            
             ln_post += likelihood[it_like]->loglike( full_param,
                                                      lndet_temp,     //    this will be first set to zero inside likelihood functions
                                                      chisq_temp,     //    this will be first set to zero inside likelihood functions
