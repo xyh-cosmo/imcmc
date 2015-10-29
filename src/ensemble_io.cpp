@@ -19,10 +19,25 @@ namespace imcmc{
                 //  this old walker has been replaced by a new one, so we have to output it and update walker_io
 
                     if( walker_io["Chisq"][i] < _IMCMC_CHISQ_MAX_ ){
+
                         of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
                             << walker_io["Weight"][i] << ""
                             << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
                             << walker_io["Chisq"][i] << "";
+
+                        it = output_param_name.begin();
+
+                        while( it != output_param_name.end() ){
+
+                            of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
+                                << walker_io[*it][i] << "";
+
+                        //  update to new walker
+                            walker_io[*it][i] = walker[*it][i];
+                            ++it;
+                        }
+
+                        of << "\n";
                     }
 					else{
 						of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
@@ -37,27 +52,13 @@ namespace imcmc{
                     walker_io["LnPost"][i] = walker["LnPost"][i];
                     walker_io["LnDet"][i]  = walker["LnDet"][i];
                     walker_io["Chisq"][i]  = walker["Chisq"][i];
-
-                    it = output_param_name.begin();
-
-                    while( it != output_param_name.end() ){
-
-                        of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
-                            << walker_io[*it][i] << "";
-
-                    //  update to new walker
-                        walker_io[*it][i] = walker[*it][i];
-                        ++it;
-                    }
-
-                    of << "\n";
                 }
                 else{
                     imcmc_runtime_error("unknown accept value, must be 0 or 1!");
                 }
             }
         }
-        else{
+        else{   //  the following needs update
 
             for( int i=0; i<walker_num; ++i ){
 
