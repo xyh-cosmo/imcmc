@@ -2,7 +2,6 @@
 
 namespace imcmc{
 
-//    void ensemble_workspace::write_walkers( std::ofstream& of, bool last ){
     void ensemble_workspace::write_walkers( std::ofstream& of ){
 
         imcmc_vector_string_iterator it;
@@ -39,13 +38,14 @@ namespace imcmc{
 
                         of << "\n";
                     }
+/*
 					else{
 						of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
 							<< 0.0 << "" //	set weight to zero.
 							<< std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
 							<< walker_io["Chisq"][i] << "";
 					}
-
+*/
 
                 //  update weight, lnpost, lndet and chisq
                     walker_io["Weight"][i] = 1.0;  //  reset to 1.0
