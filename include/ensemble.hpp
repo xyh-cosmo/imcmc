@@ -101,7 +101,8 @@ namespace imcmc{
             imcmc_vector_string     sampling_param_name;    //  hold the names of parameters being sampled
             imcmc_vector_string     derived_param_name;     //  hold the names of derived parameters
             imcmc_vector_string     output_param_name;      //  if not set, then output_param_name = sampling_param_name
-            imcmc_likelihood_state  likelihood_state;       //  save likelihood state, i.e., possible error information
+
+            imcmc_likelihood_state  likelihood_state;       //  save current likelihood state, i.e., possible error information
 
 
             imcmc_double_pointer    walker_io;  //  this is acutally a backup of walker, and it will be used to write chains into files.

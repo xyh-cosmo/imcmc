@@ -133,7 +133,7 @@ namespace imcmc{
                 }
                 else{// still going on the sampling, but will print the error information
                     likelihood_state.what_happened();
-                    ln_post = _IMCMC_INF_;
+                    ln_post = _IMCMC_NEGINF_;
                     break;  //  jump out the loop
                 }
             }

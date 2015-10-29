@@ -5,6 +5,41 @@ using namespace imcmc::parser;
 
 namespace imcmc{
 
+    void ensemble_workspace::set_efficient_a( double a ){
+
+        if( a <= 0 )
+            imcmc_runtime_error("\nensemble_workspace::set_efficient_a():\n a must be a positive number !");
+        else if( a < 1.0 )
+            efficient_a = 1.0 / a;
+        else
+            efficient_a = a;
+
+        MPI::COMM_WORLD.Barrier();
+    }
+
+    double ensemble_workspace::g( double z ){
+        if( z >= 1.0/efficient_a && z <= efficient_a )
+            return 1.0 / sqrt(z);
+        else
+            return 0.0;
+    }
+
+    double ensemble_workspace::gz(){
+
+        double z;
+        double zmin = 1./efficient_a;
+        double zmax = efficient_a;
+        double gmax = g(zmin);
+        double gx;
+
+        do{
+            z     = gsl_ran_flat(rand_seed, zmin, zmax);
+            gx    = gsl_ran_flat(rand_seed,  0.0, gmax);
+        } while( gx > g(z) );
+
+        return z;
+    }
+
     void ensemble_workspace::do_sampling(){
 
         int burnin_loops, sampling_loops;
@@ -156,41 +191,6 @@ namespace imcmc{
         }
     }
 
-    void ensemble_workspace::set_efficient_a( double a ){
-
-        if( a <= 0 )
-            imcmc_runtime_error("\nensemble_workspace::set_efficient_a():\n a must be a positive number !");
-        else if( a < 1.0 )
-            efficient_a = 1.0 / a;
-        else
-            efficient_a = a;
-
-        MPI::COMM_WORLD.Barrier();
-    }
-
-    double ensemble_workspace::g( double z ){
-        if( z >= 1.0/efficient_a && z <= efficient_a )
-            return 1.0 / sqrt(z);
-        else
-            return 0.0;
-    }
-
-    double ensemble_workspace::gz(){
-
-        double z;
-        double zmin = 1./efficient_a;
-        double zmax = efficient_a;
-        double gmax = g(zmin);
-        double gx;
-
-        do{
-            z     = gsl_ran_flat(rand_seed, zmin, zmax);
-            gx    = gsl_ran_flat(rand_seed,  0.0, gmax);
-        } while( gx > g(z) );
-
-        return z;
-    }
-
 
     int ensemble_workspace::update_a_walker( imcmc_double& full_param_temp, int current_id, int rand_id ){
 
@@ -211,34 +211,40 @@ namespace imcmc{
 
             double lnpost_current   = walker["LnPost"][current_id];
             double lnpost_new       = likelihood_eval( full_param_temp, lndet, chisq );
-            double dlnpost          = lnpost_new - lnpost_current;
-            double alpha            = GSL_MIN( 1., pow(z, sampling_param_num-1)*exp(dlnpost) );
-            double ran              = gsl_ran_flat(rand_seed, 0, 1);
 
-            if( ran <= alpha ){
+            if( likelihood_state.this_like_is_ok ){
 
-                state = 1;
+                double dlnpost      = lnpost_new - lnpost_current;
+                double alpha        = GSL_MIN( 1., pow(z, sampling_param_num-1)*exp(dlnpost) );
+                double ran          = gsl_ran_flat(rand_seed, 0, 1);
 
-                walker["LnPost"][current_id]    = lnpost_new;
-                walker["LnDet"][current_id]     = lndet;
-                walker["Chisq"][current_id]     = chisq;
+                if( ran <= alpha ){
 
-                imcmc_vector_string_iterator it;
+                    state = 1;
 
-                it = sampling_param_name.begin();
-                while( it != sampling_param_name.end() ){
-                    walker[*it][current_id] = full_param_temp[*it];
-                    ++it;
+                    walker["LnPost"][current_id]    = lnpost_new;
+                    walker["LnDet"][current_id]     = lndet;
+                    walker["Chisq"][current_id]     = chisq;
+
+                    imcmc_vector_string_iterator it;
+
+                    it = sampling_param_name.begin();
+                    while( it != sampling_param_name.end() ){
+                        walker[*it][current_id] = full_param_temp[*it];
+                        ++it;
+                    }
+
+                    it = derived_param_name.begin();
+                    while( it != derived_param_name.end() ){
+                        walker[*it][current_id] = full_param_temp[*it];
+                        ++it;
+                    }
                 }
-
-                it = derived_param_name.begin();
-                while( it != derived_param_name.end() ){
-                    walker[*it][current_id] = full_param_temp[*it];
-                    ++it;
-                }
+                else
+                    state = 0;  //  nothing to do ...
             }
-            else
-                state = 0;  //  nothing to do ...
+            else    //  if state.this_like_is_ok = false, then this
+                state = 0;
         }
 
         return state;

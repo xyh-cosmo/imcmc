@@ -39,8 +39,16 @@
     #define _IMCMC_MESG_LENGTH_ 1024
 #endif
 
+//#ifndef _IMCMC_INF_
+//    #define _IMCMC_INF_ 1.0E99
+//#endif
+
 #ifndef _IMCMC_INF_
-    #define _IMCMC_INF_ 1.0E99
+    #define _IMCMC_INF_ GSL_POSINF
+#endif
+
+#ifndef _IMCMC_NEGINF_
+    #define _IMCMC_NEGINF_ GSL_POSINF
 #endif
 
 namespace imcmc{
@@ -78,6 +86,7 @@ namespace imcmc{
     // };
 
     struct likelihood_{
+
         void   *data;
         void   *model;
 
