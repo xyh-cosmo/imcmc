@@ -632,12 +632,9 @@ namespace imcmc{
             //  just give the walkers some reasonable values...
             //  0.25 can be replaced by other values whoes absolute values are less than 0.5
             //  ==============================================================================
-//                walker[*it][i]      = gsl_ran_flat( rand_seed,
-//                                                    mean_value - 0.5*init_ball_radius*value_width,
-//                                                    mean_value + 0.5*init_ball_radius*value_width );
-
-//  debug
-                walker[*it][i]      = gsl_ran_flat( rand_seed, -0.1, 0.1 );
+                walker[*it][i]      = gsl_ran_flat( rand_seed,
+                                                    mean_value - 0.5*init_ball_radius*value_width,
+                                                    mean_value + 0.5*init_ball_radius*value_width );
 
                 full_param_temp[*it] = walker[*it][i];
                 ++it;

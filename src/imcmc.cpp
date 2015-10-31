@@ -10,11 +10,10 @@ namespace imcmc{
         prompt_error    = true;
 
         if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
-            std::cout << "\n ====================================================================\n"
+            std::cout << "\n =================== Likelihood State Initialization ===================\n"
                       << " ---> imcmc_likelihood_state.this_like_is_ok  initialized to \'true\' \n"
                       << " ---> imcmc_likelihood_state.stop_on_error    initialized to \'false\'\n"
-                      << " ---> imcmc_likelihood_state.prompt_warning   initialized to \'false\'\n"
-                      << " ---> imcmc_likelihood_state.prompt_error     initialized to \'true\'\n\n";
+                      << " ---> imcmc_likelihood_state.prompt_warning   initialized to \'false\'\n";
         }
     }
 
