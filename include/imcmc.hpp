@@ -76,6 +76,7 @@ namespace imcmc{
         void what_happened();
 
         imcmc_likelihood_state();
+		void init();
     };
 
     typedef struct imcmc_likelihood_state istate;

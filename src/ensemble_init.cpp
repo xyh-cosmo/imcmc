@@ -34,6 +34,8 @@ namespace imcmc{
                         << "  #  =======================================================\n";
         }
 
+		likelihood_state.init();
+
         srand(time(NULL));
 
         config_file = paramfile;
