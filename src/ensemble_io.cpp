@@ -4,6 +4,8 @@ namespace imcmc{
 
     void ensemble_workspace::write_walkers( std::ofstream& of ){
 
+		std::cout << "# ---> saving walkers into chain files ...\n";
+
         imcmc_vector_string_iterator it;
 
         if( use_cosmomc_format ){
@@ -17,7 +19,7 @@ namespace imcmc{
                 else if( accept[i] == 1 ){
                 //  this old walker has been replaced by a new one, so we have to output it and update walker_io
 
-                    if( walker_io["Chisq"][i] < _IMCMC_CHISQ_MAX_ ){
+                    if( walker_io["Chisq"][i] < _IMCMC_CHISQ_MAX_ ){ // if chisq is too large, then just ignore this sampling point (not output)
 
                         of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
                             << walker_io["Weight"][i] << ""
