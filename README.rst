@@ -2,7 +2,7 @@
 imcmc
 =====
 :imcmc: A C++ implemented MCMC library
-:Version: 0.1.0
+:Version: 0.1.1
 :Author: Youhua Xu
 :Homepage: http://lss.bao.ac.cn/~xyh/
 
@@ -14,6 +14,10 @@ library, for example the classical Metropolis-Hastings and Hamiltonian Monte Car
 
 Updates
 =========
+Oct-31-2015:
+------------
+1) Bug-fixed inside update_a_walker(***)
+
 Oct-28-2015: 
 ---------------
 1) Added likelihood error handling option, i.e., whether stop when an error happends inside likelihood function; and now the sampler support writing derived parameters into chain files, by design, these derived parameters are to be calculated inside the likelihood functions, so that's up to the users. 'gaussian.cpp' in examples shows to use derived parameters.
