@@ -14,6 +14,7 @@ namespace imcmc{
         sample_step         = 0;
         total_accepts       = 0;
         total_rejects       = 0;
+        total_errors        = 0;
         sampling_param_num  = 0;
         full_param_num      = 0;
         chain_root          = "";

@@ -39,21 +39,12 @@
     #define _IMCMC_MESG_LENGTH_ 1024
 #endif
 
-//#ifndef _IMCMC_INF_
-//    #define _IMCMC_INF_ 1.0E99
-//#endif
-
-#ifndef _IMCMC_INF_
-    #define _IMCMC_INF_ GSL_POSINF
+#ifndef _IMCMC_LNPOST_MAX_
+    #define _IMCMC_LNPOST_MAX_ -1.0E50
 #endif
 
-#ifndef _IMCMC_NEGINF_
-    #define _IMCMC_NEGINF_ GSL_POSINF
-#endif
-
-//	when chisq is too large, usually means that this sampling point should not be used. 
 #ifndef _IMCMC_CHISQ_MAX_
-	#define _IMCMC_CHISQ_MAX_ 1.0E20
+	#define _IMCMC_CHISQ_MAX_ 1.0E50
 #endif
 
 
@@ -76,6 +67,8 @@ namespace imcmc{
     struct imcmc_likelihood_state{  //  this will be used by user, so there is no suffix '_'
         bool this_like_is_ok;
         bool stop_on_error;
+        bool prompt_warning;
+        bool prompt_error;
         char errmesg[_IMCMC_MESG_LENGTH_];
 
         void store_mesg( std::string& why );

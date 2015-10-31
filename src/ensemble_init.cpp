@@ -6,6 +6,18 @@ using namespace imcmc::parser;
 
 namespace imcmc{
 
+    void ensemble_workspace::set_efficient_a( double a ){
+
+        if( a <= 0 )
+            imcmc_runtime_error("\nensemble_workspace::set_efficient_a():\n a must be a positive number !");
+        else if( a < 1.0 )
+            efficient_a = 1.0 / a;
+        else
+            efficient_a = a;
+
+        MPI::COMM_WORLD.Barrier();
+    }
+
     void ensemble_workspace::init( std::string paramfile ){
 
         rank        = MPI::COMM_WORLD.Get_rank();
@@ -51,6 +63,7 @@ namespace imcmc{
 
             accept  = new int[walker_num];
             error   = new int[walker_num];
+
         }
         else
             imcmc_runtime_error("\'walker_num\' not found in:" + paramfile + " !");
@@ -98,9 +111,10 @@ namespace imcmc{
         if( Read::Has_Key_in_File( paramfile, "init_ball_radius" ) ){
             Read::Read_Value_from_File(paramfile, "init_ball_radius", init_ball_radius);
 
-            if( init_ball_radius <=0.0 || init_ball_radius >= 0.9999 ){
+            if( init_ball_radius <=0.0 || init_ball_radius >= 0.999999 ){
                 // imcmc_runtime_error("init_ball_radius should be greater than 0.0 and samller than 1.0");
                 imcmc_runtime_warning("init_ball_radius should be greater than 0.0 and samller than 1.0, so I reset it to default value 0.5");
+                init_ball_radius = 0.5;
             }
         }
         else{
@@ -110,6 +124,12 @@ namespace imcmc{
         if( Read::Has_Key_in_File( paramfile, "chain_root" ) ){
             Read::Read_Value_from_File(paramfile, "chain_root", chain_root);
             param_limits = chain_root + ".ranges";
+
+            if( rank == ROOT_RANK ){
+                std::string settings = chain_root + ".settings";
+                ensemble_used_settings.open( settings.c_str() );    //  will be closed at the end.
+                std::cout << " ===> " << settings << " has been opened to save used settings\n";
+            }
         }
 
         if( Read::Has_Key_in_File( paramfile, "use_cosmomc_format" ) ){
@@ -129,6 +149,13 @@ namespace imcmc{
             
             if( likelihood_state.stop_on_error )
                 imcmc_runtime_warning("your sampling will stop when error(s) encountered inside likelihoods!");
+        }
+
+        if( Read::Has_Key_in_File( paramfile, "prompt_warning") ){
+            likelihood_state.prompt_warning = Read::Read_Bool_from_File(paramfile, "prompt_warning");
+
+            if( !likelihood_state.prompt_warning )
+                imcmc_runtime_warning("you choose to ignore likelihood warning messages ...");
         }
 
     //  setup seeds for the random number generators
@@ -182,6 +209,45 @@ namespace imcmc{
         init_walkers();
 
         walker_initialized = true;
+
+        MPI::COMM_WORLD.Barrier();
+
+    //  save used settings:
+        if( rank == ROOT_RANK ){
+
+            ensemble_used_settings << " # ========================= used settings ======================\n";
+            ensemble_used_settings << std::setw(50) << std::left << " chain_root" << " = " << chain_root << "\n";
+            ensemble_used_settings << std::setw(50) << std::left << " chain_num" << " = " << chain_num << "\n";
+            ensemble_used_settings << std::setw(50) << std::left << " walker_num" << " = " << walker_num << "\n";
+            ensemble_used_settings << std::setw(50) << std::left << " burnin_step" << " = " << burnin_step << "\n";
+            ensemble_used_settings << std::setw(50) << std::left << " sample_step" << " = " << sample_step << "\n";
+            ensemble_used_settings << std::setw(50) << std::left << " skip_step" << " = " << skip_step << "\n";
+            ensemble_used_settings << std::setw(50) << std::left << " efficient_a" << " = " << efficient_a << "\n";
+            ensemble_used_settings << std::setw(50) << std::left << " init_ball_radius" << " = " << init_ball_radius << "\n";
+
+            if( use_cosmomc_format )
+                ensemble_used_settings << std::setw(50) << std::left << " used_cosmomc_format" << " = true\n";
+            else
+                ensemble_used_settings << std::setw(50) << std::left << " used_cosmomc_format" << " = false\n";
+
+            if( save_burned_ashes )
+                ensemble_used_settings << std::setw(50) << std::left << " save_burned_ashes" << " = true\n";
+            else
+                ensemble_used_settings << std::setw(50) << std::left << " save_burned_ashes" << " = false\n";
+
+            if( likelihood_state.stop_on_error )
+                ensemble_used_settings << std::setw(50) << std::left << " stop_on_error" << " = true\n";
+            else
+                ensemble_used_settings << std::setw(50) << std::left << " stop_on_error" << " = false\n";
+
+            if( write_chain_header )
+                ensemble_used_settings << std::setw(50) << std::left << " write_chain_header" << " = true\n";
+            else
+                ensemble_used_settings << std::setw(50) << std::left << " write_chain_header" << " = false\n";
+
+            ensemble_used_settings.close();
+            std::cout << " ===> seetings have been saved\n\n";
+        }
 
         MPI::COMM_WORLD.Barrier();
     }
@@ -273,7 +339,8 @@ namespace imcmc{
             ++it;
         }
 
-        param_limits_os.close();
+        if( rank == ROOT_RANK )
+            param_limits_os.close();
 
         //  add derived parameters into full_param
         imcmc_double_iterator itd = derived_param.begin();
@@ -560,9 +627,12 @@ namespace imcmc{
             //  just give the walkers some reasonable values...
             //  0.25 can be replaced by other values whoes absolute values are less than 0.5
             //  ==============================================================================
-                walker[*it][i]      = gsl_ran_flat( rand_seed,
-                                                    mean_value - 0.25*value_width,
-                                                    mean_value + 0.25*value_width );
+//                walker[*it][i]      = gsl_ran_flat( rand_seed,
+//                                                    mean_value - 0.5*init_ball_radius*value_width,
+//                                                    mean_value + 0.5*init_ball_radius*value_width );
+
+//  debug
+                walker[*it][i]      = gsl_ran_flat( rand_seed, -0.1, 0.1 );
 
                 full_param_temp[*it] = walker[*it][i];
                 ++it;
@@ -759,8 +829,8 @@ namespace imcmc{
                 double value_width  = full_param_max[*it] - full_param_min[*it];
 
                 walker[*it][i]      = gsl_ran_flat( rand_seed,
-                                                    mean_value - 0.1*value_width,
-                                                    mean_value + 0.1*value_width );
+                                                    mean_value - 0.5*init_ball_radius*value_width,
+                                                    mean_value + 0.5*init_ball_radius*value_width );
 
                 full_param_temp[*it] = walker[*it][i];
                 ++it;

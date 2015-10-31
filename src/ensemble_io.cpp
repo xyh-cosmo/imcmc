@@ -16,38 +16,23 @@ namespace imcmc{
                 //  this old walker stays where it was, so we just increase its weight by 1.0
                     walker_io["Weight"][i] += 1.0;
                 }
-                else if( accept[i] == 1 ){
-                //  this old walker has been replaced by a new one, so we have to output it and update walker_io
+                else if( accept[i] == 1 ){ //  this old walker has been replaced by a new one, so we have to output it and update walker_io
 
-                    if( walker_io["Chisq"][i] < _IMCMC_CHISQ_MAX_ ){ // if chisq is too large, then just ignore this sampling point (not output)
+                    of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
+                        << walker_io["Weight"][i] << ""
+                        << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
+                        << walker_io["Chisq"][i] << "";
 
-                        of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
-                            << walker_io["Weight"][i] << ""
-                            << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
-                            << walker_io["Chisq"][i] << "";
+                    it = output_param_name.begin();
 
-                        it = output_param_name.begin();
+                    while( it != output_param_name.end() ){
 
-                        while( it != output_param_name.end() ){
-
-                            of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
-                                << walker_io[*it][i] << "";
-
-                        //  update to new walker
-                            walker_io[*it][i] = walker[*it][i];
-                            ++it;
-                        }
-
-                        of << "\n";
+                        of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase << walker_io[*it][i] << "";
+                        walker_io[*it][i] = walker[*it][i]; //  update to new walker
+                        ++it;
                     }
-/*
-					else{
-						of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
-							<< 0.0 << "" //	set weight to zero.
-							<< std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
-							<< walker_io["Chisq"][i] << "";
-					}
-*/
+
+                    of << "\n";
 
                 //  update weight, lnpost, lndet and chisq
                     walker_io["Weight"][i] = 1.0;  //  reset to 1.0
@@ -60,7 +45,7 @@ namespace imcmc{
                 }
             }
         }
-        else{   //  the following needs update
+        else{   //  !!!!!!!!!!! the following needs update !!!!!!!!!!!!!!!!!
 
             for( int i=0; i<walker_num; ++i ){
 

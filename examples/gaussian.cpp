@@ -41,21 +41,29 @@ double TestLike( imcmc_double&  full_param,
                  void*          data, 
                  istate&        state ){
 
+    lndet = chisq = 0;
+
+    Gaussian *g = static_cast<Gaussian *>(model);
+
     full_param["x+y"] = full_param["x"] + full_param["y"];  //  new added for test derived parameters
 
     // state.this_like_is_ok = true;
     // state.store_mesg("nothing happened!");
 
     //	how to pass error information to imcmc::ensemble_workspace
-    if( full_param["x"] < -5 ){
+    if( full_param["x"] < -5.0 || full_param["x"] > 5.0 ){
+
     	state.this_like_is_ok = false;
-    	state.store_mesg("   x is less than -5, this should not happen!");
+    	state.store_mesg("   fabs(x) is larger than 3, this should not happen!");
+
+        chisq = _IMCMC_CHISQ_MAX_;
+    }
+    else{
+        g->Update(full_param);  //  now the model is workable
+
+        chisq = g->GD();
     }
 
-    Gaussian *g = static_cast<Gaussian *>(model);
-    g->Update(full_param);  //  now the model is workable
-
-    chisq = g->GD();
     return -0.5*chisq;
 }
 

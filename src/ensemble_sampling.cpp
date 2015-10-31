@@ -5,18 +5,6 @@ using namespace imcmc::parser;
 
 namespace imcmc{
 
-    void ensemble_workspace::set_efficient_a( double a ){
-
-        if( a <= 0 )
-            imcmc_runtime_error("\nensemble_workspace::set_efficient_a():\n a must be a positive number !");
-        else if( a < 1.0 )
-            efficient_a = 1.0 / a;
-        else
-            efficient_a = a;
-
-        MPI::COMM_WORLD.Barrier();
-    }
-
     double ensemble_workspace::g( double z ){
         if( z >= 1.0/efficient_a && z <= efficient_a )
             return 1.0 / sqrt(z);
@@ -206,6 +194,8 @@ namespace imcmc{
         int state = 1;
         double lndet, chisq;
 
+        likelihood_state.this_like_is_ok = true; //  MUST frist set to true
+
         if( !prior(full_param_temp) )    //  run out of prior
             state = 0;
         else{
@@ -227,6 +217,10 @@ namespace imcmc{
                     walker["LnDet"][current_id]     = lndet;
                     walker["Chisq"][current_id]     = chisq;
 
+                //  =========================================================
+                //  new position has been accepted, so update the parameters 
+                //  (both MCMC pars and derived ones)
+                //  =========================================================
                     imcmc_vector_string_iterator it;
 
                     it = sampling_param_name.begin();
@@ -244,7 +238,7 @@ namespace imcmc{
                 else
                     state = 0;  //  nothing to do ...
             }
-            else    //  if state.this_like_is_ok = false, then this
+            else
                 state = 0;
         }
 
@@ -272,7 +266,12 @@ namespace imcmc{
 
                 accept[i] = update_a_walker( full_param_temp, i, id );
 
-                if( likelihood_state.this_like_is_ok )
+//                if( likelihood_state.this_like_is_ok )
+//                    error[i] = 0;
+//                else
+//                    error[i] = 1;
+
+                if( accept[i] == 1 )
                     error[i] = 0;
                 else
                     error[i] = 1;
@@ -349,6 +348,7 @@ namespace imcmc{
                 //  start to update walkers
                 //  update the first half
                 for( int i=id_min[rank]; i<=id_max[rank]; ++i ){
+
                     accept[i] = update_a_walker( full_param_temp, i, walker_id[i] );
 
                     if( likelihood_state.this_like_is_ok )
@@ -391,10 +391,10 @@ namespace imcmc{
                                                 recvcounts, displace, MPI::DOUBLE,
                                                 ROOT_RANK );
 
-                    MPI::COMM_WORLD.Bcast(  walker[*it],
-                                            walker_num,
-                                            MPI::DOUBLE,
-                                            ROOT_RANK    );
+//                    MPI::COMM_WORLD.Bcast(  walker[*it],
+//                                            walker_num,
+//                                            MPI::DOUBLE,
+//                                            ROOT_RANK    );
 
                     ++it;
                 }
@@ -458,6 +458,7 @@ namespace imcmc{
                     displace[i] += walker_num_half;
 
                 for( int i=id_min[rank]; i<=id_max[rank]; ++i ){
+
                     accept[i] = update_a_walker( full_param_temp, i, walker_id[i] );
 
                     if( likelihood_state.this_like_is_ok )
@@ -501,10 +502,10 @@ namespace imcmc{
                                                 recvcounts, displace, MPI::DOUBLE,
                                                 ROOT_RANK );
 
-                    MPI::COMM_WORLD.Bcast(  walker[*it],
-                                            walker_num,
-                                            MPI::DOUBLE,
-                                            ROOT_RANK    );
+//                    MPI::COMM_WORLD.Bcast(  walker[*it],
+//                                            walker_num,
+//                                            MPI::DOUBLE,
+//                                            ROOT_RANK    );
 
                     ++it;
                 }
@@ -602,10 +603,10 @@ namespace imcmc{
                                             1, MPI::DOUBLE,
                                             ROOT_RANK );
 
-                    MPI::COMM_WORLD.Bcast(  walker[*it],
-                                            walker_num,
-                                            MPI::DOUBLE,
-                                            ROOT_RANK    );
+//                    MPI::COMM_WORLD.Bcast(  walker[*it],
+//                                            walker_num,
+//                                            MPI::DOUBLE,
+//                                            ROOT_RANK    );
                     ++it;
                 }
 
@@ -688,7 +689,7 @@ namespace imcmc{
                 }
 
             //  ==============================
-            //  collecting sampling parameters
+            //  collecting derived parameters
             //  ==============================
                 it = derived_param_name.begin();
 
@@ -700,10 +701,10 @@ namespace imcmc{
                                             1, MPI::DOUBLE,
                                             ROOT_RANK );
 
-                    MPI::COMM_WORLD.Bcast(  walker[*it],
-                                            walker_num,
-                                            MPI::DOUBLE,
-                                            ROOT_RANK    );
+//                    MPI::COMM_WORLD.Bcast(  walker[*it],
+//                                            walker_num,
+//                                            MPI::DOUBLE,
+//                                            ROOT_RANK    );
 
                     ++it;
                 }
@@ -762,11 +763,14 @@ namespace imcmc{
             delete[] walker_id;
         }
 
+        //  =================================
+        //  breifly summarize the samplings
+        //  =================================
+
         if( rank == ROOT_RANK ){
 
-            total_errors = 0;
-
             for( int i=0; i<walker_num; ++i ){
+
                 accept_tot += accept[i];
                 error_tot += error[i];
 

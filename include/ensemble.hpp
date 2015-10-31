@@ -49,6 +49,12 @@ namespace imcmc{
 
             std::string config_file;
 
+            std::ofstream   ensemble_used_settings; // to save used settings
+//            void save_settings( std::string& iterm, std::string& value );
+//            void save_settings( std::string& iterm, double& value );
+//            void save_settings( std::string& iterm, int& value );
+//            void save_settings( std::string& iterm, bool& value );
+
             //    Parallel mode: 0, 1, 2
             //    0: serial version
             //    1: parallel version with small number of cores
@@ -127,16 +133,11 @@ namespace imcmc{
             void init_walkers();        //    initialize the walkers.
             void reset_walkers();       //    reset the walkers to a random state.
 
-            //    =======================================================================================================================
-            //    add likelihood functions.  If you have many likelihoods functions, which share some common parameters, it'd better to
-            //    combine those likelihood functions into a BIGGER one, and adding some flags to control which likelihood functions will
-            //    be used.  This is quite common when someone is trying to constraining model parameters using different combinations of
-            //    data sets.
-
-//            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void* ),
-//                                 imcmc_vector_string modelparam,
-//                                 void                *model,
-//                                 void                *data );
+        //    =======================================================================================================================
+        //    add likelihood functions.  If you have many likelihoods functions, which share some common parameters, it'd better to
+        //    combine those likelihood functions into a BIGGER one, and adding some flags to control which likelihood functions will
+        //    be used.  This is quite common when someone is trying to constraining model parameters using different combinations of
+        //    data sets.
 
             void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
                                  imcmc_vector_string modelparam,

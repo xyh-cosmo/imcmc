@@ -6,6 +6,16 @@ namespace imcmc{
     imcmc_likelihood_state::imcmc_likelihood_state(){
         this_like_is_ok = true;
         stop_on_error   = false;
+        prompt_warning  = false;
+        prompt_error    = true;
+
+        if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+            std::cout << "\n ====================================================================\n"
+                      << " ---> imcmc_likelihood_state.this_like_is_ok  initialized to \'true\' \n"
+                      << " ---> imcmc_likelihood_state.stop_on_error    initialized to \'false\'\n"
+                      << " ---> imcmc_likelihood_state.prompt_warning   initialized to \'false\'\n"
+                      << " ---> imcmc_likelihood_state.prompt_error     initialized to \'true\'\n\n";
+        }
     }
 
     void imcmc_likelihood_state::store_mesg( std::string& why ){
@@ -17,6 +27,7 @@ namespace imcmc{
     }
 
     void imcmc_likelihood_state::what_happened(){
+
         int rank = MPI::COMM_WORLD.Get_rank();
 
         if( stop_on_error ){
@@ -27,7 +38,7 @@ namespace imcmc{
 
             throw std::runtime_error(" #  ---> Likelihood Error Ecountered\n");
         }
-        else{
+        else if( prompt_warning ){
             std::cout << "\n #  ===================  Likelihood Warning  ================== #\n"
                       << " >  we captured the following Warning @ rank " << rank << ":\n"
                       << " " << errmesg << "\n"
