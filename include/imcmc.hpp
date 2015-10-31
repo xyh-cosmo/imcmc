@@ -40,7 +40,7 @@
 #endif
 
 #ifndef _IMCMC_LNPOST_MAX_
-    #define _IMCMC_LNPOST_MAX_ -1.0E50
+    #define _IMCMC_LNPOST_MIN_ -1.0E50
 #endif
 
 #ifndef _IMCMC_CHISQ_MAX_

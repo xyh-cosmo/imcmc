@@ -640,6 +640,8 @@ namespace imcmc{
                 ++it;
             }
 
+            //  if error happens during initialization, LnPost will be _IMCMC_LNPOST_MIN_
+
             walker["LnPost"][i] = likelihood_eval( full_param_temp, lndet, chisq );
             walker["LnDet"][i]  = lndet;
             walker["Chisq"][i]  = chisq;

@@ -110,7 +110,7 @@ namespace imcmc{
                 else{
                     likelihood_state.what_happened(); // still going on the sampling, but will print the error information
                     chisq   = _IMCMC_CHISQ_MAX_;
-                    ln_post = _IMCMC_LNPOST_MAX_;
+                    ln_post = _IMCMC_LNPOST_MIN_;
                 }
 
                 break;  //  jump out the loop
