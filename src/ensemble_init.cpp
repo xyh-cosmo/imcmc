@@ -206,14 +206,6 @@ namespace imcmc{
         delete[] random_seeds;
         delete[] first_number;
 
-        init_param();
-
-        init_walkers();
-
-        walker_initialized = true;
-
-        MPI::COMM_WORLD.Barrier();
-
     //  save used settings:
         if( rank == ROOT_RANK ){
 
@@ -257,6 +249,14 @@ namespace imcmc{
         }
 
         MPI::COMM_WORLD.Barrier();
+
+		init_param();
+
+		init_walkers();
+
+		walker_initialized = true;
+
+		MPI::COMM_WORLD.Barrier();
     }
 
 
