@@ -240,6 +240,11 @@ namespace imcmc{
             else
                 ensemble_used_settings << std::setw(50) << std::left << " stop_on_error" << " = false\n";
 
+            if( likelihood_state.prompt_warning )
+                ensemble_used_settings << std::setw(50) << std::left << " prompt_warning" << " = true\n";
+            else
+                ensemble_used_settings << std::setw(50) << std::left << " prompt_warning" << " = false\n";
+
             if( write_chain_header )
                 ensemble_used_settings << std::setw(50) << std::left << " write_chain_header" << " = true\n";
             else
