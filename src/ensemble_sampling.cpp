@@ -266,12 +266,7 @@ namespace imcmc{
 
                 accept[i] = update_a_walker( full_param_temp, i, id );
 
-//                if( likelihood_state.this_like_is_ok )
-//                    error[i] = 0;
-//                else
-//                    error[i] = 1;
-
-                if( accept[i] == 1 )
+                if( likelihood_state.this_like_is_ok )
                     error[i] = 0;
                 else
                     error[i] = 1;

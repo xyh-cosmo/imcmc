@@ -54,7 +54,7 @@ double TestLike( imcmc_double&  full_param,
     if( full_param["x"] < -5.0 || full_param["x"] > 5.0 ){
 
     	state.this_like_is_ok = false;
-    	state.store_mesg("   fabs(x) is larger than 3, this should not happen!");
+    	state.store_mesg("   fabs(x) is larger than 5, this should not happen!");
 
         chisq = _IMCMC_CHISQ_MAX_;
     }

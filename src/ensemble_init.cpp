@@ -620,6 +620,9 @@ namespace imcmc{
 
         for(int i=i_start; i<=i_end; ++i){
 
+			std::cout << " # ====> RANK: " << rank << "  initializing " << i 
+					  << " -th walker, [ i_start = " << i_start << ", i_end = " << i_end << "]\n";
+
             double lndet, chisq;
 
             //  initialize full_param randomly. Note that full_param includes sampling parameters, fixed parameters and derived parameters
@@ -651,9 +654,14 @@ namespace imcmc{
             if( likelihood_state.this_like_is_ok ){
                 error[i] = 0;
             }
-            else
+            else{
                 error[i] = 1;
+				std::cout << " # ++++> RANK: " << rank << "  error happened when initializing walker[" 
+						  << i << "],  [ i_start = " << i_start << ", i_end = " << i_end << "]\n";
+			}
         }
+
+		MPI::COMM_WORLD.Barrier();
 
         //  ===================================
         //  collecting all sampling parameters
