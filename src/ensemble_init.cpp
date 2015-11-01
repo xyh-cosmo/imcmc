@@ -620,7 +620,8 @@ namespace imcmc{
 
         for(int i=i_start; i<=i_end; ++i){
 
-			std::cout << " # ====> RANK: " << std::setw(4) << std::right << rank << " initializing " << i 
+			std::cout << " # ==> RANK: " << std::setw(4) << std::right << rank 
+					  << " initializing " << std::setw(4) << std::right << i 
 					  << " -th walker, [ i_start = " << std::setw(4) << std::right << i_start 
                       << ", i_end = " << std::setw(4) << std::right << i_end << "]\n";
 
