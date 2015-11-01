@@ -488,7 +488,7 @@ namespace imcmc{
 			outfile << "# =========================================\n";
 
 		//	derived_params_width >= params_width
-            outfile << std::setw(derived_params_width) << std::left <<"params:" << " "
+            outfile << std::setw(derived_params_width) << std::left <<" params:" << " "
                     << std::setw(15) << std::right << "min-value" << " "
                     << std::setw(15) << std::right << "max-value" << " "
                     << std::setw(15) << std::right << "do sampling?" << "\n";
@@ -499,7 +499,7 @@ namespace imcmc{
 
                 if( (full_param_min.count(it->first) == 1) && (full_param_max.count(it->first) == 1) ){
 
-                    outfile << std::setw(derived_params_width) << std::left << it->first << " "
+                    outfile << " " << std::setw(derived_params_width) << std::left << it->first << " "
                             << std::setw(15) << std::right << full_param_min[it->first] << " "
                             << std::setw(15) << std::right << full_param_max[it->first] << " ";
 
@@ -510,7 +510,7 @@ namespace imcmc{
                 }
                 else{
 
-                    outfile << std::setw(derived_params_width) << std::left << it->first << " "
+                    outfile << " " << std::setw(derived_params_width) << std::left << it->first << " "
                             << std::setw(15) << std::right << "--" << " "
                             << std::setw(15) << std::right << "--" << " ";
 
