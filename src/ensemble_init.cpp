@@ -123,6 +123,10 @@ namespace imcmc{
             init_ball_radius    = 0.5;  //  set to default value 0.5
         }
 
+        if( Read::Has_Key_in_File( paramfile, "start_from_fiducial" ) ){
+            start_from_fiducial = Read::Read_Bool_from_File(paramfile, "start_from_fiducial");
+        }
+
         if( Read::Has_Key_in_File( paramfile, "chain_root" ) ){
             Read::Read_Value_from_File(paramfile, "chain_root", chain_root);
             param_limits = chain_root + ".ranges";
@@ -209,40 +213,47 @@ namespace imcmc{
     //  save used settings:
         if( rank == ROOT_RANK ){
 
+            int iterm_width = 40;
+
             ensemble_used_settings << " # ========================= used settings ======================\n";
-            ensemble_used_settings << std::setw(50) << std::left << " chain_root" << " = " << chain_root << "\n";
-            ensemble_used_settings << std::setw(50) << std::left << " chain_num" << " = " << chain_num << "\n";
-            ensemble_used_settings << std::setw(50) << std::left << " walker_num" << " = " << walker_num << "\n";
-            ensemble_used_settings << std::setw(50) << std::left << " burnin_step" << " = " << burnin_step << "\n";
-            ensemble_used_settings << std::setw(50) << std::left << " sample_step" << " = " << sample_step << "\n";
-            ensemble_used_settings << std::setw(50) << std::left << " skip_step" << " = " << skip_step << "\n";
-            ensemble_used_settings << std::setw(50) << std::left << " efficient_a" << " = " << efficient_a << "\n";
-            ensemble_used_settings << std::setw(50) << std::left << " init_ball_radius" << " = " << init_ball_radius << "\n";
+            ensemble_used_settings << std::setw(iterm_width) << std::left << " chain_root" << " = " << chain_root << "\n";
+            ensemble_used_settings << std::setw(iterm_width) << std::left << " chain_num" << " = " << chain_num << "\n";
+            ensemble_used_settings << std::setw(iterm_width) << std::left << " walker_num" << " = " << walker_num << "\n";
+            ensemble_used_settings << std::setw(iterm_width) << std::left << " burnin_step" << " = " << burnin_step << "\n";
+            ensemble_used_settings << std::setw(iterm_width) << std::left << " sample_step" << " = " << sample_step << "\n";
+            ensemble_used_settings << std::setw(iterm_width) << std::left << " skip_step" << " = " << skip_step << "\n";
+            ensemble_used_settings << std::setw(iterm_width) << std::left << " efficient_a" << " = " << efficient_a << "\n";
+            ensemble_used_settings << std::setw(iterm_width) << std::left << " init_ball_radius" << " = " << init_ball_radius << "\n";
+
+            if( start_from_fiducial )
+                ensemble_used_settings << std::setw(iterm_width) << std::left << " start_from_fiducial" << " = true\n";
+            else
+                ensemble_used_settings << std::setw(iterm_width) << std::left << " start_from_fiducial" << " = false\n";
 
             if( use_cosmomc_format )
-                ensemble_used_settings << std::setw(50) << std::left << " used_cosmomc_format" << " = true\n";
+                ensemble_used_settings << std::setw(iterm_width) << std::left << " used_cosmomc_format" << " = true\n";
             else
-                ensemble_used_settings << std::setw(50) << std::left << " used_cosmomc_format" << " = false\n";
+                ensemble_used_settings << std::setw(iterm_width) << std::left << " used_cosmomc_format" << " = false\n";
 
             if( save_burned_ashes )
-                ensemble_used_settings << std::setw(50) << std::left << " save_burned_ashes" << " = true\n";
+                ensemble_used_settings << std::setw(iterm_width) << std::left << " save_burned_ashes" << " = true\n";
             else
-                ensemble_used_settings << std::setw(50) << std::left << " save_burned_ashes" << " = false\n";
+                ensemble_used_settings << std::setw(iterm_width) << std::left << " save_burned_ashes" << " = false\n";
 
             if( likelihood_state.stop_on_error )
-                ensemble_used_settings << std::setw(50) << std::left << " stop_on_error" << " = true\n";
+                ensemble_used_settings << std::setw(iterm_width) << std::left << " stop_on_error" << " = true\n";
             else
-                ensemble_used_settings << std::setw(50) << std::left << " stop_on_error" << " = false\n";
+                ensemble_used_settings << std::setw(iterm_width) << std::left << " stop_on_error" << " = false\n";
 
             if( likelihood_state.prompt_warning )
-                ensemble_used_settings << std::setw(50) << std::left << " prompt_warning" << " = true\n";
+                ensemble_used_settings << std::setw(iterm_width) << std::left << " prompt_warning" << " = true\n";
             else
-                ensemble_used_settings << std::setw(50) << std::left << " prompt_warning" << " = false\n";
+                ensemble_used_settings << std::setw(iterm_width) << std::left << " prompt_warning" << " = false\n";
 
             if( write_chain_header )
-                ensemble_used_settings << std::setw(50) << std::left << " write_chain_header" << " = true\n";
+                ensemble_used_settings << std::setw(iterm_width) << std::left << " write_chain_header" << " = true\n";
             else
-                ensemble_used_settings << std::setw(50) << std::left << " write_chain_header" << " = false\n";
+                ensemble_used_settings << std::setw(iterm_width) << std::left << " write_chain_header" << " = false\n";
 
             ensemble_used_settings.close();
             std::cout << " ===> seetings have been saved\n\n";
@@ -349,11 +360,14 @@ namespace imcmc{
         if( rank == ROOT_RANK )
             param_limits_os.close();
 
-        //  add derived parameters into full_param
+    //  =========================================
+    //  add derived parameters into full_param
+    //  =========================================
         imcmc_double_iterator itd = derived_param.begin();
 
         while( itd != derived_param.end() ){
-            if( full_param.count(itd->first) == 0 ){    // make sure that the derived parameter is NOT in full_param
+        // make sure that the derived parameter is NOT in full_param
+            if( full_param.count(itd->first) == 0 ){
                 full_param[itd->first]    = itd->second;
             }
             ++itd;
@@ -626,22 +640,28 @@ namespace imcmc{
                       << ", i_end = " << std::setw(4) << std::right << i_end << "]\n";
 
             double lndet, chisq;
+            double start_value, value_width;
 
             //  initialize full_param randomly. Note that full_param includes sampling parameters, fixed parameters and derived parameters
             it = sampling_param_name.begin();
 
             while( it != sampling_param_name.end() ){
 
-                double mean_value   = 0.5*(full_param_min[*it]+full_param_max[*it]);
-                double value_width  = full_param_max[*it] - full_param_min[*it];
+
+                if( start_from_fiducial )
+                    start_value = full_param[*it];
+                else
+                    start_value = 0.5*(full_param_min[*it] + full_param_max[*it]);
+
+                value_width  = full_param_max[*it] - full_param_min[*it];
 
             //  ==============================================================================
             //  just give the walkers some reasonable values...
             //  0.25 can be replaced by other values whoes absolute values are less than 0.5
             //  ==============================================================================
                 walker[*it][i]      = gsl_ran_flat( rand_seed,
-                                                    mean_value - 0.5*init_ball_radius*value_width,
-                                                    mean_value + 0.5*init_ball_radius*value_width );
+                                                    start_value - 0.5*init_ball_radius*value_width,
+                                                    start_value + 0.5*init_ball_radius*value_width );
 
                 full_param_temp[*it] = walker[*it][i];
                 ++it;

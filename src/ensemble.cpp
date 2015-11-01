@@ -36,6 +36,7 @@ namespace imcmc{
         use_cosmomc_format  = true; //  default use CosmoMC format
         write_chain_header  = true; //  default true
         save_burned_ashes   = true;
+        start_from_fiducial = true;
     }
 
     ensemble_workspace::~ensemble_workspace(){

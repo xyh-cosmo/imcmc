@@ -86,6 +86,7 @@ namespace imcmc{
 
             //  radius of the initialization "ball", default value: 0.5
             double  init_ball_radius;
+            bool    start_from_fiducial;
 
             //    state of acception or rejection, 1 or 0
             int *accept;    // = new int[walker_num];

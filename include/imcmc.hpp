@@ -13,7 +13,7 @@
 
 //  Version information
 #ifndef __IMCMC_VERSION__
-    #define __IMCMC_VERSION__   "0.0.5"
+    #define __IMCMC_VERSION__   "0.1.1"
 #endif
 
 //  Author
