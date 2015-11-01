@@ -16333,8 +16333,6 @@ if test x"$enable_debug" = xyes; then
 
 $as_echo "#define DEBUG 1" >>confdefs.h
 
-#    CFLAGS=${CFLAGS: -g -O2}
-#    CXXFLAGS=${CXXFLAGS: -g -O2}
     CFLAGS=${-g -O2}
     CXXFLAGS=${-g -O2}
 else

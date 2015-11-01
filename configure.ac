@@ -23,8 +23,6 @@ AC_ARG_ENABLE( debug,
 # Set default compiler flags (if none were set by the user).
 if test x"$enable_debug" = xyes; then
     AC_DEFINE([DEBUG], 1, [Enable debugging output])
-#    CFLAGS=${CFLAGS: -g -O2}
-#    CXXFLAGS=${CXXFLAGS: -g -O2}
     CFLAGS=${-g -O2}
     CXXFLAGS=${-g -O2}
 else

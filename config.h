@@ -101,9 +101,10 @@
 
 /* Define to 1 if `lstat' dereferences a symlink specified with a trailing
    slash. */
-/* #undef LSTAT_FOLLOWS_SLASHED_SYMLINK */
+#define LSTAT_FOLLOWS_SLASHED_SYMLINK 1
 
-/* Define to the sub-directory where libtool stores uninstalled libraries. */
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
 #define LT_OBJDIR ".libs/"
 
 /* Ignore assert statements */
@@ -119,7 +120,7 @@
 #define PACKAGE_NAME "imcmc"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "imcmc 0.0.5"
+#define PACKAGE_STRING "imcmc 0.1.1"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "imcmc"
@@ -128,7 +129,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.0.5"
+#define PACKAGE_VERSION "0.1.1"
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -137,7 +138,7 @@
 /* #undef VERBOSE */
 
 /* Version number of package */
-#define VERSION "0.0.5"
+#define VERSION "0.1.1"
 
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */
