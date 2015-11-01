@@ -798,7 +798,7 @@ namespace imcmc{
                             << "[" << std::setw(5) << ith+1 << " of " << std::setw(5) << num << "] -> "
                             << std::setw(5) << accept_tot << " of " << std::setw(5) << walker_num
                             << " walkers accepted ...\n"
-                            << " --> " << error_tot << " likelihood errors happened ..\n";
+                            << "# ---> " << error_tot << " likelihood errors happened ..\n";
             }
             else{
                 total_accepts += accept_tot;
@@ -809,7 +809,7 @@ namespace imcmc{
                             << "[" << std::setw(5) << ith+1 << " of " << std::setw(5) << num << "] -> "
                             << std::setw(5) << accept_tot << " of " << std::setw(5) << walker_num
                             << " walkers accepted ...\n"
-                            << " --> " << error_tot << " likelihood errors happened ..\n";
+                            << "# ---> " << error_tot << " likelihood errors happened ..\n";
             }
         }
 
