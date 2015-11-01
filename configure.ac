@@ -17,25 +17,21 @@ AC_PROG_CXXCPP
 
 
 # Decide if this is a debug or optimized build.
-AC_ARG_ENABLE(  debug,
-                [AS_HELP_STRING([--enable-debug], [compile with debugging symbols (default no)])] )
+AC_ARG_ENABLE( debug,
+               [AS_HELP_STRING([--enable-debug], [compile with debugging symbols (default no)])] )
 
 # Set default compiler flags (if none were set by the user).
 if test x"$enable_debug" = xyes; then
-    # Debugging build
     AC_DEFINE([DEBUG], 1, [Enable debugging output])
-    CFLAGS=${CFLAGS:--g -O2}
-    CXXFLAGS=${CXXFLAGS:-$CFLAGS}
+#    CFLAGS=${CFLAGS: -g -O2}
+#    CXXFLAGS=${CXXFLAGS: -g -O2}
+    CFLAGS=${-g -O2}
+    CXXFLAGS=${-g -O2}
 else
     enable_debug=no
-    # Optimized build
     AX_CC_MAXOPT=no
-
-    # This is broken for autoconf 2.64 and up, and I don't understand why.  It
-    # gives errors about AC_PROG_CXX being expanded before required, even
-    # though AX_CXX_MAXOPT is identical to AX_CC_MAXOPT...
-    #AX_CXX_MAXOPT
-    CXXFLAGS=${CXXFLAGS-$CFLAGS}
+    CFLAGS=-O2
+    CXXFLAGS=-O2
 fi
 
 # Decide whether or not to keep assert statements.
