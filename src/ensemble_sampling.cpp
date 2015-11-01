@@ -86,8 +86,10 @@ namespace imcmc{
 
             if( use_cosmomc_format ){   //  need to update walker_io
 
-                if( save_burned_ashes && (rank == ROOT_RANK) )
-                    write_walkers(out_stream);
+                if( save_burned_ashes ){
+                    if( rank == ROOT_RANK )
+                        write_walkers(out_stream);
+                }
                 else
                     update_walkers_io();
             }
@@ -428,7 +430,7 @@ namespace imcmc{
                                             recvcounts, displace, MPI::DOUBLE,
                                             ROOT_RANK );
 
-                MPI::COMM_WORLD.Barrier();
+//                MPI::COMM_WORLD.Barrier();
 
                 //  broadcast walkers to each proc
                 MPI::COMM_WORLD.Bcast(  walker["LnPost"],
@@ -558,6 +560,9 @@ namespace imcmc{
                                         ROOT_RANK    );
 
                 MPI::COMM_WORLD.Barrier();
+
+//if( rank == ROOT_RANK )
+//    std::cout << "  ++++ DEBUG ++++\n";
             }
             else if( parallel_mode == 2 ){
 
