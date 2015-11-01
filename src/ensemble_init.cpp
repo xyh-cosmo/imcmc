@@ -273,12 +273,24 @@ namespace imcmc{
 
     void ensemble_workspace::init_param(){    //    loop over FullParams
 
+		int params_width = 7;
+		int derived_params_width = params_width;
+
+        imcmc_double_iterator it = full_param.begin();
+
+		while( it != full_param.end() ){
+			if( it->first.size() > params_width )
+				params_width = it->first.size();
+
+			++it;
+		}
+
         if( rank == ROOT_RANK ){
             std::cout << "\n#  =============================================================\n"
                       << "#  ensemble_workspace::init_param():\n"
                       << "#  reading sampling parameters from: " + config_file << "\n";
 
-            std::cout << std::setw(15) << "params" << ": "
+            std::cout << std::setw(params_width) << "params" << ": "
                       << std::setw(15) << "fid-value" << "  "
                       << std::setw(15) << "min-value" << "  "
                       << std::setw(15) << "max-value" << "\n";
@@ -290,7 +302,7 @@ namespace imcmc{
                             << "# Just copy the following into getdist parameter files (some *ini file)\n\n";
         }
 
-        imcmc_double_iterator it = full_param.begin();
+		it = full_param.begin();
 
         while( it != full_param.end() ){
 
@@ -341,7 +353,7 @@ namespace imcmc{
                 }
 
                 if( rank == ROOT_RANK ){
-                    std::cout   << std::setw(15) << it->first << ": "
+                    std::cout   << std::setw(params_width) << it->first << ": "
                                 << std::setw(15) << full_param[it->first] << "  "
                                 << std::setw(15) << full_param_min[it->first] << "  "
                                 << std::setw(15) << full_param_max[it->first] << "\n";
@@ -369,6 +381,9 @@ namespace imcmc{
         // make sure that the derived parameter is NOT in full_param
             if( full_param.count(itd->first) == 0 ){
                 full_param[itd->first]    = itd->second;
+
+				if( itd->first.size() > derived_params_width )
+					derived_params_width = itd->first.size();
             }
             ++itd;
         }
@@ -446,7 +461,8 @@ namespace imcmc{
 
             imcmc_vector_string_iterator it = derived_param_name.begin();
 
-            while( it != derived_param_name.end() ){ // all names in derived_param_name have been checked that no duplicate exists
+		// all names in derived_param_name have been checked that no duplicate exists
+            while( it != derived_param_name.end() ){
                 output_param_name.push_back(*it);
                 ++it;
             }
@@ -467,23 +483,25 @@ namespace imcmc{
             }
 
             //  write the full parameters ...
-            outfile << "\n# ============================ full parameter names =========================\n";
+			outfile << "\n# =========================================\n";
+            outfile << "# === names and types of all parameters ===\n";
+			outfile << "# =========================================\n";
 
-            imcmc_double_iterator it        = full_param.begin();
+		//	derived_params_width >= params_width
+            outfile << std::setw(derived_params_width) << std::left <<"params:" << " "
+                    << std::setw(15) << std::right << "min-value" << " "
+                    << std::setw(15) << std::right << "max-value" << " "
+                    << std::setw(15) << std::right << "do sampling?" << "\n";
 
-            outfile << std::setw(15) << "params" << ":"
-                    << std::setw(15) << "min-value" << "  "
-                    << std::setw(15) << "max-value" << "  "
-                    << std::setw(15) << "do sampling?" << "\n";
+            it = full_param.begin();
 
             while( it != full_param.end() ){
 
-
                 if( (full_param_min.count(it->first) == 1) && (full_param_max.count(it->first) == 1) ){
 
-                    outfile << std::setw(15) << it->first << " "
-                            << std::setw(15) << full_param_min[it->first] << "  "
-                            << std::setw(15) << full_param_max[it->first] << "  ";
+                    outfile << std::setw(derived_params_width) << std::left << it->first << " "
+                            << std::setw(15) << std::right << full_param_min[it->first] << " "
+                            << std::setw(15) << std::right << full_param_max[it->first] << " ";
 
                     if( fabs(full_param_min[it->first] - full_param_max[it->first]) < 1.E-15 )
                         outfile << std::setw(15) << std::right << "no\n";
@@ -492,9 +510,9 @@ namespace imcmc{
                 }
                 else{
 
-                    outfile << std::setw(15) << it->first  << " "
-                            << std::setw(15) << std::right << "--" << "  "
-                            << std::setw(15) << std::right << "--" << "  ";
+                    outfile << std::setw(derived_params_width) << std::left << it->first << " "
+                            << std::setw(15) << std::right << "--" << " "
+                            << std::setw(15) << std::right << "--" << " ";
 
                     outfile << std::setw(15) << std::right << "derived\n"; 
                 }
@@ -502,20 +520,39 @@ namespace imcmc{
                 ++it;
             }
 
-            outfile << "\n# ======================== full parameters being sampled ====================\n";
-            imcmc_vector_string_iterator itx = sampling_param_name.begin();
+			outfile << "\n# ==============================\n";
+            outfile << "# == parameters being sampled ==\n";
+			outfile << "# ==============================\n";
+
+            imcmc_vector_string_iterator itx;
+
+			itx = sampling_param_name.begin();
 
             while( itx != sampling_param_name.end() ){
-                outfile << std::setw(15) << *itx << "\n";
+                outfile << " " << std::setw(15) << std::left << *itx << "\n";
                 ++itx;
             }
 
-            outfile << "\n# ============================ parameters to output =========================\n";
-            imcmc_vector_string_iterator itxx = output_param_name.begin();
+			outfile << "\n# ==============================\n";
+            outfile << "# == parameters being derived ==\n";
+			outfile << "# ==============================\n";
 
-            while( itxx != output_param_name.end() ){
-                outfile << std::setw(15) << *itxx << "\n";
-                ++itxx;
+            itd = derived_param.begin();
+
+            while( itd != derived_param.end() ){
+                outfile << " " << std::setw(15) << std::left << itd->first << "\n";
+                ++itd;
+            }
+
+			outfile << "\n# ==============================\n";
+            outfile << "# ==== parameters to output ====\n";
+			outfile << "# ==============================\n";
+
+            itx = output_param_name.begin();
+
+            while( itx != output_param_name.end() ){
+                outfile << " " << std::setw(15) << std::left << *itx << "\n";
+                ++itx;
             }
 
             outfile.close();
