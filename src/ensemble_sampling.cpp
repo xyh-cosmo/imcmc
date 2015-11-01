@@ -352,6 +352,8 @@ namespace imcmc{
                         error[i] = 1;
                 }
 
+                MPI::COMM_WORLD.Barrier();
+
             //  ==============================
             //  collecting sampling parameters
             //  ==============================
@@ -462,6 +464,8 @@ namespace imcmc{
                         error[i] = 1;
                 }
 
+                MPI::COMM_WORLD.Barrier();
+
             //  ==============================
             //  collecting sampling parameters
             //  ==============================
@@ -565,6 +569,8 @@ namespace imcmc{
                 else
                     error[rank] = 1;
 
+                MPI::COMM_WORLD.Barrier();
+
             //  ==============================
             //  collecting sampling parameters
             //  ==============================
@@ -661,6 +667,8 @@ namespace imcmc{
                     error[rankx] = 0;
                 else
                     error[rankx] = 1;
+
+                MPI::COMM_WORLD.Barrier();
 
             //  ==============================
             //  collecting sampling parameters
@@ -834,6 +842,8 @@ namespace imcmc{
                 }
             }
         }
+
+        MPI::COMM_WORLD.Barrier();
     }
 
 }
