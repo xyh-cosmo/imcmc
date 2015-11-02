@@ -118,7 +118,7 @@ std::cout << "@rank: " << rank << "  this_like_is_bad ...\n";
         }
 
 if( !likelihood_state.this_like_is_ok )
-    std::cout << "@rank: " << rank << " BAD, what's fucking up????\n"
+    std::cout << "@rank: " << rank << " BAD, what's fucking up????\n";
 
         // MPI::COMM_WORLD.Barrier();
         return ln_post;
