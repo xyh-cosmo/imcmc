@@ -147,22 +147,10 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
         }
 
 //  ######################################################################
-    //    @TODO: this function needs modification, add the functionality of removing comments
-    //  get the end position of value, the line MUST be un-commented !!!
         std::string::size_type End_of_Value( std::string line ){
-            std::string::size_type idx_begin_of_value = Begin_of_Value(line);
-
-        //  old version cannot handle this situation:
-        //              key = value ; some_other_value
-        //  this will be considered as a commented line
-        //  std::string::size_type idx_end_of_value = line.find_last_not_of(",; \n");
-
-            std::string::size_type idx_end_of_value = line.size()-1;
-
-        //  though this line is not commented, there still might be one of "#;$%&*" exists in this
-        //  line, so the first thing to do is checking
-
-            std::string::size_type idx_of_comments = line.find_first_of("#;$%&*");
+            std::string::size_type idx_begin_of_value   = Begin_of_Value(line);
+            std::string::size_type idx_end_of_value     = line.size()-1;
+            std::string::size_type idx_of_comments      = line.find_first_of("#;");
 
             if( idx_of_comments != std::string::npos ){
                 idx_end_of_value = idx_of_comments - 1;
