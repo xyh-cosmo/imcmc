@@ -383,7 +383,7 @@ namespace imcmc{
     //  =========================================
         imcmc_double_iterator itd = derived_param.begin();
 
-        derived_params_width = params_width;
+        derived_params_width = params_width + 2;
 
         while( itd != derived_param.end() ){
         // make sure that the derived parameter is NOT in full_param
