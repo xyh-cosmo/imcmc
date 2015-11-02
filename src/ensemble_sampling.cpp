@@ -106,17 +106,17 @@ namespace imcmc{
 
         for( int i=1; i<=chain_num; ++i ){
 
-            if( chain_num == 1)
-                chain_name = chain_root + ".txt";
-            else
-                chain_name = chain_root + "_" + Read::IntToString(i) + ".txt";
-
             if( rank == ROOT_RANK ){
+
+                if( chain_num == 1)
+                    chain_name = chain_root + ".txt";
+                else
+                    chain_name = chain_root + "_" + Read::IntToString(i) + ".txt";
 
                 out_stream.open(chain_name.c_str(), std::ofstream::out);
 
                 if( !out_stream.good() )
-                    throw std::runtime_error("\n@ void ensemble_workspace::do_sampling() --> filed to open file: " + chain_name);
+                    imcmc_runtime_error("Filed to open file: " + chain_name);
 
                 //  write parameter names into the first line of the chain file
                 imcmc_vector_string_iterator it = output_param_name.begin();
@@ -150,7 +150,7 @@ namespace imcmc{
                 std::cout << "#  ===================================================\n\n";
             }
 
-            MPI::COMM_WORLD.Barrier();
+            // MPI::COMM_WORLD.Barrier();
 
             for( int j=0; j<sampling_loops; ++j ){
 
@@ -182,8 +182,10 @@ namespace imcmc{
                 if( rank == ROOT_RANK )
                     std::cout << "\n ****** skipping some chains, can be viewed as extra burn-in ******\n";
 
-                for( int j=0; j<skip_step; ++j )
+                for( int j=0; j<skip_step; ++j ){
                     update_walkers( false, j, skip_step );
+                    MPI::COMM_WORLD.Barrier();
+                }
             }
 
             MPI::COMM_WORLD.Barrier();
