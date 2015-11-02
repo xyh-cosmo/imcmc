@@ -32,7 +32,7 @@ namespace imcmc{
 
         int burnin_loops, sampling_loops;
 
-        burnin_loops    = burnin_step;  //  must >= 5, otherwise meaningless
+        burnin_loops    = burnin_step;
         sampling_loops  = sample_step;
 
         // make sure searching lndet_min and chisq_min will be done at least one time during burn-in
@@ -84,7 +84,7 @@ namespace imcmc{
 
             update_walkers( false, j, burnin_loops );
 
-            if( use_cosmomc_format ){   //  need to update walker_io
+            if( use_cosmomc_format ){
 
                 if( save_burned_ashes ){
                     if( rank == ROOT_RANK )
@@ -220,7 +220,7 @@ namespace imcmc{
                     walker["Chisq"][current_id]     = chisq;
 
                 //  =========================================================
-                //  new position has been accepted, so update the parameters 
+                //  new position has been accepted, so update the parameters
                 //  (both MCMC pars and derived ones)
                 //  =========================================================
                     imcmc_vector_string_iterator it;
@@ -276,17 +276,14 @@ namespace imcmc{
         }
         else{   //  opempi-parallel mode
 
-            int rank = MPI::COMM_WORLD.Get_rank();
-            int size = MPI::COMM_WORLD.Get_size();
-
             int num_each_proc;
-            int *id_min     = new int[size];
-            int *id_max     = new int[size];
-            int *id_width   = new int[size];
+            int *id_min     = new int[rank_size];
+            int *id_max     = new int[rank_size];
+            int *id_width   = new int[rank_size];
 
-            int *sendcounts = new int[size];
-            int *recvcounts = new int[size];
-            int *displace   = new int[size];
+            int *sendcounts = new int[rank_size];
+            int *recvcounts = new int[rank_size];
+            int *displace   = new int[rank_size];
 
             int *walker_id = new int[walker_num];
             int walker_num_half = walker_num / 2;   //  walker_num should be an even number.
@@ -300,11 +297,11 @@ namespace imcmc{
 
             if( parallel_mode == 1 ){
 
-                if( walker_num_half%size == 0 ){ //  each proc will handle same number of walkers
+                if( walker_num_half%rank_size == 0 ){ //  each proc will handle same number of walkers
 
-                    num_each_proc   = walker_num_half / size;
+                    num_each_proc   = walker_num_half / rank_size;
 
-                    for( int i=0; i<size; ++i ){
+                    for( int i=0; i<rank_size; ++i ){
                         id_width[i]   = num_each_proc;
                         id_min[i]     = i * num_each_proc;
                         id_max[i]     = id_min[i] + ( num_each_proc - 1 );
@@ -315,7 +312,7 @@ namespace imcmc{
                 }
                 else{
 
-                    id_width[0]    = walker_num_half - (walker_num_half/size + 1)*(size-1);
+                    id_width[0]    = walker_num_half - (walker_num_half/rank_size + 1)*(rank_size-1);
 
                     if( id_width[0] <= 0 ){
                         std::string err = "\nvoid ensemble_workspace::update_walkers():\n";
@@ -329,9 +326,9 @@ namespace imcmc{
                     recvcounts[0] = sendcounts[0];
                     displace[0]   = 0;
 
-                    num_each_proc    = walker_num_half/size + 1;
+                    num_each_proc    = walker_num_half/rank_size + 1;
 
-                    for( int i=1; i<size; ++i ){
+                    for( int i=1; i<rank_size; ++i ){
                         id_width[i]   = num_each_proc;
                         id_min[i]     = id_width[0] + (i-1) * num_each_proc;
                         id_max[i]     = id_min[i] + ( num_each_proc - 1 );
@@ -453,7 +450,7 @@ namespace imcmc{
                 id_min[rank] += walker_num_half;
                 id_max[rank] += walker_num_half;
 
-                for( int i=0; i<size; ++i )
+                for( int i=0; i<rank_size; ++i )
                     displace[i] += walker_num_half;
 
                 for( int i=id_min[rank]; i<=id_max[rank]; ++i ){

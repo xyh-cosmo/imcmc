@@ -868,7 +868,7 @@ namespace imcmc{
                       << "#  =============================================================\n";
             //  _lndet_min_, _chisq_min_ are used only when writing probability into chains.
             //
-            std::cout << "#     *** " << error_tot << " likelihood errors encountered ...\n";
+            std::cout << "#  " << error_tot << " likelihood errors encountered ...\n";
         }
 
         MPI::COMM_WORLD.Barrier();
