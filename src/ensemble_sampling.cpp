@@ -93,6 +93,8 @@ namespace imcmc{
                 else
                     update_walkers_io();
             }
+
+            MPI::COMM_WORLD.Barrier();
         }
 
         if( rank == ROOT_RANK ) //  DONT forget to close out_stream before start REAL sampling
@@ -148,12 +150,16 @@ namespace imcmc{
                 std::cout << "#  ===================================================\n\n";
             }
 
+            MPI::COMM_WORLD.Barrier();
+
             for( int j=0; j<sampling_loops; ++j ){
 
                 update_walkers( true, j, sampling_loops );
 
                 if( rank == ROOT_RANK )
                     write_walkers(out_stream);
+
+                MPI::COMM_WORLD.Barrier();
             }
 
             if( rank == ROOT_RANK ){
@@ -179,6 +185,8 @@ namespace imcmc{
                 for( int j=0; j<skip_step; ++j )
                     update_walkers( false, j, skip_step );
             }
+
+            MPI::COMM_WORLD.Barrier();
         }
     }
 
@@ -442,8 +450,9 @@ namespace imcmc{
                                         MPI::DOUBLE,
                                         ROOT_RANK    );
 
-
-                //  update the second half
+            //  =========================
+            //  update the second half
+            //  =========================
                 id_min[rank] += walker_num_half;
                 id_max[rank] += walker_num_half;
 
@@ -842,7 +851,7 @@ namespace imcmc{
             }
         }
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
     }
 
 }
