@@ -15,7 +15,7 @@ namespace imcmc{
         else
             efficient_a = a;
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
     }
 
     void ensemble_workspace::init( std::string paramfile ){
@@ -259,11 +259,11 @@ namespace imcmc{
             std::cout << " ===> seetings have been saved\n\n";
         }
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
 
         init_param();
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
 
         init_walkers();
 
@@ -304,7 +304,7 @@ namespace imcmc{
                             << "# Just copy the following into getdist parameter files (some *ini file)\n\n";
         }
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
 
         it = full_param.begin();
 
@@ -694,7 +694,7 @@ namespace imcmc{
             }
         }
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
 
         for(int i=i_start; i<=i_end; ++i){
 /*
@@ -775,6 +775,8 @@ namespace imcmc{
                                         recvcounts, displace, MPI::DOUBLE,
                                         ROOT_RANK );
 
+            // MPI::COMM_WORLD.Barrier();
+
             MPI::COMM_WORLD.Bcast(  walker[*it],
                                     walker_num,
                                     MPI::DOUBLE,
@@ -796,6 +798,8 @@ namespace imcmc{
                                         walker[*it],
                                         recvcounts, displace, MPI::DOUBLE,
                                         ROOT_RANK );
+
+            // MPI::COMM_WORLD.Barrier();
 
             MPI::COMM_WORLD.Bcast(  walker[*it],
                                     walker_num,
@@ -910,11 +914,13 @@ namespace imcmc{
             std::cout << "#  " << error_tot << " likelihood errors encountered ...\n";
         }
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
 
         delete[] sendcounts;
         delete[] recvcounts;
         delete[] displace;
+
+        MPI::COMM_WORLD.Barrier();
     }
 
 

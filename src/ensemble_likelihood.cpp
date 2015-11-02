@@ -112,11 +112,11 @@ namespace imcmc{
                     ln_post = _IMCMC_LNPOST_MIN_;
                 }
 
-                break;  //  jump out the loop
+                // break;  //  jump out the loop
             }
         }
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
         return ln_post;
     }
 
