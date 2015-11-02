@@ -585,24 +585,31 @@ namespace imcmc{
                       << "#  compute.\n"
                       << "#  ========================================================================\n";
         }
-        else{
-            std::cout << "rank: " << rank << " : waiting root rank ...." << std::endl;
-        }
+        // else{
+        //     std::cout << "rank: " << rank << " : waiting root rank ...." << std::endl;
+        // }
 
         MPI::COMM_WORLD.Barrier();
 
         imcmc_vector_string_iterator it         = sampling_param_name.begin();
         imcmc_vector_string_iterator it_derived = derived_param_name.begin();
 
+        if( rank == ROOT_RANK ){
+            std::cout << "# --> allocating memories for ensemble_workspace ...\n";
+        }
+
         while( it != sampling_param_name.end() ){
 
             walker[*it] = new double[walker_num];
 
-            if( use_cosmomc_format ){
+            if( use_cosmomc_format )
                 walker_io[*it] = new double[walker_num];
-            }
 
             ++it;
+        }
+
+        if( rank == ROOT_RANK ){
+            std::cout << "# --> adding derived parameters ...\n";
         }
 
         while( it_derived != derived_param_name.end() ){
@@ -642,6 +649,10 @@ namespace imcmc{
         int *recvcounts = new int[rank_size];
         int *displace   = new int[rank_size];
 
+        if( rank == ROOT_RANK ){
+            std::cout << "# --> distributing assignments ...\n";
+        }
+
         //  each rank will only calculate some of the likelihoods of the walkers.
         int i_start, i_end;
 
@@ -668,12 +679,12 @@ namespace imcmc{
 
             for( int i=1; i<rank_size; ++i ){   //  set for the remaining ranks
 
-                i_start         = walker_num/rank_size + walker_num%rank_size + (i-1)*(walker_num/rank_size);
-                i_end           = i_start + (walker_num/rank_size - 1);
+                i_start = walker_num/rank_size + walker_num%rank_size + (i-1)*(walker_num/rank_size);
+                i_end   = i_start + (walker_num/rank_size - 1);
 
-                sendcounts[i]   = (i_end - i_start) + 1;
-                recvcounts[i]   = sendcounts[i];
-                displace[i]     = sendcounts[0] + (i-1) * ( walker_num / rank_size );
+                sendcounts[i] = (i_end - i_start) + 1;
+                recvcounts[i] = sendcounts[i];
+                displace[i]   = sendcounts[0] + (i-1) * ( walker_num / rank_size );
             }
         }
 
@@ -694,13 +705,24 @@ namespace imcmc{
 
             while( it != sampling_param_name.end() ){
 
-
                 if( start_from_fiducial )
                     start_value = full_param[*it];
                 else
                     start_value = 0.5*(full_param_min[*it] + full_param_max[*it]);
 
+            //  initial guess of value_width
                 value_width  = full_param_max[*it] - full_param_min[*it];
+
+                if( start_from_fiducial ){  // fid-values are not necessarily the middle values.
+                    double width_left  = fabs(start_value - full_param_min[*it]);
+                    double width_right = fabs(start_value - full_param_max[*it]);
+
+                    if( value_width > width_left )
+                        value_width = width_left;
+
+                    if( value_width > width_right )
+                        value_width = width_right;
+                }
 
             //  ==============================================================================
             //  just give the walkers some reasonable values...
