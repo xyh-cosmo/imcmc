@@ -116,6 +116,7 @@ namespace imcmc{
             }
         }
 
+        MPI::COMM_WORLD.Barrier();
         return ln_post;
     }
 
