@@ -582,6 +582,7 @@ namespace imcmc{
                       << "#  ========================================================================\n";
         }
 
+        MPI::COMM_WORLD.Barrier();
 
         imcmc_vector_string_iterator it         = sampling_param_name.begin();
         imcmc_vector_string_iterator it_derived = derived_param_name.begin();

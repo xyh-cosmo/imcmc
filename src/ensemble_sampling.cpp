@@ -314,11 +314,8 @@ namespace imcmc{
 
                     id_width[0]    = walker_num_half - (walker_num_half/rank_size + 1)*(rank_size-1);
 
-                    if( id_width[0] <= 0 ){
-                        std::string err = "\nvoid ensemble_workspace::update_walkers():\n";
-                            err += "id_width[0] must be positive integer, please adjust the number of walkers / processros\n";
-                        throw std::runtime_error(err);
-                    }
+                    if( id_width[0] <= 0 )
+                        imcmc_runtime_error("id_width[0] must be positive integer, please adjust the number of walkers / processros");
 
                     id_min[0]     = 0;
                     id_max[0]     = id_width[0] - 1;

@@ -65,7 +65,9 @@ namespace imcmc{
             }
         }
 
+        std::cout << "# ===============================================================================\n";
         std::cout << "# ensemble_workspace --> saved walkers [note, this line is for debug only!] ...\n";
+        std::cout << "# ===============================================================================\n";
     }
 
     void ensemble_workspace::save_walker_state( std::ofstream& of ){
