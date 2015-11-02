@@ -28,8 +28,10 @@ if test x"$enable_debug" = xyes; then
 else
     enable_debug=no
     AX_CC_MAXOPT=no
-    CFLAGS=-O2
-    CXXFLAGS=-O2
+#    CFLAGS=-O2
+#    CXXFLAGS=-O2
+    CFLAGS=
+    CXXFLAGS=
 fi
 
 # Decide whether or not to keep assert statements.

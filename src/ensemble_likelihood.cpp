@@ -88,16 +88,16 @@ namespace imcmc{
         for( it_like = 0; it_like !=likelihood.size(); ++it_like ){
 
             bool last_state = likelihood_state.this_like_is_ok;
-            
+
             ln_post += likelihood[it_like]->loglike( full_param,
-                                                     lndet_temp,     //    this will be first set to zero inside likelihood functions
-                                                     chisq_temp,     //    this will be first set to zero inside likelihood functions
+                                                     lndet_temp,
+                                                     chisq_temp,
                                                      likelihood[it_like]->model,
                                                      likelihood[it_like]->data,
                                                      likelihood_state );
 
             likelihood_state.this_like_is_ok = likelihood_state.this_like_is_ok && last_state;
-            
+
 
         //  test whether there is any error happened
             if( likelihood_state.this_like_is_ok ){
@@ -108,7 +108,7 @@ namespace imcmc{
                 if( likelihood_state.stop_on_error )
                     likelihood_state.what_happened();
                 else{
-                    likelihood_state.what_happened(); // still going on the sampling, but will print the error information
+                    likelihood_state.what_happened(); // still going on sampling, but will print the error information
                     chisq   = _IMCMC_CHISQ_MAX_;
                     ln_post = _IMCMC_LNPOST_MIN_;
                 }
