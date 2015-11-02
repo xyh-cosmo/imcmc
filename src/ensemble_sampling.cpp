@@ -254,10 +254,11 @@ namespace imcmc{
                 state = 0;
         }
 
-        if( likelihood_state.this_like_is_ok )
-            std::cout << "@rank: " << rank << " --- This Like is OK \n";
-        else
-            std::cout << "@rank: " << rank << " --- This Like is BAD \n";
+//      DEBUG
+        // if( likelihood_state.this_like_is_ok )
+        //     std::cout << "@rank: " << rank << " --- This Like is OK \n";
+        // else
+        //     std::cout << "@rank: " << rank << " --- This Like is BAD \n";
 
         return state;
     }

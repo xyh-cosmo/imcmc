@@ -105,7 +105,6 @@ namespace imcmc{
             }
             else{
 
-std::cout << "@rank: " << rank << "  this_like_is_bad ...\n";
                 if( likelihood_state.stop_on_error )
                     likelihood_state.what_happened();
                 else{
@@ -113,14 +112,10 @@ std::cout << "@rank: " << rank << "  this_like_is_bad ...\n";
                     chisq   = _IMCMC_CHISQ_MAX_;
                     ln_post = _IMCMC_LNPOST_MIN_;
                 }
-                // break;  //  jump out the loop
+                break;  //  jump out the loop
             }
         }
 
-if( !likelihood_state.this_like_is_ok )
-    std::cout << "@rank: " << rank << " BAD, what's fucking up????\n";
-
-        // MPI::COMM_WORLD.Barrier();
         return ln_post;
     }
 
