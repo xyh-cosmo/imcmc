@@ -302,6 +302,8 @@ namespace imcmc{
                             << "# Just copy the following into getdist parameter files (some *ini file)\n\n";
         }
 
+        MPI::COMM_WORLD.Barrier();
+
         it = full_param.begin();
 
         while( it != full_param.end() ){
@@ -368,6 +370,8 @@ namespace imcmc{
 
             ++it;
         }
+
+        MPI::COMM_WORLD.Barrier();
 
         if( rank == ROOT_RANK )
             param_limits_os.close();
@@ -457,8 +461,8 @@ namespace imcmc{
             }
         }
         else{
-            output_param_name = sampling_param_name;
 
+            output_param_name = sampling_param_name;
             imcmc_vector_string_iterator it = derived_param_name.begin();
 
         // all names in derived_param_name have been checked that no duplicate exists
@@ -582,8 +586,6 @@ namespace imcmc{
                       << "#  ========================================================================\n";
         }
 
-        MPI::COMM_WORLD.Barrier();
-
         imcmc_vector_string_iterator it         = sampling_param_name.begin();
         imcmc_vector_string_iterator it_derived = derived_param_name.begin();
 
@@ -669,6 +671,8 @@ namespace imcmc{
                 displace[i]     = sendcounts[0] + (i-1) * ( walker_num / rank_size );
             }
         }
+
+        MPI::COMM_WORLD.Barrier();
 
         for(int i=i_start; i<=i_end; ++i){
 
