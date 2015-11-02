@@ -585,6 +585,11 @@ namespace imcmc{
                       << "#  compute.\n"
                       << "#  ========================================================================\n";
         }
+        else{
+            std::std::cout << "..... waiting root rank ...." << std::endl;
+        }
+
+        MPI::COMM_WORLD.Barrier();
 
         imcmc_vector_string_iterator it         = sampling_param_name.begin();
         imcmc_vector_string_iterator it_derived = derived_param_name.begin();
@@ -672,7 +677,7 @@ namespace imcmc{
             }
         }
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
 
         for(int i=i_start; i<=i_end; ++i){
 
