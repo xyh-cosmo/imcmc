@@ -586,7 +586,7 @@ namespace imcmc{
                       << "#  ========================================================================\n";
         }
         else{
-            std::std::cout << "..... waiting root rank ...." << std::endl;
+            std::cout << "..... waiting root rank ...." << std::endl;
         }
 
         MPI::COMM_WORLD.Barrier();
