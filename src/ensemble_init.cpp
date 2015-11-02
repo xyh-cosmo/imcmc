@@ -292,7 +292,7 @@ namespace imcmc{
                       << "#  ensemble_workspace::init_param():\n"
                       << "#  reading sampling parameters from: " + config_file << "\n";
 
-            std::cout << std::setw(params_width) << std::left << " params" << ": "
+            std::cout << std::setw(params_width) << std::left << " params:" << " "
                       << std::right << std::setw(15) << "fid-value" << "  "
                       << std::right << std::setw(15) << "min-value" << "  "
                       << std::right << std::setw(15) << "max-value" << "\n";
@@ -493,8 +493,8 @@ namespace imcmc{
             outfile << "# === names and types of all parameters ===\n";
             outfile << "# =========================================\n";
 
-        //    derived_params_width >= params_width
-            outfile << std::setw(derived_params_width) << std::left <<" params:" << " "
+        //    derived_params_width >= params_width !!
+            outfile << std::setw(derived_params_width) << std::left <<" params:" << "  "
                     << std::setw(15) << std::right << "min-value" << " "
                     << std::setw(15) << std::right << "max-value" << " "
                     << std::setw(15) << std::right << "do sampling?" << "\n";
