@@ -259,11 +259,11 @@ namespace imcmc{
             std::cout << " ===> seetings have been saved\n\n";
         }
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
 
         init_param();
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
 
         init_walkers();
 
@@ -292,10 +292,10 @@ namespace imcmc{
                       << "#  ensemble_workspace::init_param():\n"
                       << "#  reading sampling parameters from: " + config_file << "\n";
 
-            std::cout << std::setw(params_width) << "params" << ": "
-                      << std::setw(15) << "fid-value" << "  "
-                      << std::setw(15) << "min-value" << "  "
-                      << std::setw(15) << "max-value" << "\n";
+            std::cout << std::setw(params_width) << std::left << " params" << ": "
+                      << std::right << std::setw(15) << "fid-value" << "  "
+                      << std::right << std::setw(15) << "min-value" << "  "
+                      << std::right << std::setw(15) << "max-value" << "\n";
 
             param_limits_os.open(param_limits.c_str());
 
@@ -335,7 +335,7 @@ namespace imcmc{
                         ++sampling_param_num;
 
                         if( rank == ROOT_RANK ){
-                            param_limits_os << std::left << std::setw(25) << "limits[" + it->first + "]"
+                            param_limits_os << std::left << std::setw(params_width+8) << "limits[" + it->first + "]"
                                             << " = "
                                             << std::setw(10) << par[1] << " "
                                             << std::setw(10) << par[2] << "\n";
@@ -357,10 +357,10 @@ namespace imcmc{
                 }
 
                 if( rank == ROOT_RANK ){
-                    std::cout   << std::setw(params_width) << it->first << ": "
-                                << std::setw(15) << full_param[it->first] << "  "
-                                << std::setw(15) << full_param_min[it->first] << "  "
-                                << std::setw(15) << full_param_max[it->first] << "\n";
+                    std::cout   << " " << std::setw(params_width) << std::left << it->first << " "
+                                << std::right << std::setw(15) << full_param[it->first] << "  "
+                                << std::right << std::setw(15) << full_param_min[it->first] << "  "
+                                << std::right << std::setw(15) << full_param_max[it->first] << "\n";
                 }
 
                 delete[] par;
@@ -474,9 +474,9 @@ namespace imcmc{
             }
 
             if( rank == ROOT_RANK )
-                std::cout << "\nensemble_workspace::init_param():\n"
-                    << "\tno keyword : output_params found in " + config_file + ", so all sampling\n"
-                    << "\tparameters will be output (including all derived parameters).\n\n";
+                std::cout << "\n # ensemble_workspace::init_param():\n"
+                    << " # --> no keyword : output_params found in " + config_file + ", so all sampling\n"
+                    << " # --> parameters will be output (including all derived parameters).\n\n";
         }
 
         if( rank == ROOT_RANK ){
@@ -591,7 +591,7 @@ namespace imcmc{
         //     std::cout << "rank: " << rank << " : waiting root rank ...." << std::endl;
         // }
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
 
         imcmc_vector_string_iterator it         = sampling_param_name.begin();
         imcmc_vector_string_iterator it_derived = derived_param_name.begin();
@@ -613,6 +613,8 @@ namespace imcmc{
         if( rank == ROOT_RANK ){
             std::cout << "# --> Adding Derived Parameters ...\n";
         }
+
+        // MPI::COMM_WORLD.Barrier();
 
         while( it_derived != derived_param_name.end() ){
 
@@ -654,6 +656,8 @@ namespace imcmc{
         if( rank == ROOT_RANK ){
             std::cout << "# --> Distributing Assignments ...\n";
         }
+
+        MPI::COMM_WORLD.Barrier();
 
         //  each rank will only calculate some of the likelihoods of the walkers.
         int i_start, i_end;

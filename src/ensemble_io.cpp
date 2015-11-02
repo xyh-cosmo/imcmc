@@ -4,7 +4,7 @@ namespace imcmc{
 
     void ensemble_workspace::write_walkers( std::ofstream& of ){
 
-        std::cout << "# ensemble_workspace --> saving walkers into chain files ...\n";
+        std::cout << "# ensemble_workspace --> saving walkers into chain files ...\n\n";
 
         imcmc_vector_string_iterator it;
 
@@ -64,10 +64,6 @@ namespace imcmc{
                 of << "\n";
             }
         }
-
-        std::cout << "# ===============================================================================\n";
-        std::cout << "# ensemble_workspace --> saved walkers [note, this line is for debug only!] ...\n";
-        std::cout << "# ===============================================================================\n";
     }
 
     void ensemble_workspace::save_walker_state( std::ofstream& of ){
