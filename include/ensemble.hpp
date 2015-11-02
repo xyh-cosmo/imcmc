@@ -2,9 +2,9 @@
     -----
     NEWS:
     -----
-1)  Oct-28-2015: add derived_param_names, and the derived parameters will also 
-    be strored in full_param, but these derived parameters, will be calculated 
-    only in user-provied likelihoods, so these functionality actually depends 
+1)  Oct-28-2015: add derived_param_names, and the derived parameters will also
+    be strored in full_param, but these derived parameters, will be calculated
+    only in user-provied likelihoods, so these functionality actually depends
     on the users.
     ============================================================================*/
 
@@ -90,7 +90,7 @@ namespace imcmc{
 
             //    state of acception or rejection, 1 or 0
             int *accept;    // = new int[walker_num];
-            int *error;  
+            int *error;
             int total_accepts;
             int total_rejects;
             int total_errors;       // record how many likelihood error happens
@@ -113,7 +113,6 @@ namespace imcmc{
 
             imcmc_likelihood_state  likelihood_state;       //  save current likelihood state, i.e., possible error information
 
-
             imcmc_double_pointer    walker_io;  //  this is acutally a backup of walker, and it will be used to write chains into files.
 
             //    Likelihoof functions , include both MODELs and DATA
@@ -127,7 +126,7 @@ namespace imcmc{
 
             void init( std::string infile );    // read initialization & other settings from the input *ini file
             void init_param();                  // initialize relavant parameters, some might be set to default values.
-            void add_derived_param();   // derived parameters are calculated inside likelihoods written by users, so I needed to modify 
+            void add_derived_param();   // derived parameters are calculated inside likelihoods written by users, so I needed to modify
                                         // add_likelihood(*****)
 
             bool walker_initialized;    //    inidicate whether the walkers are initialized.

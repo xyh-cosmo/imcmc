@@ -94,7 +94,7 @@ namespace imcmc{
                     update_walkers_io();
             }
 
-            MPI::COMM_WORLD.Barrier();
+            // MPI::COMM_WORLD.Barrier();
         }
 
         if( rank == ROOT_RANK ) //  DONT forget to close out_stream before start REAL sampling
@@ -159,7 +159,7 @@ namespace imcmc{
                 if( rank == ROOT_RANK )
                     write_walkers(out_stream);
 
-                MPI::COMM_WORLD.Barrier();
+                // MPI::COMM_WORLD.Barrier();
             }
 
             if( rank == ROOT_RANK ){
@@ -184,7 +184,7 @@ namespace imcmc{
 
                 for( int j=0; j<skip_step; ++j ){
                     update_walkers( false, j, skip_step );
-                    MPI::COMM_WORLD.Barrier();
+                    // MPI::COMM_WORLD.Barrier();
                 }
             }
 
@@ -379,7 +379,7 @@ namespace imcmc{
                                                 recvcounts, displace, MPI::DOUBLE,
                                                 ROOT_RANK );
 
-                    MPI::COMM_WORLD.Barrier();
+                    // MPI::COMM_WORLD.Barrier();
 
                     MPI::COMM_WORLD.Bcast(  walker[*it],
                                             walker_num,
@@ -494,7 +494,7 @@ namespace imcmc{
                                                 recvcounts, displace, MPI::DOUBLE,
                                                 ROOT_RANK );
 
-                    MPI::COMM_WORLD.Barrier();
+                    // MPI::COMM_WORLD.Barrier();
 
                     MPI::COMM_WORLD.Bcast(  walker[*it],
                                             walker_num,
@@ -601,7 +601,7 @@ namespace imcmc{
                                             1, MPI::DOUBLE,
                                             ROOT_RANK );
 
-                    MPI::COMM_WORLD.Barrier();
+                    // MPI::COMM_WORLD.Barrier();
 
                     MPI::COMM_WORLD.Bcast(  walker[*it],
                                             walker_num,
@@ -660,7 +660,7 @@ namespace imcmc{
                                         1, MPI::DOUBLE,
                                         ROOT_RANK );
 
-                MPI::COMM_WORLD.Barrier();
+                // MPI::COMM_WORLD.Barrier();
 
                 //  broadcast walkers to each proc
                 MPI::COMM_WORLD.Bcast(  walker["LnPost"],
@@ -702,7 +702,7 @@ namespace imcmc{
                                             1, MPI::DOUBLE,
                                             ROOT_RANK );
 
-                    MPI::COMM_WORLD.Barrier();
+                    // MPI::COMM_WORLD.Barrier();
 
                     MPI::COMM_WORLD.Bcast(  walker[*it],
                                             walker_num,
@@ -763,7 +763,7 @@ namespace imcmc{
                                         1, MPI::DOUBLE,
                                         ROOT_RANK );
 
-                MPI::COMM_WORLD.Barrier();
+                // MPI::COMM_WORLD.Barrier();
 
                 //  broadcast walkers to each proc
                 MPI::COMM_WORLD.Bcast(  walker["LnPost"],
