@@ -263,6 +263,8 @@ namespace imcmc{
 
         init_param();
 
+        MPI::COMM_WORLD.Barrier();
+
         init_walkers();
 
         walker_initialized = true;
@@ -371,7 +373,7 @@ namespace imcmc{
             ++it;
         }
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
 
         if( rank == ROOT_RANK )
             param_limits_os.close();
@@ -595,7 +597,7 @@ namespace imcmc{
         imcmc_vector_string_iterator it_derived = derived_param_name.begin();
 
         if( rank == ROOT_RANK ){
-            std::cout << "# --> allocating memories for ensemble_workspace ...\n";
+            std::cout << "# --> Creating Walkers for Ensemble_Workspace ...\n";
         }
 
         while( it != sampling_param_name.end() ){
@@ -609,7 +611,7 @@ namespace imcmc{
         }
 
         if( rank == ROOT_RANK ){
-            std::cout << "# --> adding derived parameters ...\n";
+            std::cout << "# --> Adding Derived Parameters ...\n";
         }
 
         while( it_derived != derived_param_name.end() ){
@@ -650,7 +652,7 @@ namespace imcmc{
         int *displace   = new int[rank_size];
 
         if( rank == ROOT_RANK ){
-            std::cout << "# --> distributing assignments ...\n";
+            std::cout << "# --> Distributing Assignments ...\n";
         }
 
         //  each rank will only calculate some of the likelihoods of the walkers.
