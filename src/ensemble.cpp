@@ -7,11 +7,11 @@ namespace imcmc{
 
     ensemble_workspace::ensemble_workspace(){
 
-		if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
-			std::cout << "\n #  =================================================================\n";
-			std::cout << " #  =============  Creating Ensemble Sampler WorkSpace  =============\n";
-			std::cout << " #  =================================================================\n";
-		}
+        if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+            std::cout << "\n #  =================================================================\n";
+            std::cout << " #  =============  Creating Ensemble Sampler WorkSpace  =============\n";
+            std::cout << " #  =================================================================\n";
+        }
 
         rank_size           = 0;
         walker_num          = 0;

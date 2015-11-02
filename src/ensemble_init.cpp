@@ -34,7 +34,7 @@ namespace imcmc{
                         << "  #  =======================================================\n";
         }
 
-		likelihood_state.init();
+        likelihood_state.init();
 
         srand(time(NULL));
 
@@ -152,7 +152,7 @@ namespace imcmc{
 
         if( Read::Has_Key_in_File( paramfile, "stop_on_error" ) ){
             likelihood_state.stop_on_error = Read::Read_Bool_from_File(paramfile, "stop_on_error");
-            
+
             if( likelihood_state.stop_on_error )
                 imcmc_runtime_warning("your sampling will stop when error(s) encountered inside likelihoods!");
         }
@@ -261,29 +261,29 @@ namespace imcmc{
 
         MPI::COMM_WORLD.Barrier();
 
-		init_param();
+        init_param();
 
-		init_walkers();
+        init_walkers();
 
-		walker_initialized = true;
+        walker_initialized = true;
 
-		MPI::COMM_WORLD.Barrier();
+        MPI::COMM_WORLD.Barrier();
     }
 
 
     void ensemble_workspace::init_param(){    //    loop over FullParams
 
-		int params_width = 7;
-		int derived_params_width = params_width;
+        int params_width = 7;
+        int derived_params_width = params_width;
 
         imcmc_double_iterator it = full_param.begin();
 
-		while( it != full_param.end() ){
-			if( it->first.size() > params_width )
-				params_width = it->first.size();
+        while( it != full_param.end() ){
+            if( it->first.size() > params_width )
+                params_width = it->first.size();
 
-			++it;
-		}
+            ++it;
+        }
 
         if( rank == ROOT_RANK ){
             std::cout << "\n#  =============================================================\n"
@@ -302,7 +302,7 @@ namespace imcmc{
                             << "# Just copy the following into getdist parameter files (some *ini file)\n\n";
         }
 
-		it = full_param.begin();
+        it = full_param.begin();
 
         while( it != full_param.end() ){
 
@@ -382,8 +382,8 @@ namespace imcmc{
             if( full_param.count(itd->first) == 0 ){
                 full_param[itd->first]    = itd->second;
 
-				if( itd->first.size() > derived_params_width )
-					derived_params_width = itd->first.size();
+                if( itd->first.size() > derived_params_width )
+                    derived_params_width = itd->first.size();
             }
             ++itd;
         }
@@ -461,7 +461,7 @@ namespace imcmc{
 
             imcmc_vector_string_iterator it = derived_param_name.begin();
 
-		// all names in derived_param_name have been checked that no duplicate exists
+        // all names in derived_param_name have been checked that no duplicate exists
             while( it != derived_param_name.end() ){
                 output_param_name.push_back(*it);
                 ++it;
@@ -483,11 +483,11 @@ namespace imcmc{
             }
 
             //  write the full parameters ...
-			outfile << "\n# =========================================\n";
+            outfile << "\n# =========================================\n";
             outfile << "# === names and types of all parameters ===\n";
-			outfile << "# =========================================\n";
+            outfile << "# =========================================\n";
 
-		//	derived_params_width >= params_width
+        //    derived_params_width >= params_width
             outfile << std::setw(derived_params_width) << std::left <<" params:" << " "
                     << std::setw(15) << std::right << "min-value" << " "
                     << std::setw(15) << std::right << "max-value" << " "
@@ -514,28 +514,28 @@ namespace imcmc{
                             << std::setw(15) << std::right << "--" << " "
                             << std::setw(15) << std::right << "--" << " ";
 
-                    outfile << std::setw(15) << std::right << "derived\n"; 
+                    outfile << std::setw(15) << std::right << "derived\n";
                 }
 
                 ++it;
             }
 
-			outfile << "\n# ==============================\n";
+            outfile << "\n# ==============================\n";
             outfile << "# == parameters being sampled ==\n";
-			outfile << "# ==============================\n";
+            outfile << "# ==============================\n";
 
             imcmc_vector_string_iterator itx;
 
-			itx = sampling_param_name.begin();
+            itx = sampling_param_name.begin();
 
             while( itx != sampling_param_name.end() ){
                 outfile << " " << std::setw(15) << std::left << *itx << "\n";
                 ++itx;
             }
 
-			outfile << "\n# ==============================\n";
+            outfile << "\n# ==============================\n";
             outfile << "# == parameters being derived ==\n";
-			outfile << "# ==============================\n";
+            outfile << "# ==============================\n";
 
             itd = derived_param.begin();
 
@@ -544,9 +544,9 @@ namespace imcmc{
                 ++itd;
             }
 
-			outfile << "\n# ==============================\n";
+            outfile << "\n# ==============================\n";
             outfile << "# ==== parameters to output ====\n";
-			outfile << "# ==============================\n";
+            outfile << "# ==============================\n";
 
             itx = output_param_name.begin();
 
@@ -671,9 +671,9 @@ namespace imcmc{
 
         for(int i=i_start; i<=i_end; ++i){
 
-			std::cout << " # ==> RANK: " << std::setw(4) << std::right << rank 
-					  << " initializing " << std::setw(4) << std::right << i 
-					  << " -th walker, [ i_start = " << std::setw(4) << std::right << i_start 
+            std::cout << " # ==> RANK: " << std::setw(4) << std::right << rank
+                      << " initializing " << std::setw(4) << std::right << i
+                      << " -th walker, [ i_start = " << std::setw(4) << std::right << i_start
                       << ", i_end = " << std::setw(4) << std::right << i_end << "]\n";
 
             double lndet, chisq;
@@ -715,12 +715,12 @@ namespace imcmc{
             }
             else{
                 error[i] = 1;
-				std::cout << " # ++++> RANK: " << rank << "  error happened when initializing walker[" 
-						  << i << "],  [ i_start = " << i_start << ", i_end = " << i_end << "]\n";
-			}
+                std::cout << " # ++++> RANK: " << rank << "  error happened when initializing walker["
+                          << i << "],  [ i_start = " << i_start << ", i_end = " << i_end << "]\n";
+            }
         }
 
-		MPI::COMM_WORLD.Barrier();
+        MPI::COMM_WORLD.Barrier();
 
         //  ===================================
         //  collecting all sampling parameters
@@ -868,7 +868,7 @@ namespace imcmc{
                       << "#  =============================================================\n";
             //  _lndet_min_, _chisq_min_ are used only when writing probability into chains.
             //
-            std::cout << "#	 *** " << error_tot << " likelihood errors encountered ...\n";
+            std::cout << "#     *** " << error_tot << " likelihood errors encountered ...\n";
         }
 
         MPI::COMM_WORLD.Barrier();
