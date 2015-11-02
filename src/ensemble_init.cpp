@@ -259,11 +259,11 @@ namespace imcmc{
             std::cout << " ===> seetings have been saved\n\n";
         }
 
-        // MPI::COMM_WORLD.Barrier();
+        MPI::COMM_WORLD.Barrier();
 
         init_param();
 
-        // MPI::COMM_WORLD.Barrier();
+        MPI::COMM_WORLD.Barrier();
 
         init_walkers();
 
@@ -697,11 +697,12 @@ namespace imcmc{
         MPI::COMM_WORLD.Barrier();
 
         for(int i=i_start; i<=i_end; ++i){
-
+/*
             std::cout << " # ==> RANK: " << std::setw(4) << std::right << rank
                       << " initializing " << std::setw(4) << std::right << i
                       << " -th walker, [ i_start = " << std::setw(4) << std::right << i_start
                       << ", i_end = " << std::setw(4) << std::right << i_end << "]\n";
+*/
 
             double lndet, chisq;
             double start_value, value_width;
