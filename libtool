@@ -164,7 +164,7 @@ lock_old_archive_extraction=no
 LTCC="gcc"
 
 # LTCC compiler flags.
-LTCFLAGS=""
+LTCFLAGS="-O2"
 
 # Take the output of nm and produce a listing of raw symbols and C names.
 global_symbol_pipe="sed -n -e 's/^.*[	 ]\\([ABCDGIRSTW][ABCDGIRSTW]*\\)[	 ][	 ]*\\([_A-Za-z][_A-Za-z0-9]*\\)\$/\\1 \\2 \\2/p' | sed '/ __gnu_lto/d'"
@@ -10234,7 +10234,7 @@ compiler_lib_search_dirs="/usr/local/lib"
 
 # Dependencies to place before and after the objects being linked to
 # create a shared library.
-predep_objects="-mIPOPT_obj_output_file_name=/tmp/ipo_icpc34JnXp.o -mGLOB_obj_output_file=/tmp/ipo_icpc34JnXp.o"
+predep_objects="-mIPOPT_obj_output_file_name=/tmp/ipo_icpcpAJRaN.o -mGLOB_obj_output_file=/tmp/ipo_icpcpAJRaN.o"
 postdep_objects="/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbeginS.o /usr/lib/gcc/x86_64-linux-gnu/5/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o"
 predeps=""
 postdeps="-L/usr/local/lib -L/opt/intel/composer_xe_2013_sp1.2.144/compiler/lib/intel64 -L/opt/intel/composer_xe_2013_sp1.2.144/ipp/../compiler/lib/intel64 -L/opt/intel/composer_xe_2013_sp1.2.144/ipp/lib/intel64 -L/opt/intel/composer_xe_2013_sp1.2.144/compiler/lib/intel64 -L/opt/intel/composer_xe_2013_sp1.2.144/mkl/lib/intel64 -L/opt/intel/composer_xe_2013_sp1.2.144/tbb/lib/intel64/gcc4.1 -L/opt/boost/lib -L/opt/intel/composer_xe_2013_sp1.2.144/compiler/lib/intel64 -L/opt/boost/lib/../lib/ -L/usr/lib/gcc/x86_64-linux-gnu/5/ -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/ -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/ -L/lib/x86_64-linux-gnu/ -L/lib/../lib64 -L/lib/../lib/ -L/usr/lib/x86_64-linux-gnu/ -L/usr/lib/../lib/ -L/opt/intel/composer_xe_2013_sp1.2.144/compiler/lib/intel64/ -L/opt/intel/composer_xe_2013_sp1.2.144/ipp/../compiler/lib/intel64/ -L/opt/intel/composer_xe_2013_sp1.2.144/ipp/lib/intel64/ -L/opt/intel/composer_xe_2013_sp1.2.144/mkl/lib/intel64/ -L/opt/intel/composer_xe_2013_sp1.2.144/tbb/lib/intel64/gcc4.1/ -L/opt/boost/lib/ -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../ -L/lib64 -L/lib/ -L/usr/lib -L/usr/lib/i386-linux-gnu -lmpi_cxx -lmpi -limf -lsvml -lirng -lm -lipgo -ldecimal -lstdc++ -lgcc -lgcc_s -lintlc -lpthread -lsvml -lc -lgcc -lgcc_s -lirc_s -ldl -lc"
