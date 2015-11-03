@@ -255,10 +255,12 @@ namespace imcmc{
         }
 
 //      DEBUG
+/*
          if( likelihood_state.this_like_is_ok )
              std::cout << "@rank: " << rank << " --- This Like is OK \n";
          else
              std::cout << "@rank: " << rank << " --- This Like is BAD \n";
+*/
 
         return state;
     }
@@ -379,14 +381,13 @@ namespace imcmc{
                                                 recvcounts, displace, MPI::DOUBLE,
                                                 ROOT_RANK );
 
-                    // MPI::COMM_WORLD.Barrier();
-
                     MPI::COMM_WORLD.Bcast(  walker[*it],
                                             walker_num,
                                             MPI::DOUBLE,
                                             ROOT_RANK    );
 
                     ++it;
+                    MPI::COMM_WORLD.Barrier();
                 }
 
             //  =============================
@@ -402,12 +403,8 @@ namespace imcmc{
                                                 recvcounts, displace, MPI::DOUBLE,
                                                 ROOT_RANK );
 
-//                    MPI::COMM_WORLD.Bcast(  walker[*it],
-//                                            walker_num,
-//                                            MPI::DOUBLE,
-//                                            ROOT_RANK    );
-
                     ++it;
+                    MPI::COMM_WORLD.Barrier();
                 }
 
             //  count accepts
@@ -494,14 +491,13 @@ namespace imcmc{
                                                 recvcounts, displace, MPI::DOUBLE,
                                                 ROOT_RANK );
 
-                    // MPI::COMM_WORLD.Barrier();
-
                     MPI::COMM_WORLD.Bcast(  walker[*it],
                                             walker_num,
                                             MPI::DOUBLE,
                                             ROOT_RANK    );
 
                     ++it;
+                    MPI::COMM_WORLD.Barrier();
                 }
 
             //  =============================
@@ -518,12 +514,8 @@ namespace imcmc{
                                                 recvcounts, displace, MPI::DOUBLE,
                                                 ROOT_RANK );
 
-//                    MPI::COMM_WORLD.Bcast(  walker[*it],
-//                                            walker_num,
-//                                            MPI::DOUBLE,
-//                                            ROOT_RANK    );
-
                     ++it;
+                    MPI::COMM_WORLD.Barrier();
                 }
 
             //  count accepts
@@ -601,13 +593,12 @@ namespace imcmc{
                                             1, MPI::DOUBLE,
                                             ROOT_RANK );
 
-                    // MPI::COMM_WORLD.Barrier();
-
                     MPI::COMM_WORLD.Bcast(  walker[*it],
                                             walker_num,
                                             MPI::DOUBLE,
                                             ROOT_RANK    );
                     ++it;
+                    MPI::COMM_WORLD.Barrier();
                 }
 
             //  ==============================
@@ -623,11 +614,8 @@ namespace imcmc{
                                             1, MPI::DOUBLE,
                                             ROOT_RANK );
 
-//                    MPI::COMM_WORLD.Bcast(  walker[*it],
-//                                            walker_num,
-//                                            MPI::DOUBLE,
-//                                            ROOT_RANK    );
                     ++it;
+                    MPI::COMM_WORLD.Barrier();
                 }
 
                 MPI::COMM_WORLD.Gather( &accept[rank],
@@ -702,14 +690,13 @@ namespace imcmc{
                                             1, MPI::DOUBLE,
                                             ROOT_RANK );
 
-                    // MPI::COMM_WORLD.Barrier();
-
                     MPI::COMM_WORLD.Bcast(  walker[*it],
                                             walker_num,
                                             MPI::DOUBLE,
                                             ROOT_RANK    );
 
                     ++it;
+                    MPI::COMM_WORLD.Barrier();
                 }
 
             //  ==============================
@@ -725,12 +712,8 @@ namespace imcmc{
                                             1, MPI::DOUBLE,
                                             ROOT_RANK );
 
-//                    MPI::COMM_WORLD.Bcast(  walker[*it],
-//                                            walker_num,
-//                                            MPI::DOUBLE,
-//                                            ROOT_RANK    );
-
                     ++it;
+                    MPI::COMM_WORLD.Barrier();
                 }
 
                 MPI::COMM_WORLD.Gather( &accept[rankx],
@@ -782,7 +765,7 @@ namespace imcmc{
                                         ROOT_RANK    );
             }
             else
-                throw std::runtime_error("ensemble_workspace::update_walkers() --> Wrong parallel_mode !!!");
+                imcmc_runtime_error("Wrong parallel_mode !");
 
             delete[] walker_id;
         }

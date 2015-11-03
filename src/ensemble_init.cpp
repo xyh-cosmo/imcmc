@@ -133,7 +133,7 @@ namespace imcmc{
 
             if( rank == ROOT_RANK ){
                 std::string settings = chain_root + ".settings";
-                ensemble_used_settings.open( settings.c_str() );    //  will be closed at the end.
+                used_settings.open( settings.c_str() );    //  will be closed at the end.
                 std::cout << " ===> " << settings << " has been opened to save used settings\n";
             }
         }
@@ -215,47 +215,47 @@ namespace imcmc{
 
             int iterm_width = 40;
 
-            ensemble_used_settings << " # ========================= used settings ======================\n";
-            ensemble_used_settings << std::setw(iterm_width) << std::left << " chain_root" << " = " << chain_root << "\n";
-            ensemble_used_settings << std::setw(iterm_width) << std::left << " chain_num" << " = " << chain_num << "\n";
-            ensemble_used_settings << std::setw(iterm_width) << std::left << " walker_num" << " = " << walker_num << "\n";
-            ensemble_used_settings << std::setw(iterm_width) << std::left << " burnin_step" << " = " << burnin_step << "\n";
-            ensemble_used_settings << std::setw(iterm_width) << std::left << " sample_step" << " = " << sample_step << "\n";
-            ensemble_used_settings << std::setw(iterm_width) << std::left << " skip_step" << " = " << skip_step << "\n";
-            ensemble_used_settings << std::setw(iterm_width) << std::left << " efficient_a" << " = " << efficient_a << "\n";
-            ensemble_used_settings << std::setw(iterm_width) << std::left << " init_ball_radius" << " = " << init_ball_radius << "\n";
+            used_settings << " # ========================= used settings ======================\n";
+            used_settings << std::setw(iterm_width) << std::left << " chain_root" << " = " << chain_root << "\n";
+            used_settings << std::setw(iterm_width) << std::left << " chain_num" << " = " << chain_num << "\n";
+            used_settings << std::setw(iterm_width) << std::left << " walker_num" << " = " << walker_num << "\n";
+            used_settings << std::setw(iterm_width) << std::left << " burnin_step" << " = " << burnin_step << "\n";
+            used_settings << std::setw(iterm_width) << std::left << " sample_step" << " = " << sample_step << "\n";
+            used_settings << std::setw(iterm_width) << std::left << " skip_step" << " = " << skip_step << "\n";
+            used_settings << std::setw(iterm_width) << std::left << " efficient_a" << " = " << efficient_a << "\n";
+            used_settings << std::setw(iterm_width) << std::left << " init_ball_radius" << " = " << init_ball_radius << "\n";
 
             if( start_from_fiducial )
-                ensemble_used_settings << std::setw(iterm_width) << std::left << " start_from_fiducial" << " = true\n";
+                used_settings << std::setw(iterm_width) << std::left << " start_from_fiducial" << " = true\n";
             else
-                ensemble_used_settings << std::setw(iterm_width) << std::left << " start_from_fiducial" << " = false\n";
+                used_settings << std::setw(iterm_width) << std::left << " start_from_fiducial" << " = false\n";
 
             if( use_cosmomc_format )
-                ensemble_used_settings << std::setw(iterm_width) << std::left << " used_cosmomc_format" << " = true\n";
+                used_settings << std::setw(iterm_width) << std::left << " used_cosmomc_format" << " = true\n";
             else
-                ensemble_used_settings << std::setw(iterm_width) << std::left << " used_cosmomc_format" << " = false\n";
+                used_settings << std::setw(iterm_width) << std::left << " used_cosmomc_format" << " = false\n";
 
             if( save_burned_ashes )
-                ensemble_used_settings << std::setw(iterm_width) << std::left << " save_burned_ashes" << " = true\n";
+                used_settings << std::setw(iterm_width) << std::left << " save_burned_ashes" << " = true\n";
             else
-                ensemble_used_settings << std::setw(iterm_width) << std::left << " save_burned_ashes" << " = false\n";
+                used_settings << std::setw(iterm_width) << std::left << " save_burned_ashes" << " = false\n";
 
             if( likelihood_state.stop_on_error )
-                ensemble_used_settings << std::setw(iterm_width) << std::left << " stop_on_error" << " = true\n";
+                used_settings << std::setw(iterm_width) << std::left << " stop_on_error" << " = true\n";
             else
-                ensemble_used_settings << std::setw(iterm_width) << std::left << " stop_on_error" << " = false\n";
+                used_settings << std::setw(iterm_width) << std::left << " stop_on_error" << " = false\n";
 
             if( likelihood_state.prompt_warning )
-                ensemble_used_settings << std::setw(iterm_width) << std::left << " prompt_warning" << " = true\n";
+                used_settings << std::setw(iterm_width) << std::left << " prompt_warning" << " = true\n";
             else
-                ensemble_used_settings << std::setw(iterm_width) << std::left << " prompt_warning" << " = false\n";
+                used_settings << std::setw(iterm_width) << std::left << " prompt_warning" << " = false\n";
 
             if( write_chain_header )
-                ensemble_used_settings << std::setw(iterm_width) << std::left << " write_chain_header" << " = true\n";
+                used_settings << std::setw(iterm_width) << std::left << " write_chain_header" << " = true\n";
             else
-                ensemble_used_settings << std::setw(iterm_width) << std::left << " write_chain_header" << " = false\n";
+                used_settings << std::setw(iterm_width) << std::left << " write_chain_header" << " = false\n";
 
-            ensemble_used_settings.close();
+            used_settings.close();
             std::cout << " ===> seetings have been saved\n\n";
         }
 
@@ -292,7 +292,7 @@ namespace imcmc{
                       << "#  ensemble_workspace::init_param():\n"
                       << "#  reading sampling parameters from: " + config_file << "\n";
 
-            std::cout << std::setw(params_width) << std::left << " params:" << " "
+            std::cout << std::setw(params_width) << std::left << " params:" << "  "
                       << std::right << std::setw(15) << "fid-value" << "  "
                       << std::right << std::setw(15) << "min-value" << "  "
                       << std::right << std::setw(15) << "max-value" << "\n";
@@ -699,12 +699,12 @@ namespace imcmc{
         // MPI::COMM_WORLD.Barrier();
 
         for(int i=i_start; i<=i_end; ++i){
-/*
+
             std::cout << " # ==> RANK: " << std::setw(4) << std::right << rank
                       << " initializing " << std::setw(4) << std::right << i
                       << " -th walker, [ i_start = " << std::setw(4) << std::right << i_start
                       << ", i_end = " << std::setw(4) << std::right << i_end << "]\n";
-*/
+
 
             double lndet, chisq;
             double start_value, value_width;
@@ -861,7 +861,6 @@ namespace imcmc{
                 walker_io["Chisq"][i]  = walker["Chisq"][i];
             }
 
-
         //  =====================
         //  initialize walker_io
         //  =====================
@@ -880,7 +879,7 @@ namespace imcmc{
 
             while( it != derived_param_name.end() ){
                 for( int i=0; i<walker_num; ++i )
-                    walker_io[*it][i] = walker[*it][i];
+                    walker_io[*it][i] = walker[*it][i]; //  all these initial values are zero
 
                 ++it;
             }

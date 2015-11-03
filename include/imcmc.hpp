@@ -2,29 +2,54 @@
 #define __IMCMC__
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
+#include <utility>
+#include <map>
+#include <cmath>
+#include <ctime>
 #include <string>
 #include <vector>
-#include <map>
+#include <cstdlib>
 #include <stdexcept>
 
-#ifndef __IMCMC_YEAR__
-    #define __IMCMC_YEAR__  2015
-#endif
+#include "mpi.h"
+
+extern "C"{
+    #include <gsl/gsl_math.h>
+    #include <gsl/gsl_rng.h>
+    #include <gsl/gsl_randist.h>
+}
+
+//  ============================================================================
+//  ============================================================================
+
+//  ================
+//   Version Number
+//  ================
 
 //  Version information
 #ifndef __IMCMC_VERSION__
     #define __IMCMC_VERSION__   "0.1.1"
 #endif
 
-//  Author
+//  ==============
+//  Author's Name
+//  ==============
 #ifndef __IMCMC_AUTHOR__
     #define __IMCMC_AUTHOR__    "Youhua Xu"
 #endif
 
-//  E-mail
+//  ==========
+//  My E-mail
+//  ==========
 #ifndef __IMCMC_EMAIL__
     #define __IMCMC_EMAIL__     "yhxu@nao.cas.cn"
 #endif
+
+//  ============================================================================
+//  ============================================================================
 
 #ifndef _OUT_WIDTH_
     #define _OUT_WIDTH_ 18  //  the width of the outputs of the chains.

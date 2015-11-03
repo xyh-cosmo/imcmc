@@ -11,27 +11,6 @@
 #ifndef __ensemble__
 #define __ensemble__
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <iomanip>
-#include <utility>
-#include <map>
-#include <cmath>
-#include <ctime>
-#include <string>
-#include <vector>
-#include <cstdlib>
-#include <stdexcept>
-
-#include "mpi.h"
-
-extern "C"{
-    #include <gsl/gsl_math.h>
-    #include <gsl/gsl_rng.h>
-    #include <gsl/gsl_randist.h>
-}
-
 #include "parser++.hpp"
 #include "imcmc.hpp"
 
@@ -49,11 +28,7 @@ namespace imcmc{
 
             std::string config_file;
 
-            std::ofstream   ensemble_used_settings; // to save used settings
-//            void save_settings( std::string& iterm, std::string& value );
-//            void save_settings( std::string& iterm, double& value );
-//            void save_settings( std::string& iterm, int& value );
-//            void save_settings( std::string& iterm, bool& value );
+            std::ofstream   used_settings; // to save used settings
 
             //    Parallel mode: 0, 1, 2
             //    0: serial version
@@ -107,13 +82,12 @@ namespace imcmc{
 
             //  Walkers
             imcmc_double_pointer    walker;                 //  includes LnPost, LnDet and Chisq
+            imcmc_double_pointer    walker_io;              //  this is acutally a backup of walker, and it will be used to write chains into files.
             imcmc_vector_string     sampling_param_name;    //  hold the names of parameters being sampled
             imcmc_vector_string     derived_param_name;     //  hold the names of derived parameters
             imcmc_vector_string     output_param_name;      //  if not set, then output_param_name = sampling_param_name
 
             imcmc_likelihood_state  likelihood_state;       //  save current likelihood state, i.e., possible error information
-
-            imcmc_double_pointer    walker_io;  //  this is acutally a backup of walker, and it will be used to write chains into files.
 
             //    Likelihoof functions , include both MODELs and DATA
             std::vector<likelihood_*>   likelihood;
