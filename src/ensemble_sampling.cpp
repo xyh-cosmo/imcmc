@@ -80,6 +80,8 @@ namespace imcmc{
             out_stream << "\n";
         }
 
+        MPI::COMM_WORLD.Barrier();
+
         for( int j=0; j<burnin_loops; ++j ){    //  Burn in
 
             update_walkers( false, j, burnin_loops );
@@ -101,8 +103,6 @@ namespace imcmc{
             out_stream.close();
 
         _searched_lndet_min_chisq_min_ = true;  //  once search during the burning, change its state to TRUE.
-
-//    TODO: add a diagnosis check of the burn in process, to see whether the samplers have been in equilibrium or not
 
         for( int i=1; i<=chain_num; ++i ){
 
@@ -150,7 +150,7 @@ namespace imcmc{
                 std::cout << "#  ===================================================\n\n";
             }
 
-            // MPI::COMM_WORLD.Barrier();
+            MPI::COMM_WORLD.Barrier();
 
             for( int j=0; j<sampling_loops; ++j ){
 
@@ -176,7 +176,9 @@ namespace imcmc{
                     << "#  ===============================================\n\n";
             }
 
-        //    after one chain is finished, you can choose to skip some steps
+            MPI::COMM_WORLD.Barrier();
+
+        //  after one chain is finished, you can choose to skip some steps
             if( (skip_step > 0)  && (i < chain_num) ){
 
                 if( rank == ROOT_RANK )
@@ -267,7 +269,8 @@ namespace imcmc{
 
     void ensemble_workspace::update_walkers( bool do_sampling, int ith, int num ){   //  do_sampling = true means start to sample
 
-        imcmc_double    full_param_temp(full_param);     //  make a copy
+    //  make a copy of full_param, and full_param will be updated inside update_a_walker()
+        imcmc_double    full_param_temp(full_param);
 
         for( int i=0; i<walker_num; ++i )
             accept[i] = 0;
