@@ -599,7 +599,7 @@ namespace imcmc{
         imcmc_vector_string_iterator it_derived = derived_param_name.begin();
 
         if( rank == ROOT_RANK ){
-            std::cout << "# --> Creating Walkers for Ensemble_Workspace ...\n";
+            std::cout << std::setw(60) << std::left << "# --> Creating Walkers for Ensemble_Workspace ... ";
         }
 
         while( it != sampling_param_name.end() ){
@@ -611,9 +611,10 @@ namespace imcmc{
 
             ++it;
         }
-
+        
         if( rank == ROOT_RANK ){
-            std::cout << "# --> Adding Derived Parameters ...\n";
+			std::cout << " [Done]\n";
+            std::cout << std::setw(60) << std::left << "# --> Adding Derived Parameters ...";
         }
 
         // MPI::COMM_WORLD.Barrier();
@@ -635,6 +636,9 @@ namespace imcmc{
             ++it_derived;
         }
 
+		if( rank == ROOT_RANK ){
+			std::cout << " [Done]\n";
+		}
 
         //  add LnPost, LnDet, and Chisq to walkers
         walker["LnPost"]    = new double[walker_num];
@@ -656,10 +660,11 @@ namespace imcmc{
         int *displace   = new int[rank_size];
 
         if( rank == ROOT_RANK ){
-            std::cout << "# --> Distributing Assignments ...\n";
+            std::cout << std::setw(60) << std::left << "# --> start initializing walkers ...\n";
+            std::cout << "\n";
         }
 
-        MPI::COMM_WORLD.Barrier();
+        //MPI::COMM_WORLD.Barrier();
 
         //  each rank will only calculate some of the likelihoods of the walkers.
         int i_start, i_end;
@@ -759,6 +764,11 @@ namespace imcmc{
                 std::cout << " # ++++> RANK: " << rank << "  error happened when initializing walker["
                           << i << "],  [ i_start = " << i_start << ", i_end = " << i_end << "]\n";
             }
+        }
+
+        if( rank == ROOT_RANK ){
+			std::cout << std::setw(60) << std::left << "# --> Initializing walkers ...\n";
+            std::cout << " [Done]\n";
         }
 
         MPI::COMM_WORLD.Barrier();

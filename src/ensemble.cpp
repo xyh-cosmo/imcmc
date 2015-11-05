@@ -41,6 +41,18 @@ namespace imcmc{
 
     ensemble_workspace::~ensemble_workspace(){
 
+        if( rank == ROOT_RANK ){
+
+            std::cout << "#  ========================================================================\n";
+
+            if( walker_initialized )
+                std::cout << "#  ~ensemble_workspace(): sampling is over, clearing ensemble workspace ...\n";
+            else
+                std::cout << "#  ~ensemble_workspace(): no sampling, normal quit ...\n";
+
+            std::cout << "#  ========================================================================\n";
+        }
+
         if( walker_initialized ){
 
             gsl_rng_free(rand_seed);
@@ -94,14 +106,8 @@ namespace imcmc{
         }
 
         if( rank == ROOT_RANK ){
-
-            std::cout << "#  ========================================================================\n";
-
-            if( walker_initialized )
-                std::cout << "#  ~ensemble_workspace(): sampling is over, clearing ensemble workspace ...\n";
-            else
-                std::cout << "#  ~ensemble_workspace(): no sampling, normal quit ...\n";
-
+			std::cout << "#  ========================================================================\n";
+            std::cout << "#  =============================    Done    ===============================\n";
             std::cout << "#  ========================================================================\n";
         }
     }
