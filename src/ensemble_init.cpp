@@ -102,6 +102,10 @@ namespace imcmc{
         if( Read::Has_Key_in_File( paramfile, "sample_step" ) ){
             Read::Read_Value_from_File(paramfile, "sample_step", sample_step);
         }
+        else{
+            imcmc_runtime_warning("\'sample_step\' not found, so the default value 50 will be used.");
+            sample_step = 50;
+        }
 
         if( Read::Has_Key_in_File( paramfile, "efficient_a" ) ){
             Read::Read_Value_from_File(paramfile, "efficient_a", efficient_a);
