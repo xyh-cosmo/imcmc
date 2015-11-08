@@ -473,6 +473,11 @@ namespace imcmc{
                 imcmc_vector_string_iterator it = derived_param_name.begin();
                 while( it != derived_param_name.end() ){
                     output_param_name.push_back(*it);
+
+                    if( rank == ROOT_RANK ){
+                        std::cout << "*\tparam[" << std::setw(4) << i << "] : " << *it << "\n";
+                        ++i;
+                    }
                     ++it;
                 }
             }
