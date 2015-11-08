@@ -397,6 +397,9 @@ namespace imcmc{
                 if( itd->first.size() > derived_params_width )
                     derived_params_width = itd->first.size();
             }
+            else
+                imcmc_runtime_error("found duplicate parameter: " + itd->first + ", check your list of derived parameters!");
+
             ++itd;
         }
 
@@ -420,7 +423,7 @@ namespace imcmc{
                 if( rank == ROOT_RANK ){
                     std::cout << "\n#  ==============================================\n"
                               << "#  ensemble_workspace::init_param():\n"
-                              << "#  " << nvalue << " parameters will be output:\n";
+                              << "#  " << nvalue + derived_param.size() << " parameters [including derived] will be output:\n";
                 }
 
                 std::string *name = new std::string[nvalue];
@@ -459,13 +462,19 @@ namespace imcmc{
                         ++i;
                     }
                     else{
-                        std::string err = "\nensemble_workspace::init_param():\n" + name[i]
-                            + " is not in the sampling parameter list, check your input file.\n";
-                        throw std::runtime_error(err);
+                        imcmc_runtime_error( name[i] + " is not in the sampling parameter list, check your input file.");
                     }
                 }
 
                 std::cout << "\n";
+
+            //  add derived parameters into output_params, derived parameters are always interested by users, so they will
+            //  always be written into chain files.
+                imcmc_vector_string_iterator it = derived_param_name.begin();
+                while( it != derived_param_name.end() ){
+                    output_param_name.push_back(*it);
+                    ++it;
+                }
             }
         }
         else{
@@ -482,7 +491,7 @@ namespace imcmc{
             if( rank == ROOT_RANK )
                 std::cout << "\n # ensemble_workspace::init_param():\n"
                     << " # --> no keyword : output_params found in " + config_file + ", so all sampling\n"
-                    << " # --> parameters will be output (including all derived parameters).\n\n";
+                    << " # --> parameters and derived parameters will be written into chains.\n\n";
         }
 
         if( rank == ROOT_RANK ){
@@ -615,7 +624,7 @@ namespace imcmc{
 
             ++it;
         }
-        
+
         if( rank == ROOT_RANK ){
 			std::cout << " [Done]\n";
             std::cout << std::setw(60) << std::left << "# --> Adding Derived Parameters ...";

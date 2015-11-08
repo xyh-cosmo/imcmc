@@ -100,8 +100,8 @@ namespace imcmc{
 
             void init( std::string infile );    // read initialization & other settings from the input *ini file
             void init_param();                  // initialize relavant parameters, some might be set to default values.
-            void add_derived_param();   // derived parameters are calculated inside likelihoods written by users, so I needed to modify
-                                        // add_likelihood(*****)
+            // void add_derived_param();   // derived parameters are calculated inside likelihoods written by users, so I needed to modify
+            //                             // add_likelihood(*****)
 
             bool walker_initialized;    //    inidicate whether the walkers are initialized.
             void init_walkers();        //    initialize the walkers.
