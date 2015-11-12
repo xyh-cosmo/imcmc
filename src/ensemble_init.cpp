@@ -304,8 +304,11 @@ namespace imcmc{
             param_limits_os.open(param_limits.c_str());
 
             param_limits_os << "# This file contains parameters' limits, which might be useful when using CosmoMC::getdist\n"
-                            << "# to process the sampled chains and make interesting plots\n\n"
+                            << "# to process the sampled chains and make interesting plots.\n"
                             << "# Just copy the following into getdist parameter files (some *ini file)\n\n";
+
+            param_limits_os << "# UPDATE (Nov-12-2015): GetDist now use new format of ranges: 'parname min max', so the old\n"
+                               "# version limits[param] = min max is no longer used.\n";
         }
 
         // MPI::COMM_WORLD.Barrier();
@@ -339,10 +342,17 @@ namespace imcmc{
                         ++sampling_param_num;
 
                         if( rank == ROOT_RANK ){
-                            param_limits_os << std::left << std::setw(params_width+8) << "limits[" + it->first + "]"
-                                            << " = "
+                            // GetDist no loner use limits[param] = min max format
+
+                            // param_limits_os << std::left << std::setw(params_width+8) << "limits[" + it->first + "]"
+                            //                 << " = "
+                            //                 << std::setw(10) << par[1] << " "
+                            //                 << std::setw(10) << par[2] << "\n";
+
+                            param_limits_os << std::left << std::setw(params_width+8) << it->first
                                             << std::setw(10) << par[1] << " "
                                             << std::setw(10) << par[2] << "\n";
+
                         }
                     }
                     else if( fabs(par[1]-par[2]) < 1E-15 ){ //  not do MCMC, be careful here
