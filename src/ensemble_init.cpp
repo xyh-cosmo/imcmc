@@ -303,12 +303,15 @@ namespace imcmc{
 
             param_limits_os.open(param_limits.c_str());
 
-            param_limits_os << "# This file contains parameters' limits, which might be useful when using CosmoMC::getdist\n"
-                            << "# to process the sampled chains and make interesting plots.\n"
+            param_limits_os << "\n# This file contains parameters' limits, which might be useful when using\n"
+                            << "# CosmoMC::getdist to process the sampled chains and make interesting plots.\n"
                             << "# Just copy the following into getdist parameter files (some *ini file)\n\n";
 
-            param_limits_os << "# UPDATE (Nov-12-2015): GetDist now use new format of ranges: 'parname min max', so the old\n"
-                               "# version limits[param] = min max is no longer used.\n";
+            param_limits_os << "# -------------------------------------------------------------------------\n"
+                            << "# UPDATE (Nov-12-2015): GetDist now use new format of ranges: \n"
+                            << "# 'parname min max',\n"
+                            << "# so the old format limits[param] = min max is no longer used.\n"
+                            << "# -------------------------------------------------------------------------\n\n";
         }
 
         // MPI::COMM_WORLD.Barrier();
