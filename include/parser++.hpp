@@ -5,8 +5,8 @@
  *  TODO: some functions of this parser will be re-written in templates.
  */
 
-#ifndef __PARSER_CPP__
-#define __PARSER_CPP__
+#ifndef __IMCMC_PARSER__
+#define __IMCMC_PARSER__
 
 #include <iostream>
 #include <fstream>
@@ -195,4 +195,4 @@ namespace parser{
 
 }
 
-#endif    // __PARSER_CPP__
+#endif    // __IMCMC_PARSER__

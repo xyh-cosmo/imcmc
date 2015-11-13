@@ -8,8 +8,8 @@
     on the users.
     ============================================================================*/
 
-#ifndef __ensemble__
-#define __ensemble__
+#ifndef __IMCMC_ENSEMBLE__
+#define __IMCMC_ENSEMBLE__
 
 #include "parser++.hpp"
 #include "imcmc.hpp"
@@ -150,4 +150,4 @@ namespace imcmc{
 
 }
 
-#endif // __PARAensemble__
+#endif // __IMCMC_ENSEMBLE__

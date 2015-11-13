@@ -14,7 +14,11 @@
 #include <cstdlib>
 #include <stdexcept>
 
-#include "mpi.h"
+//  use macro __IMCMC_MPI__ to control source files.
+#ifndef __IMCMC_MPI__
+#define __IMCMC_MPI__
+    #include "mpi.h"
+#endif
 
 extern "C"{
     #include <gsl/gsl_math.h>
@@ -105,10 +109,6 @@ namespace imcmc{
     };
 
     typedef struct imcmc_likelihood_state istate;
-
-    // struct imcmc_derived_params{    // support for derived parameters
-    //
-    // };
 
     struct likelihood_{
 
