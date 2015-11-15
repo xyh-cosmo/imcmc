@@ -10,7 +10,7 @@ namespace imcmc{
         prompt_error    = true;
     }
 
-	void imcmc_likelihood_state::init(){
+    void imcmc_likelihood_state::init(){
 
         this_like_is_ok = true;
         stop_on_error   = false;
