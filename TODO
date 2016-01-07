@@ -26,3 +26,8 @@ Oct-21-2015
     void ensemble_workspace::restart(***);
 
     inside this function, the number of walkers should not be changed!!!
+
+Jan-07-2016
+	implement additional check of sample points, those who have NOT move for MANY times.
+	These points are not expected, since they occurence might indicate some peculiar or even
+	ridiculous properties of posterior distribution function in the neighborhood of that point.
