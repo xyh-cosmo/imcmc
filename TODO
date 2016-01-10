@@ -31,3 +31,8 @@ Jan-07-2016
 	implement additional check of sample points, those who have NOT move for MANY times.
 	These points are not expected, since they occurence might indicate some peculiar or even
 	ridiculous properties of posterior distribution function in the neighborhood of that point.
+
+Jan-08-2016
+	Prepare to upgrade parser, adding new structures to store readed key-value pairs, so all
+	contents will be read in once for all.  When we need value(s) of some key, just query that
+	from the struture(s).
