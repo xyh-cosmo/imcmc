@@ -111,10 +111,8 @@ namespace parser{
         void Read_Value_from_File( std::string infile, std::string key, int& value );
         void Read_Value_from_File( std::string infile, std::string key, double& value );
 
-        //    void Read_Value_from_File( std::string infile, std::string key, bool& value );    //    this one is not necessary, since we always use strings "true" / "false" in *.ini files
-
         //  BRead_*_*_*
-        //  'B' means return a bool value
+        //  'B' means that these functions will return a bool value
         bool BRead_Value_from_File( std::string infile, std::string key, std::string &value );
         bool BRead_Value_from_File( std::string infile, std::string key, int &value );
         bool BRead_Value_from_File( std::string infile, std::string key, double &value );
@@ -170,7 +168,7 @@ namespace parser{
                                              int         array_size );
 
         //    BRead_*_*_*
-        //    B means return a bool value
+        //    B means that these functions will return a bool value  (false means failed to read array)
         bool BRead_Array_from_File( std::string infile,
                                     std::string key,
                                     std::string array[],
