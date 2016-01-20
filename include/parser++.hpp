@@ -22,6 +22,18 @@
 #include <cstdlib>
 #include <stdexcept>
 
+//  The new parser class: IniFile, still placed under namespace imcmc
+
+namespace imcmc{
+
+    class IniFile{
+        public:
+            IniFile(){};
+
+    };
+
+}
+
 namespace imcmc{
 namespace parser{
 
