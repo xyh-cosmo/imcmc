@@ -44,6 +44,10 @@ Dependence
 2) GSL (using only GSL's random number generator)
 
 
+TODO
+====
+Desigining new parser class 'IniFile'.   -- 2016-1-22
+
 .. image:: https://badges.gitter.im/Join%20Chat.svg
    :alt: Join the chat at https://gitter.im/xyh-cosmo/imcmc
    :target: https://gitter.im/xyh-cosmo/imcmc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
