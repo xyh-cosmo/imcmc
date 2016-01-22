@@ -26,10 +26,37 @@
 
 namespace imcmc{
 
+//	define some base structures to hold parameter names and their values.
+
+	struct IniFileBaseInt{
+
+	};
+
+	struct IniFileBaseDouble{
+
+	};
+
+	struct IniFileBaseString{
+
+	};
+
     class IniFile{
         public:
-            IniFile(){};
+            IniFile();
+			~IniFile();
 
+			void Init( std::string& inifile );			//	
+			void Update( std::string& new_inifile );	//	this will make reading multiple ini file possible
+
+
+		//	after inifile object is initialized, you can get any parameter's value(s)
+			void get_value( std::string& pname, int& pvalue );
+			void get_value( std::string& pname, double& pvalue );
+			void get_value( std::string& pname, std::string& pvalue );
+
+			void get_values( std::string& pname, int *pvalues, int psize );
+			void get_values( std::string& pname, double *pvalues, int psize );
+			void get_values( std::string& pname, std::string *pvalues, int psize );
     };
 
 }
