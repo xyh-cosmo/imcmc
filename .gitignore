@@ -2,9 +2,10 @@ doc/imcmc_tutorial.aux
 doc/imcmc_tutorial.log
 doc/imcmc_tutorial.synxtex.gz
 
-./src/.deps/*.Plo
-./src/Makefile
+src/.deps
+src/Makefile
 autom4te
+libtool
 
 config.log
 config.status

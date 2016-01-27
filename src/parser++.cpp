@@ -1,12 +1,12 @@
-//    @TODO: the following will be re-named as XParser{} in the future @2014-11-29
-//    and this file can be used independently
+//  TODO: the new parser class IniFile has been declared in header 'parser++.hpp', but no implementation has been add ...
 
 #include "parser++.hpp"
 
 namespace imcmc{
-namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
+namespace parser{
     namespace Read{
 
+    //  ======================================================
     //  test whether a file exist, added @2014-11-27
         bool Has_File( std::string paramfile ){
             bool has = false;
@@ -20,19 +20,22 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             return has;
         }
 
+    //  =======================================================
     //  convert to upper case
         void ToUpperCase( std::string &str ){
             for(std::string::size_type i=0; i!=str.size(); ++i)
                 str[i] = toupper(str[i]);
         }
 
+    //  =======================================================
     //  convert to lower case
         void ToLowerCase( std::string &str ){
             for(std::string::size_type i=0; i!=str.size(); ++i)
                 str[i] = tolower(str[i]);
         }
 
-    //    compare two strings, the case is irrelavent
+    //  =======================================================
+    //  compare two strings, the case is irrelavent
         bool SameStrings( std::string s1, std::string s2 ){
             bool same = false;
             std::string S1(s1);
@@ -46,6 +49,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             return same;
         }
 
+    //  =======================================================
     //  Determine whether the line is commented out
         bool Is_Commented( std::string line ){
             bool is_commented = false;
@@ -63,8 +67,9 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             return is_commented;
         }
 
-    //    @2014-11-26
-    //    Need to add a new function to extract un-commented parts of a line
+    //  =====================================================================
+    //  @2014-11-26
+    //  Need to add a new function to extract un-commented parts of a line
     //  Note: this function should be applied only to NON-commented lines
         std::string Remove_Comments( std::string line ){
 
@@ -116,7 +121,9 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             return empty;
         }
 
-    //    A(:) means that A is an array, but its size is unknown ...
+    //  =======================================================================
+    //  A(:) means that A is an array, but its size is unknown ...
+    //  this is not used for the moment ...
         bool Is_Array( std::string param ){
             bool is_array = false;
             if( param.find("(:)") != std::string::npos )
@@ -130,6 +137,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             return param.substr(0, idx);
         }
 
+    //  ========================================================================
     //  get the begin position of value
         std::string::size_type Begin_of_Value( std::string line ){
 
@@ -146,7 +154,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             return idx;
         }
 
-//  ######################################################################
+    //  ######################################################################
         std::string::size_type End_of_Value( std::string line ){
             std::string::size_type idx_begin_of_value   = Begin_of_Value(line);
             std::string::size_type idx_end_of_value     = line.size()-1;
@@ -168,7 +176,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
             else
                 return idx_end_of_value;
         }
-//  ######################################################################
+    //  ######################################################################
 
     //  Check whether the key is included in line, if correct, one key should be found.
         bool Has_Key( std::string line, std::string key ){
@@ -968,8 +976,7 @@ namespace parser{    //    'ParaEmcee' will be replaced by 'XParser'
 
     }
 
-
-    namespace Info{ 
+    namespace Info{
     //  Though imcmc has two functions similar to the follwings, I still keep them here, because these
     //  two are used inside parser only, and NO imcmc function were used here, so this parser is actually
     //  completely independent and can be used anywhere else directly (don't forget the header)
