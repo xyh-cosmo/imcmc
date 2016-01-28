@@ -12,3 +12,6 @@ config.status
 
 examples/Makefile
 Makefile
+
+autom4te.cache
+
