@@ -132,6 +132,8 @@ namespace imcmc{
     void imcmc_runtime_error( std::string err_info );
     void imcmc_runtime_warning( std::string warn_info );
 
+//	new added verbose information displayer (@ Jan-28-2016)
+	void imcmc_verbose( int rank, std::string& verbose_info );
 }
 
 #endif
