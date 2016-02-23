@@ -66,12 +66,12 @@ namespace imcmc{
             //    state of acception or rejection, 1 or 0
             int *accept;    // = new int[walker_num];
             int *error;
-            int total_accepts;
-            int total_rejects;
-            int total_errors;       // record how many likelihood error happens
+            int total_accepts;      //  total number of acceptance of each chain
+            int total_rejects;      //  total number of rejections of each chain
+            int total_errors;       //  record how many likelihood error happens
 
-            int full_param_num;     // number of full parameters
-            int sampling_param_num; // number of sampling parameters
+            int full_param_num;     //  number of full parameters
+            int sampling_param_num; //  number of sampling parameters
             int derived_param_num;  //  number of derived parameters
 
             imcmc_double    full_param;
@@ -111,7 +111,7 @@ namespace imcmc{
         //    add likelihood functions.  If you have many likelihoods functions, which share some common parameters, it'd better to
         //    combine those likelihood functions into a BIGGER one, and adding some flags to control which likelihood functions will
         //    be used.  This is quite common when someone is trying to constraining model parameters using different combinations of
-        //    data sets.
+        //    data sets, which may share some common nuisance parameters.
 
             void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
                                  imcmc_vector_string modelparam,

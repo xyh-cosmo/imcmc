@@ -27,7 +27,8 @@ namespace imcmc{
 
                     while( it != output_param_name.end() ){
 
-                        of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase << walker_io[*it][i] << "";
+                        of  << std::setw(_OUT_WIDTH_) << std::scientific << std::setprecision(10) << std::uppercase
+                            << walker_io[*it][i] << "";
                         walker_io[*it][i] = walker[*it][i]; //  update to new walker
                         ++it;
                     }
