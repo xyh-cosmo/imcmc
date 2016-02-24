@@ -42,6 +42,7 @@ namespace imcmc{
                     walker_io["Chisq"][i]  = walker["Chisq"][i];
                 }
                 else{
+                //  This should never happen.
                     imcmc_runtime_error("unknown accept value, must be 0 or 1!");
                 }
             }

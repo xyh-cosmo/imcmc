@@ -2,16 +2,28 @@ doc/imcmc_tutorial.aux
 doc/imcmc_tutorial.log
 doc/imcmc_tutorial.synxtex.gz
 
-src/.deps
-src/Makefile
 autom4te
 libtool
-
 config.log
 config.status
 
-examples/Makefile
 Makefile
+src/Makefile
+examples/Makefile
+
+examples/.deps/cmb_test-cmb.Po
+examples/.deps/gaussian_test-gaussian.Po
+examples/.deps/himmelblau_test-himmelblau.Po
+examples/.deps/rosenbrock_test-rosenbrock.Po
+
+src/.deps/libimcmc_la-ensemble.Plo
+src/.deps/libimcmc_la-ensemble_init.Plo
+src/.deps/libimcmc_la-ensemble_io.Plo
+src/.deps/libimcmc_la-ensemble_likelihood.Plo
+src/.deps/libimcmc_la-ensemble_prior.Plo
+src/.deps/libimcmc_la-ensemble_sampling.Plo
+src/.deps/libimcmc_la-imcmc.Plo
+src/.deps/libimcmc_la-parser++.Plo
 
 autom4te.cache
 

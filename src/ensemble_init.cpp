@@ -397,8 +397,6 @@ namespace imcmc{
             ++it;
         }
 
-        // MPI::COMM_WORLD.Barrier();
-
         if( rank == ROOT_RANK )
             param_limits_os.close();
 
@@ -410,8 +408,8 @@ namespace imcmc{
         derived_params_width = params_width;
 
         while( itd != derived_param.end() ){
-        // make sure that the derived parameter is NOT in full_param
-            if( full_param.count(itd->first) == 0 ){
+            if( full_param.count(itd->first) == 0 ){    // make sure that the derived parameter is NOT in full_param
+
                 full_param[itd->first]    = itd->second;
 
                 if( itd->first.size() > derived_params_width )
@@ -443,7 +441,7 @@ namespace imcmc{
                 if( rank == ROOT_RANK ){
                     std::cout << "\n#  ==============================================\n"
                               << "#  ensemble_workspace::init_param():\n"
-                              << "#  " << nvalue + derived_param.size() << " parameters [including derived] will be output:\n";
+                              << "#  " << nvalue << " sampling parameters will be output:\n";
                 }
 
                 std::string *name = new std::string[nvalue];
@@ -458,7 +456,7 @@ namespace imcmc{
                     for( int m=0; m<nvalue; ++m ){
                         for( int n=m+1; n<nvalue; ++n ){
                             if( name[m] == name[n] ){
-                                std::string errmesg = "\nensemble_workspace::init_param()\n\tfound duplicate of parameter: "
+                                std::string errmesg = "\nensemble_workspace::init_param()\n\tfound duplicate of sampling parameter: "
                                                     + name[m] + " in output_params, remove it.";
                                 throw std::runtime_error(errmesg);
                             }
@@ -485,21 +483,6 @@ namespace imcmc{
                         imcmc_runtime_error( name[i] + " is not in the sampling parameter list, check your input file.");
                     }
                 }
-
-                std::cout << "\n";
-
-            //  add derived parameters into output_params, derived parameters are always interested by users, so they will
-            //  always be written into chain files.
-                imcmc_vector_string_iterator it = derived_param_name.begin();
-                while( it != derived_param_name.end() ){
-                    output_param_name.push_back(*it);
-
-                    if( rank == ROOT_RANK ){
-                        std::cout << "*\tparam[" << std::setw(4) << i << "] : " << *it << "\t\t... derived\n";
-                        ++i;
-                    }
-                    ++it;
-                }
             }
         }
         else{
@@ -507,16 +490,89 @@ namespace imcmc{
             output_param_name = sampling_param_name;
             imcmc_vector_string_iterator it = derived_param_name.begin();
 
-        // all names in derived_param_name have been checked that no duplicate exists
+            if( rank == ROOT_RANK )
+                std::cout << "\n # ensemble_workspace::init_param():\n"
+                    << " # --> no keyword : output_params found in " + config_file + ", so all sampling\n"
+                    << " # --> parameters will be written into chains.\n\n";
+        }
+
+        if( Read::Has_Key_in_File( config_file, "output_dparams" ) ){
+
+            int nvalue = Read::Num_of_Value_for_Key( config_file, "output_dparams" );
+
+            if( nvalue == 0 ){
+
+            //  add all derived parameters to the end of output_param_name directly.
+                imcmc_vector_string_iterator it = derived_param_name.begin();
+
+                while( it != derived_param_name.end() ){
+                    output_param_name.push_back(*it);
+                    ++it;
+                }
+
+                if( rank == ROOT_RANK ){
+                    std::cout << "\n#  =============================================================\n"
+                              << "#  ensemble_workspace::init_param():\n"
+                              << "#  keyword : output_dparams found in " + config_file + ", but no parameters\n"
+                              << "#  were listed, so all derived parameters will be output.\n";
+                }
+            }
+            else{
+
+                if( rank == ROOT_RANK ){
+                    std::cout << "\n#  ==============================================\n"
+                              << "#  ensemble_workspace::init_param():\n"
+                              << "#  " << derived_param.size() << " derived parameters will be output:\n";
+                }
+
+                std::string *name = new std::string[nvalue];
+                Read::Read_Array_from_File(config_file, "output_dparams", name, nvalue);
+
+                int i=0;
+
+                while( i < nvalue ){
+
+                    //  check if there is any duplicate in name[]
+
+                    for( int m=0; m<nvalue; ++m ){
+                        for( int n=m+1; n<nvalue; ++n ){
+                            if( name[m] == name[n] ){
+                                std::string errmesg = "\nensemble_workspace::init_param()\n\tfound duplicate of derived parameter: "
+                                                    + name[m] + " in output_params, remove it.";
+                                throw std::runtime_error(errmesg);
+                            }
+                        }
+                    }
+
+                    //  check if the readed derived parameter is in derived_param_name:
+                    int count = 0;
+                    imcmc_vector_string_iterator it = derived_param_name.begin();
+                    while( it != derived_param_name.end() ){
+                        if( *it == name[i] )
+                            ++count;
+                        ++it;
+                    }
+
+                    if ( count == 1 ){
+                        if( rank == ROOT_RANK )
+                            std::cout << "*\tparam[" << std::setw(4) << i << "] : " << name[i] << "\t\t... sampling\n";
+
+                        output_param_name.push_back( name[i] );
+                        ++i;
+                    }
+                    else{
+                        imcmc_runtime_error( name[i] + " is not in the derived parameter list, check your input file.");
+                    }
+                }
+            }
+        }
+        else{
+            imcmc_vector_string_iterator it = derived_param_name.begin();
+
             while( it != derived_param_name.end() ){
                 output_param_name.push_back(*it);
                 ++it;
             }
-
-            if( rank == ROOT_RANK )
-                std::cout << "\n # ensemble_workspace::init_param():\n"
-                    << " # --> no keyword : output_params found in " + config_file + ", so all sampling\n"
-                    << " # --> parameters and derived parameters will be written into chains.\n\n";
         }
 
         if( rank == ROOT_RANK ){
