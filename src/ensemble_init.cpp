@@ -291,6 +291,7 @@ namespace imcmc{
 
         imcmc_double_iterator it = full_param.begin();
 
+    //  obtain the max-width of parameters.
         while( it != full_param.end() ){
             if( it->first.size() > params_width )
                 params_width = it->first.size();
