@@ -409,7 +409,9 @@ namespace imcmc{
         derived_params_width = params_width;
 
         while( itd != derived_param.end() ){
-            if( full_param.count(itd->first) == 0 ){    // make sure that the derived parameter is NOT in full_param
+            
+        //  make sure that the derived parameter is NOT in full_param
+            if( full_param.count(itd->first) == 0 ){
 
                 full_param[itd->first]    = itd->second;
 
