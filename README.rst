@@ -9,10 +9,10 @@ imcmc
 Description
 ============
 
-This code aims to provide easy to use interfece to MCMC simulations.  Currently only 
-the Affine-Invariant Ensemble Sampler algorithm has been implemented, in the future 
-other commonly used algorithms / samplers will also be included into this library, 
-for example the classical Metropolis-Hastings and Hamiltonian Monte Carlo. Besides I
+This library aims to provide easy to use interfece to MCMC simulations.  Currently only 
+the Affine-Invariant Ensemble Sampler algorithm has been implemented.  In the future 
+other commonly used algorithms/samplers will also be included into this library, 
+for example, the classical Metropolis-Hastings and Hamiltonian Monte Carlo. Besides I
 would also like to add an interface to MultiNest.
 
 Updates
