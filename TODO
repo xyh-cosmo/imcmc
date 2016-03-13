@@ -42,3 +42,6 @@ Feb-27-2016:
 	including all parameter names, likelihood name, and etc..  All the new information will be output
 	to some txt file(s), so the user will see more details about the likelihood function(s) they have
 	used.
+
+Mar-13-2016:
+	How about mixing different MCMC sampler/algrithom together into a unified MCMC interface?
