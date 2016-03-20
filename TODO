@@ -1,50 +1,54 @@
-Feb-5-2015
-  Currently only emcee sampler has been included, later I will include in other commonly used
-algorithms, such as Metropolis-Hastings, Gibbs, Hamiltonian, etc ..
+Feb-5-2015 "--- state [not finished] done ---"
+    Currently only emcee sampler has been included, later I will include in other
+    commonly used algorithms, such as Metropolis-Hastings, Gibbs, Hamiltonian,
+    etc ..
 
-Feb-16-2015
-  How about writing a paper on the design of the structure of imcmc?
+Feb-16-2015 "state [not finished] done "
+    How about writing a paper on the design of the structure of imcmc?
 
-Mar-19-2015
-  Add support for derived parameters. [not finished]
+Mar-19-2015 "state [not finished] done "
+    Add support for derived parameters.
 
 Mar-27-2015
-  Add convergence check/diagnosis [not finished]
+    Add convergence check/diagnosis [not finished]
 
 Oct-10-2015
-  Planned to add other algorithms, i.e., the traditional Metropolis-Hastings,
-Hamiltonian Monte Carlo and an interface to MultiNest.
+    Planned to add other algorithms, i.e., the traditional Metropolis-Hastings,
+    Hamiltonian Monte Carlo and an interface to MultiNest.
 
 Oct-12-2015
-  Write a document.
+    Write a document.
 
 Oct-21-2015
-    add the option to restart the sampling from some place. also add the option to adjust the number
-    of CPUs in use, i.e., after testing (burning) using very few cores, one can immediately first
-    stop the sampling and then change the settings in ini-file and re-run the job submission.
+    add the option to restart the sampling from some place. also add the option 
+    to adjust the number of CPUs in use, i.e., after testing (burning) using very
+    few cores, one can immediately first stop the sampling and then change the
+    settings in ini-file and re-run the job submission.
 
     void ensemble_workspace::restart(***);
 
     inside this function, the number of walkers should not be changed!!!
 
 Jan-07-2016
-	implement additional check of sample points, those who have NOT move for MANY times.
-	These points are not expected, since they occurence might indicate some peculiar or even
-	ridiculous properties of posterior distribution function in the neighborhood of that point.
+	implement additional check of sample points, those who have NOT move for MANY
+    times.  These points are not expected, since they occurence might indicate
+    some peculiar or even ridiculous properties of posterior distribution function
+    in the neighborhood of that point.
 
 Jan-08-2016
-	Prepare to upgrade parser, adding new structures to store readed key-value pairs, so all
-	contents will be read in once for all.  When we need value(s) of some key, just query that
-	from the struture(s).
+	Prepare to upgrade parser, adding new structures to store readed key-value
+    pairs, so all contents will be read in once for all.  When we need value(s)
+    of some key, just query that from the struture(s).
 
 Feb-27-2016:
-	Define new Likelihood class, add more features, for example, add summary of the likelihood object,
-	including all parameter names, likelihood name, and etc..  All the new information will be output
-	to some txt file(s), so the user will see more details about the likelihood function(s) they have
-	used.
+	Define new Likelihood class, add more features, for example, add summary of
+    the likelihood object, including all parameter names, likelihood name, and 
+    etc..  All the new information will be output to some txt file(s), so the
+    user will see more details about the likelihood function(s) they have used.
 
 Mar-13-2016:
-	How about mixing different MCMC sampler/algrithom together into a unified MCMC interface?
+	How about mixing different MCMC sampler/algrithom together into a unified
+    MCMC interface?
 
 Mar-20-2016
 	Add support for output chisqs of each likelihood function(s).
