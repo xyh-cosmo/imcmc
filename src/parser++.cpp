@@ -1,4 +1,4 @@
-//  TODO: the new parser class IniFile has been declared in header 'parser++.hpp', but no implementation has been add ...
+//  TODO: the new parser class IniFile has been declared in header 'parser++.hpp', but it has not been implemented yet
 
 #include "parser++.hpp"
 
