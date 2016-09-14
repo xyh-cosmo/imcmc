@@ -101,7 +101,7 @@
 
 /* Define to 1 if `lstat' dereferences a symlink specified with a trailing
    slash. */
-#define LSTAT_FOLLOWS_SLASHED_SYMLINK 1
+/* #undef LSTAT_FOLLOWS_SLASHED_SYMLINK */
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
