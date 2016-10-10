@@ -52,3 +52,6 @@ Mar-13-2016 [not finished]
 
 Mar-20-2016 [not finished]
 	Add support for output chisqs of each likelihood function(s).
+
+Oct-10-2016 [NOT finished]
+    update 'make check' to parallel-mode
