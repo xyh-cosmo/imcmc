@@ -11,6 +11,12 @@ libtool
 src/.deps
 src/Makefile
 
+doc/imcmc_tutorial.aux
+doc/imcmc_tutorial.log
+doc/imcmc_tutorial.out
+doc/imcmc_tutorial.toc
+doc/imcmc_tutorial.synctex.gz
+
 examples/.libs/
 examples/cmb.params
 examples/cmb.ranges
