@@ -94,6 +94,7 @@ namespace imcmc{
     typedef std::vector<std::string>::iterator  imcmc_vector_string_iterator;
 
     struct imcmc_likelihood_state{  //  this will be used by user, so there is no suffix '_'
+
         bool this_like_is_ok;
         bool stop_on_error;
         bool prompt_warning;
@@ -101,7 +102,12 @@ namespace imcmc{
         char errmesg[_IMCMC_MESG_LENGTH_];
 
         void store_mesg( std::string& why );
-        void store_mesg( char *why );
+
+    //  ========================================================================
+    //  Note added @ Oct-28, 2016
+    //  ISO C++ forbids converting a string constant to ‘char*’
+    //  so I change older declaration "char *why" to "const char *why"
+        void store_mesg( const char *why );
         void what_happened();
 
         imcmc_likelihood_state();

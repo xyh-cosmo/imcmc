@@ -22,14 +22,16 @@ namespace imcmc{
                       << " ---> imcmc_likelihood_state.this_like_is_ok  initialized to \'true\' \n"
                       << " ---> imcmc_likelihood_state.stop_on_error    initialized to \'false\'\n"
                       << " ---> imcmc_likelihood_state.prompt_warning   initialized to \'false\'\n";
-	}
+	    }
     }
 
     void imcmc_likelihood_state::store_mesg( std::string& why ){
         strcpy(errmesg, why.c_str());
     }
 
-    void imcmc_likelihood_state::store_mesg( char *why ){
+    //  ISO C++ forbids converting a string constant to ‘char*’
+    //  so I change older declaration "char *why" to "const char *why"
+    void imcmc_likelihood_state::store_mesg( const char *why ){
         strcpy(errmesg, why);
     }
 
