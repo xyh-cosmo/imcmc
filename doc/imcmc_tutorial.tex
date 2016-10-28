@@ -1,4 +1,4 @@
-\documentclass[11pt,a4]{paper}
+\documentclass[11pt,a4paper]{article}
 \usepackage{bm}
 \usepackage{caption}
 \usepackage{algorithm}
@@ -6,63 +6,36 @@
 \usepackage{xcolor}
 \usepackage{amsmath}
 \usepackage{geometry}
-\usepackage{calc}
-\usepackage[colorlinks,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
-\usepackage{multicol}
-
-%	set text width and heights
-\setlength\textwidth{7in}
-\setlength\textheight{9in}
-\setlength\oddsidemargin{(\paperwidth-\textwidth)/2 - 1in}
-\setlength\topmargin{(\paperheight-\textheight-\headheight-\headsep-\footskip)/2 - 1 in}
-
 
 \newcommand{\hide}[1]{}
 
 
-\title{How to use IMCMC}
+\title{imcmc: tutorial}
 \author{Youhua Xu\\
 	yhxu@nao.cas.cn\\
 	NJU $\&$ NAOC}
 
 
-
 \begin{document}
 \maketitle
 
-\abstract{Observational cosmology is my working area.  Constraining cosmological models using
-various observational datasets is a hot topic, in which MCMC simulations are often involved.  The
-problems encounterred in cosmological are rather complicated, the \textit{likelihood} functions
-are also complicated and live in very high dimensions, thus a robust MCMC sampler is extreamly
-important to efficient problem solving, that's what IMCMC trying to be.  This document explains
-the code structure of IMCMC and gives some examples on how to use it.}
+\section{What this tutorial is about?}
+This tutorial is written as a gadience as how to use the Markov Chain
+Monte Carlo (MCMC) library: imcmc.
 
-\tableofcontents
-
-\begin{multicols}{2}
-
-\section{Basics of MCMC}
-
-\section{Robust algrithms}
-This section introduce my favorite MCMC algrithms/samplers, but currently only the
-Afine-invariant ensemble sampler [\ref{sec:ensemble}] has been implemented in IMCMC.
-
-\subsection{Afine-invariant ensemble sampler} \label{sec:ensemble}
-
-\subsection{Nest sampler}
-
-\subsection{Hamiltonian sampler}
-
-\section{What should IMCMC be capable of?}
-
-\subsection{Parsering parameters from $*.ini$ files}
-Usually one will use may parameters in her/his codes, which might be model parameters, names/paths
-of data and even precision controlling parameters, thus a well-designed parser is very helpful.
-
-\subsection{Recording informations}
-
-\section{Structure of IMCMC}
+\section{Basics: Bayesian Analysis $\&$ MCMC}
+Before getting start to generate MC samples with imcmc, I will brieflly
+review the basics of Bayesian analysis and MCMC (use Metropolis-Hastings
+algorithm as the example)
 
 
-\end{multicols}
+\section{Affine-invariant ensemble sampler}
+
+\section{Structure of \textbf{imcmc}}
+
+
+\section{Parser}
+Usually one will use may parameters in her/his codes, which might be model parameters, names/paths of data and even precision
+controlling parameters, thus a well-designed parser is very helpful.
+
 \end{document}
