@@ -17,7 +17,6 @@ doc/imcmc_tutorial.out
 doc/imcmc_tutorial.toc
 doc/imcmc_tutorial.synctex.gz
 
-examples/Makefile.in
 examples/.libs/
 examples/cmb.params
 examples/cmb.ranges
