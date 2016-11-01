@@ -1,2 +1,13 @@
-*.in linguist-language=C++
-src/*.in linguist-language=C++
+*.in            linguist-language=C++
+src/*.in        linguist-language=C++
+configure       linguist-language=C++
+compile         linguist-language=C++
+config.guess    linguist-language=C++
+config.log      linguist-language=C++
+config.status   linguist-language=C++
+config.sub      linguist-language=C++
+libtool         linguist-language=C++
+install-sh      linguist-language=C++
+INSTALL         linguist-language=C++
+ltmain.sh       linguist-language=C++
+test-driver     linguist-language=C++
