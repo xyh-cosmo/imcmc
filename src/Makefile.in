@@ -137,7 +137,10 @@ am_libimcmc_la_OBJECTS = libimcmc_la-imcmc.lo libimcmc_la-ensemble.lo \
 	libimcmc_la-ensemble_init.lo libimcmc_la-ensemble_io.lo \
 	libimcmc_la-ensemble_prior.lo \
 	libimcmc_la-ensemble_likelihood.lo \
-	libimcmc_la-ensemble_sampling.lo libimcmc_la-parser++.lo
+	libimcmc_la-ensemble_sampling.lo \
+	libimcmc_la-hamiltonian_config.lo libimcmc_la-hamiltonian.lo \
+	libimcmc_la-metropolis_config.lo libimcmc_la-metropolis.lo \
+	libimcmc_la-parser++.lo
 libimcmc_la_OBJECTS = $(am_libimcmc_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -335,20 +338,26 @@ EXTRA_DIST =
 lib_LTLIBRARIES = libimcmc.la
 libimcmc_la_CXXFLAGS = $(OPENMP_CFLAGS) -I$(top_srcdir)/include
 libimcmc_la_LDFLAGS = $(OPENMP_CFLAGS)
-libimcmc_la_SOURCES = imcmc.cpp                  \
-                        ensemble.cpp               \
-                        ensemble_init.cpp          \
-                        ensemble_io.cpp            \
-                        ensemble_prior.cpp         \
-                        ensemble_likelihood.cpp    \
-                        ensemble_sampling.cpp      \
+libimcmc_la_SOURCES = imcmc.cpp                   \
+                        ensemble.cpp                \
+                        ensemble_init.cpp           \
+                        ensemble_io.cpp             \
+                        ensemble_prior.cpp          \
+                        ensemble_likelihood.cpp     \
+                        ensemble_sampling.cpp       \
+                        hamiltonian_config.cpp      \
+                        hamiltonian.cpp             \
+                        metropolis_config.cpp       \
+                        metropolis.cpp              \
                         parser++.cpp
 
 
 #   $(includedir)/@PACKAGE@ is set to /usr/local/include/imcmc by default
 imcmcincdir = $(includedir)/@PACKAGE@
-imcmcinc_HEADERS = $(top_srcdir)/include/ensemble.hpp       \
+imcmcinc_HEADERS = $(top_srcdir)/include/ensemble.hpp      \
                     $(top_srcdir)/include/imcmc.hpp         \
+                    $(top_srcdir)/include/hamiltonian.hpp   \
+                    $(top_srcdir)/include/metropolis.hpp    \
                     $(top_srcdir)/include/parser++.hpp
 
 all: all-am
@@ -435,7 +444,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libimcmc_la-ensemble_likelihood.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libimcmc_la-ensemble_prior.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libimcmc_la-ensemble_sampling.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libimcmc_la-hamiltonian.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libimcmc_la-hamiltonian_config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libimcmc_la-imcmc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libimcmc_la-metropolis.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libimcmc_la-metropolis_config.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libimcmc_la-parser++.Plo@am__quote@
 
 .cpp.o:
@@ -507,6 +520,34 @@ libimcmc_la-ensemble_sampling.lo: ensemble_sampling.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='ensemble_sampling.cpp' object='libimcmc_la-ensemble_sampling.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-ensemble_sampling.lo `test -f 'ensemble_sampling.cpp' || echo '$(srcdir)/'`ensemble_sampling.cpp
+
+libimcmc_la-hamiltonian_config.lo: hamiltonian_config.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-hamiltonian_config.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-hamiltonian_config.Tpo -c -o libimcmc_la-hamiltonian_config.lo `test -f 'hamiltonian_config.cpp' || echo '$(srcdir)/'`hamiltonian_config.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-hamiltonian_config.Tpo $(DEPDIR)/libimcmc_la-hamiltonian_config.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='hamiltonian_config.cpp' object='libimcmc_la-hamiltonian_config.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-hamiltonian_config.lo `test -f 'hamiltonian_config.cpp' || echo '$(srcdir)/'`hamiltonian_config.cpp
+
+libimcmc_la-hamiltonian.lo: hamiltonian.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-hamiltonian.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-hamiltonian.Tpo -c -o libimcmc_la-hamiltonian.lo `test -f 'hamiltonian.cpp' || echo '$(srcdir)/'`hamiltonian.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-hamiltonian.Tpo $(DEPDIR)/libimcmc_la-hamiltonian.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='hamiltonian.cpp' object='libimcmc_la-hamiltonian.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-hamiltonian.lo `test -f 'hamiltonian.cpp' || echo '$(srcdir)/'`hamiltonian.cpp
+
+libimcmc_la-metropolis_config.lo: metropolis_config.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-metropolis_config.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-metropolis_config.Tpo -c -o libimcmc_la-metropolis_config.lo `test -f 'metropolis_config.cpp' || echo '$(srcdir)/'`metropolis_config.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-metropolis_config.Tpo $(DEPDIR)/libimcmc_la-metropolis_config.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='metropolis_config.cpp' object='libimcmc_la-metropolis_config.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-metropolis_config.lo `test -f 'metropolis_config.cpp' || echo '$(srcdir)/'`metropolis_config.cpp
+
+libimcmc_la-metropolis.lo: metropolis.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-metropolis.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-metropolis.Tpo -c -o libimcmc_la-metropolis.lo `test -f 'metropolis.cpp' || echo '$(srcdir)/'`metropolis.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libimcmc_la-metropolis.Tpo $(DEPDIR)/libimcmc_la-metropolis.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='metropolis.cpp' object='libimcmc_la-metropolis.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -c -o libimcmc_la-metropolis.lo `test -f 'metropolis.cpp' || echo '$(srcdir)/'`metropolis.cpp
 
 libimcmc_la-parser++.lo: parser++.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libimcmc_la_CXXFLAGS) $(CXXFLAGS) -MT libimcmc_la-parser++.lo -MD -MP -MF $(DEPDIR)/libimcmc_la-parser++.Tpo -c -o libimcmc_la-parser++.lo `test -f 'parser++.cpp' || echo '$(srcdir)/'`parser++.cpp

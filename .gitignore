@@ -8,6 +8,8 @@ config.status
 examples/Makefile
 examples/.deps
 libtool
+stamp-h1
+
 src/.deps
 src/Makefile
 
