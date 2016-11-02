@@ -8,8 +8,6 @@ config.status
 examples/Makefile
 examples/.deps
 libtool
-stamp-h1
-
 src/.deps
 src/Makefile
 
@@ -19,6 +17,7 @@ doc/imcmc_tutorial.out
 doc/imcmc_tutorial.toc
 doc/imcmc_tutorial.synctex.gz
 
+examples/Makefile.in
 examples/.libs/
 examples/*.params
 examples/*.ranges
