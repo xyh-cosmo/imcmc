@@ -409,7 +409,7 @@ namespace imcmc{
         derived_params_width = params_width;
 
         while( itd != derived_param.end() ){
-            
+
         //  make sure that the derived parameter is NOT in full_param
             if( full_param.count(itd->first) == 0 ){
 
@@ -816,10 +816,14 @@ namespace imcmc{
 
             while( it != sampling_param_name.end() ){
 
-                if( start_from_fiducial )
+                if( start_from_fiducial ){
+                //  fiducial values are usually close to the best fittings positions in the parameter space.
                     start_value = full_param[*it];
-                else
+                }
+                else{
+                //  central values might not as good as fiducial values, but should not be bad either.
                     start_value = 0.5*(full_param_min[*it] + full_param_max[*it]);
+                }
 
             //  initial guess of value_width
                 value_width  = full_param_max[*it] - full_param_min[*it];
