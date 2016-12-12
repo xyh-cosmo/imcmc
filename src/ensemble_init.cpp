@@ -558,7 +558,7 @@ namespace imcmc{
 
                     if ( count == 1 ){
                         if( rank == ROOT_RANK )
-                            std::cout << "*\tparam[" << std::setw(4) << i << "] : " << name[i] << "\t\t... sampling\n";
+                            std::cout << "*\tparam[" << std::setw(4) << i << "] : " << name[i] << "\n";
 
                         output_param_name.push_back( name[i] );
                         ++i;
