@@ -525,7 +525,7 @@ namespace imcmc{
                 if( rank == ROOT_RANK ){
                     std::cout << "\n#  ==============================================\n"
                               << "#  ensemble_workspace::init_param():\n"
-                              << "#  " << derived_param.size() << " derived parameters will be output:\n";
+                              << "#  " << nvalue << " derived parameters will be output:\n";
                 }
 
                 std::string *name = new std::string[nvalue];
@@ -558,7 +558,7 @@ namespace imcmc{
 
                     if ( count == 1 ){
                         if( rank == ROOT_RANK )
-                            std::cout << "*\tparam[" << std::setw(4) << i << "] : " << name[i] << "\n";
+                            std::cout << "*\tdparam[" << std::setw(4) << i << "] : " << name[i] << "\n";
 
                         output_param_name.push_back( name[i] );
                         ++i;
