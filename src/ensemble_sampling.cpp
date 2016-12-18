@@ -797,7 +797,8 @@ namespace imcmc{
 
             if( do_sampling == false ){
                 std::cout   << "imcmc::ensemble " << std::setw(15) << "- burning - "
-                            << "[" << std::setw(5) << ith+1 << " of " << std::setw(5) << num << "] -> "
+                            << "[" << std::setw(5) << ith+1 << " of " << std::setw(5) << num << "]\n"
+                            << "# --> "
                             << std::setw(5) << accept_tot << " of " << std::setw(5) << walker_num
                             << " walkers updated ...\n"
                             << "# --> " << error_tot << " likelihood errors happened ..\n";
@@ -808,7 +809,8 @@ namespace imcmc{
                 total_errors += error_tot;
 
                 std::cout   << "imcmc::ensemble " << std::setw(15) << "- sampling - "
-                            << "[" << std::setw(5) << ith+1 << " of " << std::setw(5) << num << "] -> "
+                            << "[" << std::setw(5) << ith+1 << " of " << std::setw(5) << num << "]\n"
+                            << "# --> " 
                             << std::setw(5) << accept_tot << " of " << std::setw(5) << walker_num
                             << " walkers updated ...\n"
                             << "# --> " << error_tot << " likelihood errors happened ..\n";
