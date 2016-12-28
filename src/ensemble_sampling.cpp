@@ -39,15 +39,27 @@ namespace imcmc{
         _searched_lndet_min_chisq_min_ = false;
 
         if( rank == ROOT_RANK ){
-            std::cout << "\n#  =====================================================\n";
-            std::cout << "#  ensemble_workspace::do_sampling(): start burning\n";
-            std::cout << "#  total evaluations: " << burnin_loops*walker_num << "\n";
-            std::cout << "#  =====================================================\n\n";
+            if( start_from_existing_chains != true ){
+                std::cout << "\n#  =====================================================\n";
+                std::cout << "#  ensemble_workspace::do_sampling(): start burning\n";
+                std::cout << "#  total evaluations: " << burnin_loops*walker_num << "\n";
+                std::cout << "#  =====================================================\n\n";
+            }
+            else{
+                std::cout << "\n#  =====================================================\n";
+                std::cout << "#  --> start from existing chains !!!\n";
+                std::cout << "#  ensemble_workspace::do_sampling(): start re-burning\n";
+                std::cout << "#  total evaluations: " << burnin_loops*walker_num << "\n";
+                std::cout << "#  =====================================================\n\n";
+            }
         }
 
         if( save_burned_ashes && (rank == ROOT_RANK) ){
 
-            chain_name = chain_root + "_ashes.txt";
+            if( start_from_existing_chains == false )
+                chain_name = chain_root + "_ashes.txt";
+            else
+                chain_name = chain_root + "_ashes2.txt";    // improvement is needed !!!
 
             out_stream.open(chain_name.c_str(), std::ofstream::out);
 
@@ -81,6 +93,10 @@ namespace imcmc{
         }
 
         MPI::COMM_WORLD.Barrier();
+        
+        if( start_from_existing_chains == true ){
+            burnin_loops = 50;
+        }
 
         for( int j=0; j<burnin_loops; ++j ){    //  Burn in
 
@@ -102,7 +118,7 @@ namespace imcmc{
         if( rank == ROOT_RANK ) //  DONT forget to close out_stream before start REAL sampling
             out_stream.close();
 
-        _searched_lndet_min_chisq_min_ = true;  //  once search during the burning, change its state to TRUE.
+        _searched_lndet_min_chisq_min_ = true;  //  once searched during the burning, change its state to TRUE.
 
         for( int i=1; i<=chain_num; ++i ){
 
