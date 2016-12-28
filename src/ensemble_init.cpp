@@ -60,7 +60,7 @@ namespace imcmc{
                 parallel_mode   = 2;
                 walker_num      = 2*rank_size;
                 std::cout << "ensemble_workspace::Init() --> you have lots of cores, set the number of \
-                             walkers to twice of number of ranks\n";
+                             walkers to 2 * n_ranks\n";
             }
 
             accept  = new int[walker_num];
