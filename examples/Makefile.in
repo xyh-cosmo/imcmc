@@ -109,15 +109,30 @@ AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+cmb_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(cmb_test_LDFLAGS) $(LDFLAGS) -o $@
 am_gaussian_test_OBJECTS = gaussian_test-gaussian.$(OBJEXT)
 gaussian_test_OBJECTS = $(am_gaussian_test_OBJECTS)
 gaussian_test_DEPENDENCIES = ../src/libimcmc.la
+gaussian_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(AM_CXXFLAGS) $(CXXFLAGS) $(gaussian_test_LDFLAGS) $(LDFLAGS) \
+	-o $@
 am_himmelblau_test_OBJECTS = himmelblau_test-himmelblau.$(OBJEXT)
 himmelblau_test_OBJECTS = $(am_himmelblau_test_OBJECTS)
 himmelblau_test_DEPENDENCIES = ../src/libimcmc.la
+himmelblau_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(AM_CXXFLAGS) $(CXXFLAGS) $(himmelblau_test_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am_rosenbrock_test_OBJECTS = rosenbrock_test-rosenbrock.$(OBJEXT)
 rosenbrock_test_OBJECTS = $(am_rosenbrock_test_OBJECTS)
 rosenbrock_test_DEPENDENCIES = ../src/libimcmc.la
+rosenbrock_test_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
+	$(AM_CXXFLAGS) $(CXXFLAGS) $(rosenbrock_test_LDFLAGS) \
+	$(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -430,6 +445,7 @@ LIBTOOL = @LIBTOOL@
 LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
+LT_SYS_LIBRARY_PATH = @LT_SYS_LIBRARY_PATH@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MANIFEST_TOOL = @MANIFEST_TOOL@
@@ -516,19 +532,19 @@ AM_CPPFLAGS = -I$(top_srcdir)/include
 # in that case, just un-comment " #gaussian_test_LDFLAGS = -Wl,--no-as-needed ", and run autoreconf to update configure file,
 # after that run ./conifgure to generate new Makefiles.
 gaussian_test_CPPFLAGS = -I$(top_srcdir)/include
-#gaussian_test_LDFLAGS = -Wl,--no-as-needed
+gaussian_test_LDFLAGS = -Wl,--no-as-needed
 gaussian_test_LDADD = ../src/libimcmc.la -lgsl -lgslcblas
 gaussian_test_SOURCES = gaussian.cpp
 rosenbrock_test_CPPFLAGS = -I$(top_srcdir)/include
-#rosenbrock_test_LDFLAGS = -Wl,--no-as-needed
+rosenbrock_test_LDFLAGS = -Wl,--no-as-needed
 rosenbrock_test_LDADD = ../src/libimcmc.la -lgsl -lgslcblas
 rosenbrock_test_SOURCES = rosenbrock.cpp
 himmelblau_test_CPPFLAGS = -I$(top_srcdir)/include
-#himmelblau_test_LDFLAGS = -Wl,--no-as-needed
+himmelblau_test_LDFLAGS = -Wl,--no-as-needed
 himmelblau_test_LDADD = ../src/libimcmc.la -lgsl -lgslcblas
 himmelblau_test_SOURCES = himmelblau.cpp
 cmb_test_CPPFLAGS = -I$(top_srcdir)/include
-#cmb_test_LDFLAGS = -Wl,--no-as-needed
+cmb_test_LDFLAGS = -Wl,--no-as-needed
 cmb_test_LDADD = ../src/libimcmc.la -lgsl -lgslcblas
 cmb_test_SOURCES = cmb.cpp
 all: all-am
@@ -576,19 +592,19 @@ clean-checkPROGRAMS:
 
 cmb_test$(EXEEXT): $(cmb_test_OBJECTS) $(cmb_test_DEPENDENCIES) $(EXTRA_cmb_test_DEPENDENCIES) 
 	@rm -f cmb_test$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(cmb_test_OBJECTS) $(cmb_test_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(cmb_test_LINK) $(cmb_test_OBJECTS) $(cmb_test_LDADD) $(LIBS)
 
 gaussian_test$(EXEEXT): $(gaussian_test_OBJECTS) $(gaussian_test_DEPENDENCIES) $(EXTRA_gaussian_test_DEPENDENCIES) 
 	@rm -f gaussian_test$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(gaussian_test_OBJECTS) $(gaussian_test_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(gaussian_test_LINK) $(gaussian_test_OBJECTS) $(gaussian_test_LDADD) $(LIBS)
 
 himmelblau_test$(EXEEXT): $(himmelblau_test_OBJECTS) $(himmelblau_test_DEPENDENCIES) $(EXTRA_himmelblau_test_DEPENDENCIES) 
 	@rm -f himmelblau_test$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(himmelblau_test_OBJECTS) $(himmelblau_test_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(himmelblau_test_LINK) $(himmelblau_test_OBJECTS) $(himmelblau_test_LDADD) $(LIBS)
 
 rosenbrock_test$(EXEEXT): $(rosenbrock_test_OBJECTS) $(rosenbrock_test_DEPENDENCIES) $(EXTRA_rosenbrock_test_DEPENDENCIES) 
 	@rm -f rosenbrock_test$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(rosenbrock_test_OBJECTS) $(rosenbrock_test_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(rosenbrock_test_LINK) $(rosenbrock_test_OBJECTS) $(rosenbrock_test_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)

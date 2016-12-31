@@ -68,12 +68,4 @@ namespace imcmc{
         }
     }
 
-    void ensemble_workspace::save_walker_state( std::ofstream& of ){
-//      not implemented yet
-    }
-
-    void ensemble_workspace::read_walker_state( std::ofstream& of ){
-//      not implemented yet
-    }
-
 }

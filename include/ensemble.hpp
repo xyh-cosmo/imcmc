@@ -49,7 +49,8 @@ namespace imcmc{
             std::ofstream   param_limits_os;
 
         //  random numbers
-            gsl_rng    *rand_seed;
+            gsl_rng *rand_seed;
+            gsl_rng *rand_seed_walker_id;   // for preparing walker_id[]
 
         //  efficient controling parameter
             double  efficient_a;
@@ -136,6 +137,9 @@ namespace imcmc{
             void    do_sampling();
 
         //  new added to start sampling from existing chains.
+        //  very important: To enable re-starting sampling from existing chains, ALL
+        //  sampling parameters MUST be written into chains_*.txt, otherwise the walkers
+        //  will not be re-initialized correctly.
             bool    start_from_existing_chians;     // default: false
             int     num_of_existing_chains;         // number of existing chains. This is needed to assign correct post-fix for new chains.
     };

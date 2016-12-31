@@ -57,6 +57,7 @@ namespace imcmc{
         if( walker_initialized ){
 
             gsl_rng_free(rand_seed);
+            gsl_rng_free(rand_seed_walker_id);
 
             delete[] walker["LnPost"];
             delete[] walker["LnDet"];

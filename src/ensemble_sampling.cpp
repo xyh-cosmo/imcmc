@@ -39,27 +39,29 @@ namespace imcmc{
         _searched_lndet_min_chisq_min_ = false;
 
         if( rank == ROOT_RANK ){
-            if( start_from_existing_chains != true ){
-                std::cout << "\n#  =====================================================\n";
-                std::cout << "#  ensemble_workspace::do_sampling(): start burning\n";
-                std::cout << "#  total evaluations: " << burnin_loops*walker_num << "\n";
-                std::cout << "#  =====================================================\n\n";
-            }
-            else{
+            // if( start_from_existing_chains != true ){
+            //     std::cout << "\n#  =====================================================\n";
+            //     std::cout << "#  ensemble_workspace::do_sampling(): start burning\n";
+            //     std::cout << "#  total evaluations: " << burnin_loops*walker_num << "\n";
+            //     std::cout << "#  =====================================================\n\n";
+            // }
+            // else{
                 std::cout << "\n#  =====================================================\n";
                 std::cout << "#  --> start from existing chains !!!\n";
                 std::cout << "#  ensemble_workspace::do_sampling(): start re-burning\n";
                 std::cout << "#  total evaluations: " << burnin_loops*walker_num << "\n";
                 std::cout << "#  =====================================================\n\n";
-            }
+            // }
         }
 
         if( save_burned_ashes && (rank == ROOT_RANK) ){
 
-            if( start_from_existing_chains == false )
-                chain_name = chain_root + "_ashes.txt";
-            else
-                chain_name = chain_root + "_ashes2.txt";    // improvement is needed !!!
+            chain_name = chain_root + "_ashes.txt";
+
+            // if( start_from_existing_chains == false )
+            //     chain_name = chain_root + "_ashes.txt";
+            // else
+            //     chain_name = chain_root + "_ashes2.txt";    // improvement is needed !!!
 
             out_stream.open(chain_name.c_str(), std::ofstream::out);
 
@@ -93,10 +95,10 @@ namespace imcmc{
         }
 
         MPI::COMM_WORLD.Barrier();
-        
-        if( start_from_existing_chains == true ){
-            burnin_loops = 50;
-        }
+
+        // if( start_from_existing_chains == true ){
+        //     burnin_loops = 50;
+        // }
 
         for( int j=0; j<burnin_loops; ++j ){    //  Burn in
 
@@ -322,13 +324,28 @@ namespace imcmc{
             int *recvcounts = new int[rank_size];
             int *displace   = new int[rank_size];
 
-            int *walker_id = new int[walker_num];
+            int *walker_id  = new int[walker_num];
             int walker_num_half = walker_num / 2;   //  walker_num should be an even number.
 
-            for( int i=0; i<walker_num_half; ++i ){
-                walker_id[i]                    = gsl_rng_get(rand_seed) % walker_num_half + walker_num_half;
-                walker_id[walker_num_half + i]  = gsl_rng_get(rand_seed) % walker_num_half;
+        //  ==============================================================================
+        //  Update @ 2016-12-31: This part is used to handled by each rank, and each rank
+        //  uses different random number seeds.  So walker_id[] are normally different in
+        //  different ranks.  This might be a bug ... [not confirmed yet!!!]
+        //  After this update, walker_id is first initialized in the root rank, and then
+        //  broadcasted to all ranks.
+        //
+        //  Anomaly: when sampling with Placnk data, if walker_num = 2*rank, the acceptance
+        //  ratio seems much lower than expected (by a factor of 0.5)
+        //  ==============================================================================
+            if( rank == ROOT_RANK ){
+                for( int i=0; i<walker_num_half; ++i ){
+                    walker_id[i]                    = gsl_rng_get(rand_seed_walker_id) % walker_num_half + walker_num_half;
+                    walker_id[walker_num_half + i]  = gsl_rng_get(rand_seed_walker_id) % walker_num_half;
+                }
             }
+
+            MPI::COMM_WORLD.Bcast(  walker_id, walker_num, MPI::INT, ROOT_RANK );
+            MPI::COMM_WORLD.Barrier();
 
             imcmc_vector_string_iterator it;
 
@@ -352,7 +369,7 @@ namespace imcmc{
                     id_width[0]    = walker_num_half - (walker_num_half/rank_size + 1)*(rank_size-1);
 
                     if( id_width[0] <= 0 )
-                        imcmc_runtime_error("id_width[0] must be positive integer, please adjust the number of walkers / processros");
+                        imcmc_runtime_error("id_width[0] must be an positive integer, please adjust the number of walkers / processros");
 
                     id_min[0]     = 0;
                     id_max[0]     = id_width[0] - 1;
@@ -373,8 +390,10 @@ namespace imcmc{
                     }
                 }
 
-                //  start to update walkers
-                //  update the first half
+            //  ========================
+            //  start to update walkers
+            //  update the first half
+            //  ========================
                 for( int i=id_min[rank]; i<=id_max[rank]; ++i ){
 
                     accept[i] = update_a_walker( full_param_temp, i, walker_id[i] );
@@ -765,9 +784,9 @@ namespace imcmc{
                                         1, MPI::DOUBLE,
                                         ROOT_RANK );
 
-                // MPI::COMM_WORLD.Barrier();
+            //  MPI::COMM_WORLD.Barrier();
 
-                //  broadcast walkers to each proc
+            //  broadcast walkers to each proc
                 MPI::COMM_WORLD.Bcast(  walker["LnPost"],
                                         walker_num,
                                         MPI::DOUBLE,
@@ -826,7 +845,7 @@ namespace imcmc{
 
                 std::cout   << "imcmc::ensemble " << std::setw(15) << "- sampling - "
                             << "[" << std::setw(5) << ith+1 << " of " << std::setw(5) << num << "]\n"
-                            << "# --> " 
+                            << "# --> "
                             << std::setw(5) << accept_tot << " of " << std::setw(5) << walker_num
                             << " walkers updated ...\n"
                             << "# --> " << error_tot << " likelihood errors happened ..\n";

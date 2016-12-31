@@ -180,9 +180,8 @@ namespace imcmc{
         unsigned long *random_seeds = new unsigned long[rank_size];
         unsigned long *first_number = new unsigned long[rank_size];
 
-//        rand_seed = gsl_rng_alloc(gsl_rng_taus2);
-        rand_seed = gsl_rng_alloc(gsl_rng_mt19937);
-
+        rand_seed           = gsl_rng_alloc(gsl_rng_mt19937);
+        rand_seed_walker_id = gsl_rng_alloc(gsl_rng_mt19937);
 
         seed = rand();  //  inital seed
 
@@ -190,6 +189,8 @@ namespace imcmc{
             gsl_rng_set( rand_seed, seed );
             seed = gsl_rng_get(rand_seed);
         }
+
+        gsl_rng_set(rand_seed_walker_id, rand());
 
         rand_num = gsl_rng_get(rand_seed);  // get the first random number for this rank
 
