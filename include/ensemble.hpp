@@ -163,6 +163,7 @@ namespace imcmc{
             void update_walkers_io();                                    // needed when use_cosmomc_format == true
             void write_walkers( std::ofstream& of );                     // Write walkers into text files
             void do_sampling( ensemble_state* es );
+            void do_sampling();
 
         //  ====================================================================
         //  start from check point

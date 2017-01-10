@@ -28,6 +28,10 @@ namespace imcmc{
         return z;
     }
 
+    void ensemble_workspace::do_sampling(){
+        do_sampling(NULL);
+    }
+
     void ensemble_workspace::do_sampling( ensemble_state* es ){
 
         existed_chain_num = 0;
