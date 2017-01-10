@@ -37,6 +37,9 @@ namespace imcmc{
         existed_chain_num = 0;
         bool do_burnin = true;
 
+    //  counter for saving ensemble_state
+        int es_counter = 0;
+
         if( (es != NULL) ){
 
             std::string chkfile = chain_root + ".chk";
@@ -131,6 +134,18 @@ namespace imcmc{
                 else
                     update_walkers_io();
             }
+            
+            // save ensemble_state
+            if( (es != NULL) && (save_state_for_N_steps > 0) ){
+                if( es_counter == save_state_for_N_steps-1 ){
+                    es->take_a_snapshot(*this);
+                    es->save_state(0);
+                    es_counter = 0; // reset counter to 0.
+                }
+                else{
+                    ++es_counter;
+                }
+            }
 
             // MPI::COMM_WORLD.Barrier();
         }
@@ -140,9 +155,6 @@ namespace imcmc{
             out_stream.close();
 
         _searched_lndet_min_chisq_min_ = true;  //  once searched during the burning, change its state to TRUE.
-
-    //  counter for saving ensemble_state
-        int es_counter = 0;
 
         for( int i=1+existed_chain_num; i<=chain_num+existed_chain_num; ++i ){
 
@@ -203,7 +215,7 @@ namespace imcmc{
                     if( es_counter == save_state_for_N_steps-1 ){
                         es->take_a_snapshot(*this);
                         es->save_state(i);
-                        es_counter = 1; // reset counter to 0.
+                        es_counter = 0; // reset counter to 0.
                     }
                     else{
                         ++es_counter;
