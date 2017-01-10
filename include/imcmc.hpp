@@ -140,6 +140,9 @@ namespace imcmc{
 
 //	new added verbose information displayer (@ Jan-28-2016)
 	void imcmc_verbose( int rank, std::string& verbose_info );
+
+//  create backup files
+    bool backup_file( std::string& file_old, std::string& file_new );
 }
 
 #endif

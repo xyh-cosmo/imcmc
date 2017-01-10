@@ -92,4 +92,28 @@ namespace imcmc{
 		}
 	}
 
+    bool backup_file( std::string& file_old, std::string& file_new ){
+
+        std::ifstream infile(file_old.c_str());
+        std::ofstream outfile(file_new.c_str());
+
+        if( !infile.good() ){
+            std::cout << "failed to open: " << file_old << std::endl;
+            return false;
+        }
+
+        if( !outfile.good() ){
+            std::cout << "failed to open: " << file_new << std::endl;
+        }
+
+        std::string line;
+
+        while( getline(infile, line) ){
+            outfile << line << std::endl;
+        };
+
+        infile.close();
+        outfile.close();
+    }
+
 }

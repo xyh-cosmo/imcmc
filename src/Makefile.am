@@ -10,6 +10,7 @@ libimcmc_la_SOURCES =   imcmc.cpp                   \
                         ensemble_prior.cpp          \
                         ensemble_likelihood.cpp     \
                         ensemble_sampling.cpp       \
+                        ensemble_state.cpp          \
                         hamiltonian_config.cpp      \
                         hamiltonian.cpp             \
                         metropolis_config.cpp       \

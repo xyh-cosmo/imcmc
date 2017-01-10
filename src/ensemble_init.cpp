@@ -161,6 +161,16 @@ namespace imcmc{
 			}
         }
 
+        if( Read::Has_Key_in_File( paramfile, "save_state_for_N_steps") ){
+            save_state_for_N_steps = Read::Read_Int_from_File(paramfile, "save_state_for_N_steps");
+            if( save_state_for_N_steps < 0 ){
+                imcmc_runtime_warning("save_state_for_N_steps is less than 0 !!!");
+            }
+        }
+        else{
+            save_state_for_N_steps = 0;
+        }
+
         if( Read::Has_Key_in_File( paramfile, "stop_on_error" ) ){
             likelihood_state.stop_on_error = Read::Read_Bool_from_File(paramfile, "stop_on_error");
 

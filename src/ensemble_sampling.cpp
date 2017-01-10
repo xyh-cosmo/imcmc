@@ -28,7 +28,17 @@ namespace imcmc{
         return z;
     }
 
-    void ensemble_workspace::do_sampling(){
+    void ensemble_workspace::do_sampling( ensemble_state* es ){
+
+        existed_chain_num = 0;
+
+        if( es != NULL ){
+        //  OK, reset ensemble_workspace using the backup file.
+            es->read_state();
+            es->reset_ensemble_workspace(*this);
+        }
+
+        existed_chain_num = es->existed_chain_num;
 
         int burnin_loops, sampling_loops;
 
@@ -39,19 +49,19 @@ namespace imcmc{
         _searched_lndet_min_chisq_min_ = false;
 
         if( rank == ROOT_RANK ){
-            // if( start_from_existing_chains != true ){
-            //     std::cout << "\n#  =====================================================\n";
-            //     std::cout << "#  ensemble_workspace::do_sampling(): start burning\n";
-            //     std::cout << "#  total evaluations: " << burnin_loops*walker_num << "\n";
-            //     std::cout << "#  =====================================================\n\n";
-            // }
-            // else{
+            if( es != NULL ){
                 std::cout << "\n#  =====================================================\n";
                 std::cout << "#  --> start from existing chains !!!\n";
                 std::cout << "#  ensemble_workspace::do_sampling(): start re-burning\n";
                 std::cout << "#  total evaluations: " << burnin_loops*walker_num << "\n";
                 std::cout << "#  =====================================================\n\n";
-            // }
+            }
+            else{
+                std::cout << "\n#  =====================================================\n";
+                std::cout << "#  ensemble_workspace::do_sampling(): start burning\n";
+                std::cout << "#  total evaluations: " << burnin_loops*walker_num << "\n";
+                std::cout << "#  =====================================================\n\n";
+            }
         }
 
         if( save_burned_ashes && (rank == ROOT_RANK) ){
@@ -122,7 +132,10 @@ namespace imcmc{
 
         _searched_lndet_min_chisq_min_ = true;  //  once searched during the burning, change its state to TRUE.
 
-        for( int i=1; i<=chain_num; ++i ){
+    //  counter for saving ensemble_state
+        int es_counter = 0;
+
+        for( int i=1+existed_chain_num; i<=chain_num+existed_chain_num; ++i ){
 
             if( rank == ROOT_RANK ){
 
@@ -178,6 +191,17 @@ namespace imcmc{
                     write_walkers(out_stream);
 
                 // MPI::COMM_WORLD.Barrier();
+
+                // save ensemble_state
+                if( (es != NULL) && (save_state_for_N_steps > 0) ){
+                    if( es_counter < save_state_for_N_steps ){
+                        es->save_state(i);
+                        es_counter = 0; // reset counter to 0.
+                    }
+                    else{
+                        ++es_counter;
+                    }
+                }
             }
 
             if( rank == ROOT_RANK ){
@@ -205,6 +229,17 @@ namespace imcmc{
                 for( int j=0; j<skip_step; ++j ){
                     update_walkers( false, j, skip_step );
                     // MPI::COMM_WORLD.Barrier();
+
+                    // save ensemble_state
+                    if( (es != NULL) && (save_state_for_N_steps > 0) ){
+                        if( es_counter < save_state_for_N_steps ){
+                            es->save_state(i);
+                            es_counter = 0; // reset counter to 0.
+                        }
+                        else{
+                            ++es_counter;
+                        }
+                    }
                 }
             }
 

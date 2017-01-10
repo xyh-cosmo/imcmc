@@ -16,6 +16,34 @@
 
 namespace imcmc{
 
+    class ensemble_workspace;
+
+    struct ensemble_state{
+
+        int walker_num;
+        int sampling_param_num;
+        int derived_param_num;
+        int existed_chain_num;
+
+        bool use_cosmomc_format;
+        std::string chkfile_root;
+
+        imcmc_double_pointer    walker;                 //  includes LnPost, LnDet and Chisq
+        imcmc_double_pointer    walker_io;              //  this is acutally a backup of walker, and it will be used to write chains into files.
+        imcmc_vector_string     sampling_param_name;    //  hold the names of parameters being sampled
+        imcmc_vector_string     derived_param_name;     //  hold the names of derived parameters
+
+        ensemble_state();
+        ~ensemble_state();
+
+        void init( ensemble_workspace& ew );
+        void take_a_snapshot( ensemble_workspace& ew );
+        void reset_ensemble_workspace( ensemble_workspace& ew );
+
+        bool save_state( int idx );  // save walkers' state into disk
+        bool read_state();  // read walkers' state from state file stored on disk.
+    };
+
     class ensemble_workspace{
         public:
             ensemble_workspace();
@@ -29,10 +57,11 @@ namespace imcmc{
         //  0: serial version
         //  1: parallel version with small number of cores
         //  2: parallel version with large number of cores
-            int    parallel_mode;
-            int    rank_size, rank;
-            int    burnin_step, skip_step, sample_step;
-            int    walker_num, chain_num;
+            int parallel_mode;
+            int rank_size, rank;
+            int burnin_step, skip_step, sample_step;
+            int walker_num, chain_num;
+            int existed_chain_num;  // use to correctly assign post-fix to chains filenames, default: 0
 
         //  name of current writing chain
             std::string     chain_root;
@@ -99,7 +128,6 @@ namespace imcmc{
             void init( std::string infile );    // read initialization & other settings from the input *ini file
             void init_param();                  // initialize relavant parameters, some might be set to default values.
             void init_walkers();                // initialize the walkers.
-            void init_walkers_from_chains();    // initialize walkers from existing chains, can save a lot of time for re-burning.
             void reset_walkers();               // reset the walkers to a random state.
 
         //  =======================================================================================================================
@@ -119,29 +147,26 @@ namespace imcmc{
                                  void                *model,
                                  void                *data );
 
-            bool    prior( imcmc_double& full_param );    //    check Samplingparams, if out of prior range, return false
+            bool prior( imcmc_double& full_param );    //    check Samplingparams, if out of prior range, return false
 
         //  return log(posterior) = -lndet - 0.5*chisq
         //  det is the determinat in the denominator of the prefactor, plus some constant
-            double  likelihood_eval( imcmc_double& full_param, double& lndet, double& chisq );
+            double likelihood_eval( imcmc_double& full_param, double& lndet, double& chisq );
 
         //  these two numbers will be used to re-scale the probability, in case that the chisq might be too large
         //  so that exp(-lndet-0.5*chisq) --> 0
             double  _lndet_min_, _chisq_min_;
             bool    _searched_lndet_min_chisq_min_;
 
-            int     update_a_walker( imcmc_double& full_param, int current_id, int rand_id );
-            void    update_walkers( bool do_sampling, int ith, int num );   // Update walkers
-            void    update_walkers_io();                                    // needed when use_cosmomc_format == true
-            void    write_walkers( std::ofstream& of );                     // Write walkers into text files
-            void    do_sampling();
+            int  update_a_walker( imcmc_double& full_param, int current_id, int rand_id );
+            void update_walkers( bool do_sampling, int ith, int num );   // Update walkers
+            void update_walkers_io();                                    // needed when use_cosmomc_format == true
+            void write_walkers( std::ofstream& of );                     // Write walkers into text files
+            void do_sampling( ensemble_state* es );
 
-        //  new added to start sampling from existing chains.
-        //  very important: To enable re-starting sampling from existing chains, ALL
-        //  sampling parameters MUST be written into chains_*.txt, otherwise the walkers
-        //  will not be re-initialized correctly.
-            bool    start_from_existing_chians;     // default: false
-            int     num_of_existing_chains;         // number of existing chains. This is needed to assign correct post-fix for new chains.
+        //  ====================================================================
+        //  start from check point
+            int save_state_for_N_steps;     // after every N steps, save the ensemble_state
     };
 
 }
