@@ -17,6 +17,10 @@ would also like to add an interface to MultiNest.
 
 Updates
 =========
+Jan-10-2017:
+------------
+Added the support of re-starting from check point file, which has the name of chain_root.chk
+
 Oct-31-2015:
 ------------
 1) Bug-fixed inside update_a_walker(***)
