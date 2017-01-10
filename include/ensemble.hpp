@@ -42,6 +42,11 @@ namespace imcmc{
 
         bool save_state( int idx );  // save walkers' state into disk
         bool read_state();  // read walkers' state from state file stored on disk.
+        
+        int width;
+        int precision;
+        void setw(int width=8);
+        void setp(int precision=6);
     };
 
     class ensemble_workspace{
@@ -168,6 +173,7 @@ namespace imcmc{
         //  ====================================================================
         //  start from check point
             int save_state_for_N_steps;     // after every N steps, save the ensemble_state
+            bool start_from_check_point;
     };
 
 }

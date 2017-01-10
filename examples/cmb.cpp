@@ -188,12 +188,14 @@ int main(int argc, char *argv[])
     MPI::Init(argc,argv);
 
     ensemble_workspace ew;
+    ensemble_state es;
 
     LCDM lcdm;
 
     ew.add_likelihood( Like_CMB, lcdm.p_name, &lcdm, NULL );
     ew.init("cmb.ini");
-    ew.do_sampling();
+    es.init(ew);
+    ew.do_sampling(&es);
 
     MPI::Finalize();
 }

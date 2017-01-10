@@ -72,6 +72,7 @@ int main( int argc, char *argv[] )
     MPI::Init(argc, argv);
 
     ensemble_workspace ew;
+    ensemble_state es;
 
     imcmc_vector_string param;
     param.push_back("x");
@@ -87,7 +88,10 @@ int main( int argc, char *argv[] )
 //    ew.add_likelihood( TestLike, param, &g, NULL );
     ew.add_likelihood( TestLike, param, dparam, &g, NULL );
     ew.init("gaussian.ini");
-    ew.do_sampling();
+    es.init(ew);
+    es.setw(8);
+    es.setp(6);
+    ew.do_sampling(&es);
 
     MPI::Finalize();
 

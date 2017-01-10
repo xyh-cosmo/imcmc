@@ -1,9 +1,11 @@
+#include "imcmc.hpp"
 #include "ensemble.hpp"
+
+using namespace imcmc::parser;
 
 namespace imcmc{
 
     ensemble_state::ensemble_state(){
-        chkfile_num = 0;
         walker_num  = 0;
         sampling_param_num = 0;
         derived_param_num  = 0;
@@ -20,10 +22,12 @@ namespace imcmc{
         delete[] walker["LnDet"];
         delete[] walker["Chisq"];
 
-        delete[] walker_io["Weight"];
-        delete[] walker_io["LnPost"];
-        delete[] walker_io["LnDet"];
-        delete[] walker_io["Chisq"];
+        if( use_cosmomc_format ){
+            delete[] walker_io["Weight"];
+            delete[] walker_io["LnPost"];
+            delete[] walker_io["LnDet"];
+            delete[] walker_io["Chisq"];
+        }
 
         imcmc_vector_string_iterator it;
 
@@ -31,6 +35,8 @@ namespace imcmc{
             it = sampling_param_name.begin();
             while( it != sampling_param_name.end() ){
                 delete[] walker[*it];
+                if( use_cosmomc_format )
+                    delete[] walker_io[*it];
                 ++it;
             }
         }
@@ -39,6 +45,8 @@ namespace imcmc{
             it = derived_param_name.begin();
             while( it != derived_param_name.end() ){
                 delete[] walker[*it];
+                if( use_cosmomc_format )
+                    delete[] walker_io[*it];
                 ++it;
             }
         }
@@ -46,16 +54,12 @@ namespace imcmc{
 
     void ensemble_state::init( ensemble_workspace& ew ){
 
-        if( num_chkf < 2 ){
-            std::string errmesg="";
-            errmesg += "==> ensemble_state::init( ensemble_workspace& ew, int& num_chkf )\n";
-            errmesg += "  num_chkf should be no less than 2!\n";
-            throw std::runtime_error(errmesg);
-        }
-
         chkfile_root= ew.chain_root;
         walker_num  = ew.walker_num;
         use_cosmomc_format = ew.use_cosmomc_format;
+        
+        setw();
+        setp();
 
         imcmc_vector_string_iterator it;
 
@@ -100,6 +104,17 @@ namespace imcmc{
     //  copy initialized walkers & walker_io to ensemble_state
         take_a_snapshot(ew);
     }
+    
+    void ensemble_state::setw(int width){
+        this->width = width;
+    }
+    
+    void ensemble_state::setp(int precision){
+        this->precision = precision;
+
+        if( this->width < precision )
+            this->width = precision + 2;
+    }
 
     void ensemble_state::take_a_snapshot( ensemble_workspace& ew ){
 
@@ -133,6 +148,20 @@ namespace imcmc{
 
             ++it;
         }
+        
+        for( int i=0; i<walker_num; ++i ){
+
+            walker["LnPost"][i] = ew.walker["LnPost"][i];
+            walker["LnDet"][i] = ew.walker["LnDet"][i];
+            walker["Chisq"][i] = ew.walker["Chisq"][i];
+
+            if( use_cosmomc_format == true ){
+                walker_io["Weight"][i] = ew.walker_io["Weight"][i];
+                walker_io["LnPost"][i] = ew.walker_io["LnPost"][i];
+                walker_io["LnDet"][i] = ew.walker_io["LnDet"][i];
+                walker_io["Chisq"][i] = ew.walker_io["Chisq"][i];
+            }
+        }
     }
 
     bool ensemble_state::save_state( int idx ){
@@ -144,41 +173,43 @@ namespace imcmc{
         if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
 
             if( Read::Has_File(chkfile) ){ // save a backup
+                std::cout << "==> making a backup of pre-existing check point file ...\n";
                 backup_file(chkfile,chkfile2);
             }
-
             std::ofstream outfile(chkfile.c_str());
+            
+            std::cout << "==> saving new check point file ...\n\n";
 
-            outfile << " walker_num = " << walker_num << endl;
-            outfile << " chain_idx = " << idx << endl;
+            outfile << " walker_num = " << walker_num << std::endl;
+            outfile << " chain_idx = " << idx << std::endl;
 
             outfile << "LnPost = ";
             for( int i=0; i<walker_num; ++i ){
-                outfile << std::setw(10)
+                outfile << std::setw(width)
                         << std::scientific
-                        << std::setprecision(8)
+                        << std::setprecision(precision)
                         << std::uppercase
-                        << walker["LnPost"][i] << "";
+                        << walker["LnPost"][i] << " ";
             }
             outfile << "\n";
 
             outfile << "LnDet = ";
             for( int i=0; i<walker_num; ++i ){
-                outfile << std::setw(10)
+                outfile << std::setw(width)
                         << std::scientific
-                        << std::setprecision(8)
+                        << std::setprecision(precision)
                         << std::uppercase
-                        << walker["LnDet"][i] << "";
+                        << walker["LnDet"][i] << " ";
             }
             outfile << "\n";
 
             outfile << "Chisq = ";
             for( int i=0; i<walker_num; ++i ){
-                outfile << std::setw(10)
+                outfile << std::setw(width)
                         << std::scientific
-                        << std::setprecision(8)
+                        << std::setprecision(precision)
                         << std::uppercase
-                        << walker["Chisq"][i] << "";
+                        << walker["Chisq"][i] << " ";
             }
             outfile << "\n";
 
@@ -186,12 +217,13 @@ namespace imcmc{
             while( it != sampling_param_name.end() ){
                 outfile << *it << " = ";
                 for( int i=0; i<walker_num; ++i ){
-                    outfile << std::setw(10)
+                    outfile << std::setw(width)
                             << std::scientific
-                            << std::setprecision(8)
+                            << std::setprecision(precision)
                             << std::uppercase
-                            << walker[*it][i] << "";
+                            << walker[*it][i] << " ";
                 }
+                ++it;
                 outfile << "\n";
             }
 
@@ -199,12 +231,13 @@ namespace imcmc{
             while( it != derived_param_name.end() ){
                 outfile << *it << " = ";
                 for( int i=0; i<walker_num; ++i ){
-                    outfile << std::setw(10)
+                    outfile << std::setw(width)
                             << std::scientific
-                            << std::setprecision(8)
+                            << std::setprecision(precision)
                             << std::uppercase
-                            << walker[*it][i] << "";
+                            << walker[*it][i] << " ";
                 }
+                ++it;
                 outfile << "\n";
             }
 
@@ -213,42 +246,42 @@ namespace imcmc{
         //  ====================================================================
         //  parameters for walker_io will be of the form par*, with an extra star
 
-            outfile << "weight* = ";
+            outfile << "Weight* = ";
             for( int i=0; i<walker_num; ++i ){
                 outfile << std::setw(5)
                         << std::setprecision(3)
                         << std::uppercase
-                        << walker_io["Weight"][i] << "";
+                        << walker_io["Weight"][i] << " ";
             }
             outfile << "\n";
 
             outfile << "LnPost* = ";
             for( int i=0; i<walker_num; ++i ){
-                outfile << std::setw(10)
+                outfile << std::setw(width)
                         << std::scientific
-                        << std::setprecision(8)
+                        << std::setprecision(precision)
                         << std::uppercase
-                        << walker_io["LnPost"][i] << "";
+                        << walker_io["LnPost"][i] << " ";
             }
             outfile << "\n";
 
             outfile << "LnDet* = ";
             for( int i=0; i<walker_num; ++i ){
-                outfile << std::setw(10)
+                outfile << std::setw(width)
                         << std::scientific
-                        << std::setprecision(8)
+                        << std::setprecision(precision)
                         << std::uppercase
-                        << walker_io["LnDet"][i] << "";
+                        << walker_io["LnDet"][i] << " ";
             }
             outfile << "\n";
 
             outfile << "Chisq* = ";
             for( int i=0; i<walker_num; ++i ){
-                outfile << std::setw(10)
+                outfile << std::setw(width)
                         << std::scientific
-                        << std::setprecision(8)
+                        << std::setprecision(precision)
                         << std::uppercase
-                        << walker_io["Chisq"][i] << "";
+                        << walker_io["Chisq"][i] << " ";
             }
             outfile << "\n";
 
@@ -256,12 +289,13 @@ namespace imcmc{
             while( it != sampling_param_name.end() ){
                 outfile << *it + "*"  << " = ";
                 for( int i=0; i<walker_num; ++i ){
-                    outfile << std::setw(10)
+                    outfile << std::setw(width)
                             << std::scientific
-                            << std::setprecision(8)
+                            << std::setprecision(precision)
                             << std::uppercase
-                            << walker_io[*it][i] << "";
+                            << walker_io[*it][i] << " ";
                 }
+                ++it;
                 outfile << "\n";
             }
 
@@ -269,12 +303,13 @@ namespace imcmc{
             while( it != derived_param_name.end() ){
                 outfile << *it + "*"  << " = ";
                 for( int i=0; i<walker_num; ++i ){
-                    outfile << std::setw(10)
+                    outfile << std::setw(width)
                             << std::scientific
-                            << std::setprecision(8)
+                            << std::setprecision(precision)
                             << std::uppercase
-                            << walker_io[*it][i] << "";
+                            << walker_io[*it][i] << " ";
                 }
+                ++it;
                 outfile << "\n";
             }
 
@@ -286,15 +321,17 @@ namespace imcmc{
     }
 
     bool ensemble_state::read_state(){
+    
+        bool read_success = true;
 
         std::string errmsg;
         imcmc_vector_string_iterator it;
 
         std::string chkfile = chkfile_root + ".chk";
 
-        if( Read::Has_File() == false ){
+        if( Read::Has_File(chkfile) == false ){
             errmsg = "";
-            errmsg += "failed to detect check point file: " << chkfile << endl;
+            errmsg += "failed to detect check point file: " + chkfile;
             throw std::runtime_error(chkfile);
         }
 
@@ -304,10 +341,21 @@ namespace imcmc{
         if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
 
         //  make a simple check of the chkfile
-            if( Read::Num_of_Value_for_Key(chkfile,"Weight") != walker_num ){
-                errmsg = "";
-                errmsg += "data stored in: " + chkfile + " is broken!";
-                throw std::runtime_error(errmsg);
+            int walker_num_last_time = Read::Read_Int_from_File(chkfile,"walker_num");
+            if( walker_num_last_time < walker_num ){
+                std::cout << "==> *** Fatal Error in reading check point file ***\n"
+                          << "==> Number of walkers used in the last MCMC sampling is: "
+                          << walker_num_last_time << "\n"
+                          << "==> But in this new run, you're using "
+                          << walker_num << " walkers.\n"
+                          << "==> please reset a smaller walker number, no more than: "
+                          << walker_num_last_time << "\n";
+                read_success = false;
+            }
+            
+            if( !read_success ){
+                std::string nw = Read::IntToString(walker_num_last_time);
+                throw std::runtime_error("==> please reset a smaller walker number, no more than: "+nw);
             }
 
         //  now let's read the chkfile ....
@@ -386,6 +434,8 @@ namespace imcmc{
                 for( int i=0; i<walker_num; ++i ){
                     walker_io[*it][i] = temp[i];
                 }
+                
+                ++it;
             }
 
             it = derived_param_name.begin();
@@ -415,12 +465,12 @@ namespace imcmc{
         it = derived_param_name.begin();
         while( it != derived_param_name.end() ){
 
-            MPI::COMM_WORLD.Bacst(  walker[*it],
+            MPI::COMM_WORLD.Bcast(  walker[*it],
                                     walker_num,
                                     MPI::DOUBLE,
                                     ROOT_RANK   );
 
-            MPI::COMM_WORLD.Bacst(  walker_io[*it],
+            MPI::COMM_WORLD.Bcast(  walker_io[*it],
                                     walker_num,
                                     MPI::DOUBLE,
                                     ROOT_RANK   );
@@ -467,7 +517,7 @@ namespace imcmc{
         }
     }
 
-    void reset_ensemble_workspace( ensemble_workspace& ew ){
+    void ensemble_state::reset_ensemble_workspace( ensemble_workspace& ew ){
         // each rank copies exactly the same ensemble_state !
 
         imcmc_vector_string_iterator it;

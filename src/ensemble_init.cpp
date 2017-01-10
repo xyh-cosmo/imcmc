@@ -161,14 +161,17 @@ namespace imcmc{
 			}
         }
 
+        save_state_for_N_steps = 0;
         if( Read::Has_Key_in_File( paramfile, "save_state_for_N_steps") ){
             save_state_for_N_steps = Read::Read_Int_from_File(paramfile, "save_state_for_N_steps");
             if( save_state_for_N_steps < 0 ){
                 imcmc_runtime_warning("save_state_for_N_steps is less than 0 !!!");
             }
         }
-        else{
-            save_state_for_N_steps = 0;
+
+        start_from_check_point = false;
+        if( Read::Has_Key_in_File( paramfile, "start_from_check_point") ){
+            start_from_check_point = Read::Read_Bool_from_File(paramfile, "start_from_check_point");
         }
 
         if( Read::Has_Key_in_File( paramfile, "stop_on_error" ) ){
@@ -1031,7 +1034,7 @@ namespace imcmc{
                       << "#  =============================================================\n";
             //  _lndet_min_, _chisq_min_ are used only when writing probability into chains.
             //
-            std::cout << "#  " << error_tot << " likelihood errors encountered ...\n";
+            std::cout << "#  " << error_tot << " likelihood errors encountered in the initialization\n\n";
         }
 
         // MPI::COMM_WORLD.Barrier();
