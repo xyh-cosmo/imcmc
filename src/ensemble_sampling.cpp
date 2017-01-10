@@ -52,11 +52,11 @@ namespace imcmc{
                     existed_chain_num = es->existed_chain_num-1; // need to minus one here.
                     do_burnin = false;
                 }
-            }
-            else{
-            //  no check point file found ...
-                std::string msg = "no existing check point file found.";
-                imcmc_verbose(rank,msg);
+                else{
+                //  no check point file found ...
+                    std::string msg = "no existing check point file found.";
+                    imcmc_verbose(rank,msg);
+                }
             }
         }
 
