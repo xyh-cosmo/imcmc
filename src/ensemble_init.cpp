@@ -682,14 +682,11 @@ namespace imcmc{
 
             std::cout << "\n#  ==============================    NOTE    ==============================\n"
                       << "#  this version of init_walkers() has been optimized to support parallel \n"
-                      << "#  initialization, so that the time used to finish the initialization will \n"
-                      << "#  be greatly reduced especially when the likelihoods need long time to \n"
+                      << "#  initialization, so that the time needed by the initialization will be \n"
+                      << "#  greatly reduced, especially when the likelihoods need long time to \n"
                       << "#  compute.\n"
                       << "#  ========================================================================\n";
         }
-        // else{
-        //     std::cout << "rank: " << rank << " : waiting root rank ...." << std::endl;
-        // }
 
         // MPI::COMM_WORLD.Barrier();
 
