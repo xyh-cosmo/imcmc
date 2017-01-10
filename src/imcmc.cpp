@@ -104,6 +104,7 @@ namespace imcmc{
 
         if( !outfile.good() ){
             std::cout << "failed to open: " << file_new << std::endl;
+			return false;
         }
 
         std::string line;
