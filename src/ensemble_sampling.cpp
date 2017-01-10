@@ -59,6 +59,8 @@ namespace imcmc{
                 }
             }
         }
+        
+        MPI::COMM_WORLD.Barrier();
 
         int burnin_loops, sampling_loops;
 
@@ -69,7 +71,8 @@ namespace imcmc{
         _searched_lndet_min_chisq_min_ = false;
 
         if( rank == ROOT_RANK ){
-            if( es != NULL && start_from_check_point ){
+//            if( es != NULL && start_from_check_point ){
+            if( !do_burnin ){
                 std::cout << "\n#  =====================================================\n";
                 std::cout << "#  --> start from existing chains !!!\n";
                 std::cout << "#  ensemble_workspace::do_sampling(): no burning\n";
@@ -147,7 +150,7 @@ namespace imcmc{
                 }
             }
 
-            // MPI::COMM_WORLD.Barrier();
+            MPI::COMM_WORLD.Barrier();
         }
 
     //  DONT forget to close out_stream before start REAL sampling
@@ -208,7 +211,6 @@ namespace imcmc{
                 if( rank == ROOT_RANK )
                     write_walkers(out_stream);
 
-                // MPI::COMM_WORLD.Barrier();
 
                 // save ensemble_state
                 if( (es != NULL) && (save_state_for_N_steps > 0) ){
@@ -221,6 +223,8 @@ namespace imcmc{
                         ++es_counter;
                     }
                 }
+
+                MPI::COMM_WORLD.Barrier();
             }
 
             if( rank == ROOT_RANK ){
@@ -262,6 +266,8 @@ namespace imcmc{
                         }
                     }
                 }
+                
+                MPI::COMM_WORLD.Barrier();
             }
 
             MPI::COMM_WORLD.Barrier();

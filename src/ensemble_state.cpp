@@ -162,6 +162,8 @@ namespace imcmc{
                 walker_io["Chisq"][i] = ew.walker_io["Chisq"][i];
             }
         }
+        
+        MPI::COMM_WORLD.Barrier();
     }
 
     bool ensemble_state::save_state( int idx ){
@@ -317,6 +319,8 @@ namespace imcmc{
 
             outfile.close();
         }
+        
+        MPI::COMM_WORLD.Barrier();
 
     }
 
@@ -329,11 +333,16 @@ namespace imcmc{
 
         std::string chkfile = chkfile_root + ".chk";
 
+//  Update is needed here !
+//  should only the root rank do the check !
+
         if( Read::Has_File(chkfile) == false ){
             errmsg = "";
             errmsg += "failed to detect check point file: " + chkfile;
             throw std::runtime_error(chkfile);
         }
+
+        MPI::COMM_WORLD.Barrier();
 
         existed_chain_num = Read::Read_Int_from_File(chkfile,"chain_idx") + 1;
 
@@ -496,24 +505,24 @@ namespace imcmc{
         if( use_cosmomc_format == true ){
 
             MPI::COMM_WORLD.Bcast(  walker_io["LnPost"],
-            walker_num,
-            MPI::DOUBLE,
-            ROOT_RANK    );
+                                    walker_num,
+                                    MPI::DOUBLE,
+                                    ROOT_RANK    );
 
             MPI::COMM_WORLD.Bcast(  walker_io["LnDet"],
-            walker_num,
-            MPI::DOUBLE,
-            ROOT_RANK    );
+                                    walker_num,
+                                    MPI::DOUBLE,
+                                    ROOT_RANK    );
 
             MPI::COMM_WORLD.Bcast(  walker_io["Chisq"],
-            walker_num,
-            MPI::DOUBLE,
-            ROOT_RANK    );
+                                    walker_num,
+                                    MPI::DOUBLE,
+                                    ROOT_RANK    );
 
             MPI::COMM_WORLD.Bcast(  walker_io["Weight"],
-            walker_num,
-            MPI::DOUBLE,
-            ROOT_RANK    );
+                                    walker_num,
+                                    MPI::DOUBLE,
+                                    ROOT_RANK    );
         }
     }
 
