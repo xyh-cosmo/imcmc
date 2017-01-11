@@ -118,6 +118,43 @@ namespace imcmc{
                                  void                *model,
                                  void                *data );
 
+            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
+                                 imcmc_vector_string modelparam,
+                                 void                *model,
+                                 void                *data,
+                                 const std::string&        likelihood_name );
+
+            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
+                                 imcmc_vector_string modelparam,
+                                 imcmc_vector_string derivedparam,
+                                 void                *model,
+                                 void                *data,
+                                 const std::string&        likelihood_name );
+                                 
+//            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
+//                                 const imcmc_vector_string& modelparam,
+//                                 void                       *model,
+//                                 void                       *data );
+
+//            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
+//                                 const imcmc_vector_string& modelparam,
+//                                 const imcmc_vector_string& derivedparam,
+//                                 void                       *model,
+//                                 void                       *data );
+
+//            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
+//                                 const imcmc_vector_string& modelparam,
+//                                 void                       *model,
+//                                 void                       *data,
+//                                 const std::string&         likelihood_name );
+
+//            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
+//                                 const imcmc_vector_string& modelparam,
+//                                 const imcmc_vector_string& derivedparam,
+//                                 void                       *model,
+//                                 void                       *data,
+//                                 const std::string&         likelihood_name );
+
             bool prior( imcmc_double& full_param );    //    check Samplingparams, if out of prior range, return false
 
         //  return log(posterior) = -lndet - 0.5*chisq

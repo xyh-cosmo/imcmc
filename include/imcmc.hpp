@@ -89,9 +89,15 @@ namespace imcmc{
 
     typedef std::map<std::string, double>::iterator         imcmc_double_iterator;
     typedef std::map<std::string, std::string>::iterator    imcmc_string_iterator;
+    
+    typedef std::map<std::string, double>::const_iterator         imcmc_double_citerator;
+    typedef std::map<std::string, std::string>::const_iterator    imcmc_string_citerator;
 
     typedef std::vector<double>::iterator       imcmc_vector_double_iterator;
     typedef std::vector<std::string>::iterator  imcmc_vector_string_iterator;
+    
+    typedef std::vector<double>::const_iterator       imcmc_vector_double_citerator;
+    typedef std::vector<std::string>::const_iterator  imcmc_vector_string_citerator;
 
     struct imcmc_likelihood_state{  //  this will be used by user, so there is no suffix '_'
 

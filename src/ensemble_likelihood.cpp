@@ -28,7 +28,7 @@ namespace imcmc{
             ++it;
         }
 
-        MPI::COMM_WORLD.Barrier();
+//        MPI::COMM_WORLD.Barrier();
     }
 
     void ensemble_workspace::add_likelihood( double (*loglike)( imcmc_double&, double&, double&, void*, void*, istate& ),
@@ -66,8 +66,117 @@ namespace imcmc{
             ++it;
         }
 
-        MPI::COMM_WORLD.Barrier();
+//        MPI::COMM_WORLD.Barrier();
     }
+    
+    
+        void ensemble_workspace::add_likelihood( double (*loglike)( imcmc_double&, double&, double&, void*, void*, istate& ),
+                                             imcmc_vector_string    modelparam,
+                                             void*                  model,
+                                             void*                  data,
+                                             const std::string&     likelihood_name ){
+
+        std::cout << "Adding Likelihood function: " << likelihood_name << std::endl;
+        add_likelihood( loglike, modelparam, model, data );
+    }
+
+    void ensemble_workspace::add_likelihood( double (*loglike)( imcmc_double&, double&, double&, void*, void*, istate& ),
+                                             imcmc_vector_string    modelparam,
+                                             imcmc_vector_string    derivedparam,
+                                             void*                  model,
+                                             void*                  data,
+                                             const std::string&     likelihood_name ){
+
+        std::cout << "Adding Likelihood function: " << likelihood_name << std::endl;
+        add_likelihood( loglike, modelparam, derivedparam, model, data );
+    }
+    
+    
+//    void ensemble_workspace::add_likelihood( double (*loglike)( imcmc_double&, double&, double&, void*, void*, istate& ),
+//                                             const imcmc_vector_string& modelparam,
+//                                             void*                      model,
+//                                             void*                      data ){
+
+//        likelihood_ *like   = new likelihood_;
+//        like->loglike       = loglike;
+//        like->model         = model;
+//        like->data          = data;
+
+//        likelihood.push_back( like );
+
+//        imcmc_vector_string_citerator it = modelparam.begin();
+
+//        while( it != modelparam.end() ){
+//            if( full_param.count(*it) == 0 ){    //    if not found
+//                full_param[*it]        = 0.0;
+//                full_param_min[*it]    = 0.0;
+//                full_param_max[*it]    = 0.0;
+//            }
+//            ++it;
+//        }
+
+////        MPI::COMM_WORLD.Barrier();
+//    }
+
+//    void ensemble_workspace::add_likelihood( double (*loglike)( imcmc_double&, double&, double&, void*, void*, istate& ),
+//                                             const imcmc_vector_string& modelparam,
+//                                             const imcmc_vector_string& derivedparam,
+//                                             void*                      model,
+//                                             void*                      data ){
+
+//        likelihood_ *like   = new likelihood_;
+//        like->loglike       = loglike;
+//        like->model         = model;
+//        like->data          = data;
+
+//        likelihood.push_back( like );
+
+//        imcmc_vector_string_citerator it = modelparam.begin();
+
+//        while( it != modelparam.end() ){
+//            if( full_param.count(*it) == 0 ){    //    if not found
+//                full_param[*it]     = 0.0;
+//                full_param_min[*it] = 0.0;
+//                full_param_max[*it] = 0.0;
+//            }
+//            ++it;
+//        }
+
+//        it = derivedparam.begin();
+
+//    //  explicitly adding derived parameters from the input argument derivedparam
+//        while( it != derivedparam.end() ){
+//            if( derived_param.count(*it) == 0 ){
+//                derived_param[*it]     = 0.0;  //  initialize to zeros
+//                derived_param_name.push_back(*it);
+//            }
+//            ++it;
+//        }
+
+////        MPI::COMM_WORLD.Barrier();
+//    }
+//    
+//    
+//    void ensemble_workspace::add_likelihood( double (*loglike)( imcmc_double&, double&, double&, void*, void*, istate& ),
+//                                             const imcmc_vector_string& modelparam,
+//                                             void*                      model,
+//                                             void*                      data,
+//                                             const std::string&         likelihood_name ){
+
+//        std::cout << "Adding Likelihood function: " << likelihood_name << std::endl;
+//        add_likelihood( loglike, modelparam, model, data );
+//    }
+
+//    void ensemble_workspace::add_likelihood( double (*loglike)( imcmc_double&, double&, double&, void*, void*, istate& ),
+//                                             const imcmc_vector_string& modelparam,
+//                                             const imcmc_vector_string& derivedparam,
+//                                             void*                      model,
+//                                             void*                      data,
+//                                             const std::string&         likelihood_name ){
+
+//        std::cout << "Adding Likelihood function: " << likelihood_name << std::endl;
+//        add_likelihood( loglike, modelparam, derivedparam, model, data );
+//    }
 
 
 //  return log(posterior) = -lndet - 0.5*chisq
