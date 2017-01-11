@@ -42,7 +42,7 @@ namespace imcmc{
             if( Read::Has_File(chkfile) ){
                 no_burnin = read_state();
 
-                
+
             }
 
             if( !no_burnin ){
@@ -63,8 +63,7 @@ namespace imcmc{
         _searched_lndet_min_chisq_min_ = false;
 
         if( rank == ROOT_RANK ){
-//            if( es != NULL && start_from_check_point ){
-            if( no_burnin ){
+            if( start_from_check_point && no_burnin ){
                 std::cout << "\n#  =====================================================\n";
                 std::cout << "#  --> start from existing chains !!!\n";
                 std::cout << "#  ensemble_workspace::do_sampling(): no burning\n";
