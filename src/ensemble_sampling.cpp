@@ -30,6 +30,10 @@ namespace imcmc{
 
     void ensemble_workspace::do_sampling(){
 
+        int burnin_loops, sampling_loops;
+
+        burnin_loops    = burnin_step;
+        sampling_loops  = sample_step;
 
     //  counter for saving ensemble_state
         int es_counter = 0;
@@ -53,10 +57,8 @@ namespace imcmc{
         
         MPI::COMM_WORLD.Barrier();
 
-        int burnin_loops, sampling_loops;
-
-        burnin_loops    = burnin_step;
-        sampling_loops  = sample_step;
+        if( no_burnin )
+            burnin_loops = 0;
 
         // make sure searching lndet_min and chisq_min will be done at least one time during burn-in
         _searched_lndet_min_chisq_min_ = false;
