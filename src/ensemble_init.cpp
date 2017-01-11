@@ -757,8 +757,6 @@ namespace imcmc{
             std::cout << "\n";
         }
 
-        //MPI::COMM_WORLD.Barrier();
-
         //  each rank will only calculate some of the likelihoods of the walkers.
         int i_start, i_end;
 
@@ -797,12 +795,6 @@ namespace imcmc{
         // MPI::COMM_WORLD.Barrier();
 
         for(int i=i_start; i<=i_end; ++i){
-
-//            std::cout << " @ RANK: " << std::setw(4) << std::right << rank
-//                      << " initializing " << std::setw(4) << std::right << i
-//                      << " -th walker, [ i_start = " << std::setw(4) << std::right << i_start
-//                      << ", i_end = " << std::setw(4) << std::right << i_end << "]\n";
-
 
             double lndet, chisq;
             double start_value, value_width;
@@ -907,8 +899,6 @@ namespace imcmc{
                                         walker[*it],
                                         recvcounts, displace, MPI::DOUBLE,
                                         ROOT_RANK );
-
-            // MPI::COMM_WORLD.Barrier();
 
             MPI::COMM_WORLD.Bcast(  walker[*it],
                                     walker_num,
@@ -1021,8 +1011,6 @@ namespace imcmc{
             //
             std::cout << "#  " << error_tot << " likelihood errors encountered in the initialization\n\n";
         }
-
-        // MPI::COMM_WORLD.Barrier();
 
         delete[] sendcounts;
         delete[] recvcounts;
