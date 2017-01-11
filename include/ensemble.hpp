@@ -16,39 +16,6 @@
 
 namespace imcmc{
 
-    class ensemble_workspace;
-
-    struct ensemble_state{
-
-        int walker_num;
-        int sampling_param_num;
-        int derived_param_num;
-        int existed_chain_num;
-
-        bool use_cosmomc_format;
-        std::string chkfile_root;
-
-        imcmc_double_pointer    walker;                 //  includes LnPost, LnDet and Chisq
-        imcmc_double_pointer    walker_io;              //  this is acutally a backup of walker, and it will be used to write chains into files.
-        imcmc_vector_string     sampling_param_name;    //  hold the names of parameters being sampled
-        imcmc_vector_string     derived_param_name;     //  hold the names of derived parameters
-
-        ensemble_state();
-        ~ensemble_state();
-
-        void init( ensemble_workspace& ew );
-        void take_a_snapshot( ensemble_workspace& ew );
-        void reset_ensemble_workspace( ensemble_workspace& ew );
-
-        bool save_state( int idx );  // save walkers' state into disk
-        bool read_state();  // read walkers' state from state file stored on disk.
-        
-        int width;
-        int precision;
-        void setw(int width=8);
-        void setp(int precision=6);
-    };
-
     class ensemble_workspace{
         public:
             ensemble_workspace();
@@ -167,13 +134,20 @@ namespace imcmc{
             void update_walkers( bool do_sampling, int ith, int num );   // Update walkers
             void update_walkers_io();                                    // needed when use_cosmomc_format == true
             void write_walkers( std::ofstream& of );                     // Write walkers into text files
-            void do_sampling( ensemble_state* es );
             void do_sampling();
 
         //  ====================================================================
-        //  start from check point
-            int save_state_for_N_steps;     // after every N steps, save the ensemble_state
+        //  save check point files & re-start from check point files
+            // std::ofstream   io_save_state;
             bool start_from_check_point;
+            int save_state_for_N_steps;     // after every N steps, save the ensemble_state
+            int chkfile_width;
+            int chkfile_precision;
+            // void save_state( std::ofstream& of, int idx );  // save walkers' state into disk
+            void save_state( int idx );  // save walkers' state into disk
+            bool read_state();  // read walkers' state from state file stored on disk.
+            void set_chkfile_width(int width=8);
+            void set_chkfile_precision(int precision=6);
     };
 
 }

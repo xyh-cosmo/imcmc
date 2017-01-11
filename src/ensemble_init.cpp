@@ -161,6 +161,9 @@ namespace imcmc{
 			}
         }
 
+    //  initially there should not be any chain files
+        existed_chain_num = 0;
+
         save_state_for_N_steps = 0;
         if( Read::Has_Key_in_File( paramfile, "save_state_for_N_steps") ){
             save_state_for_N_steps = Read::Read_Int_from_File(paramfile, "save_state_for_N_steps");
@@ -168,6 +171,9 @@ namespace imcmc{
                 imcmc_runtime_warning("save_state_for_N_steps is less than 0 !!!");
             }
         }
+
+        chkfile_width = 8;
+        chkfile_precision = 6;
 
         start_from_check_point = false;
         if( Read::Has_Key_in_File( paramfile, "start_from_check_point") ){

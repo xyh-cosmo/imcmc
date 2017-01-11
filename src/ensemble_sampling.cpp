@@ -29,34 +29,26 @@ namespace imcmc{
     }
 
     void ensemble_workspace::do_sampling(){
-        do_sampling(NULL);
-    }
 
-    void ensemble_workspace::do_sampling( ensemble_state* es ){
-
-        existed_chain_num = 0;
-        bool do_burnin = true;
+        bool no_burnin = true;
 
     //  counter for saving ensemble_state
         int es_counter = 0;
 
-        if( (es != NULL) ){
+        std::string chkfile = chain_root + ".chk";
 
-            std::string chkfile = chain_root + ".chk";
+        if( start_from_check_point ){
 
-            if( start_from_check_point ){
-                if( Read::Has_File(chkfile) ){
-                //  OK, reset ensemble_workspace using the backup file.
-                    es->read_state();
-                    es->reset_ensemble_workspace(*this);
-                    existed_chain_num = es->existed_chain_num-1; // need to minus one here.
-                    do_burnin = false;
-                }
-                else{
-                //  no check point file found ...
-                    std::string msg = "no existing check point file found.";
-                    imcmc_verbose(rank,msg);
-                }
+            if( Read::Has_File(chkfile) ){
+                no_burnin = read_state();
+
+                
+            }
+
+            if( !no_burnin ){
+            //  no check point file found ...
+                std::string msg = "no existing check point file found.";
+                imcmc_verbose(rank,msg);
             }
         }
         
@@ -72,7 +64,7 @@ namespace imcmc{
 
         if( rank == ROOT_RANK ){
 //            if( es != NULL && start_from_check_point ){
-            if( !do_burnin ){
+            if( no_burnin ){
                 std::cout << "\n#  =====================================================\n";
                 std::cout << "#  --> start from existing chains !!!\n";
                 std::cout << "#  ensemble_workspace::do_sampling(): no burning\n";
@@ -86,7 +78,7 @@ namespace imcmc{
             }
         }
 
-        if( save_burned_ashes && (rank == ROOT_RANK) && do_burnin ){
+        if( save_burned_ashes && (rank == ROOT_RANK) && !no_burnin ){
 
             chain_name = chain_root + "_ashes.txt";
 
@@ -127,6 +119,7 @@ namespace imcmc{
         for( int j=0; j<burnin_loops; ++j ){    //  Burn in
 
             update_walkers( false, j, burnin_loops );
+            ++es_counter;
 
             if( use_cosmomc_format ){
 
@@ -139,22 +132,19 @@ namespace imcmc{
             }
             
             // save ensemble_state
-            if( (es != NULL) && (save_state_for_N_steps > 0) ){
-                if( es_counter == save_state_for_N_steps-1 ){
-                    es->take_a_snapshot(*this);
-                    es->save_state(0);
+            if( (save_state_for_N_steps > 0) && (rank == ROOT_RANK) ){
+                if( es_counter == save_state_for_N_steps ){
+                    save_state(0);
                     es_counter = 0; // reset counter to 0.
                 }
-                else{
-                    ++es_counter;
-                }
             }
+            
 
             MPI::COMM_WORLD.Barrier();
         }
 
     //  DONT forget to close out_stream before start REAL sampling
-        if( (rank == ROOT_RANK) && do_burnin )
+        if( (rank == ROOT_RANK) && !no_burnin )
             out_stream.close();
 
         _searched_lndet_min_chisq_min_ = true;  //  once searched during the burning, change its state to TRUE.
@@ -170,10 +160,10 @@ namespace imcmc{
                 if( !out_stream.good() )
                     imcmc_runtime_error("Filed to open file: " + chain_name);
 
-                //  write parameter names into the first line of the chain file
+            //  write parameter names into the first line of the chain file
                 imcmc_vector_string_iterator it = output_param_name.begin();
 
-                //  Write the first line
+            //  Write the first line
                 if( use_cosmomc_format && write_chain_header ){
                     out_stream << "# standard cosmomc format\n";
                     out_stream << "#";
@@ -185,7 +175,7 @@ namespace imcmc{
                     out_stream << std::setw(_OUT_WIDTH_-1) << "probability" << std::setw(_OUT_WIDTH_) << "chisq";
                 }
 
-                //  Write the second line
+            //  Write the second line
                 if( write_chain_header ){
                     while( it != output_param_name.end() ){   //  updates only the sampling parameters
                         out_stream << std::setw(_OUT_WIDTH_) << *it << "";
@@ -207,20 +197,18 @@ namespace imcmc{
             for( int j=0; j<sampling_loops; ++j ){
 
                 update_walkers( true, j, sampling_loops );
+                ++es_counter;
 
-                if( rank == ROOT_RANK )
+                if( rank == ROOT_RANK ){
+
                     write_walkers(out_stream);
 
-
-                // save ensemble_state
-                if( (es != NULL) && (save_state_for_N_steps > 0) ){
-                    if( es_counter == save_state_for_N_steps-1 ){
-                        es->take_a_snapshot(*this);
-                        es->save_state(i);
-                        es_counter = 0; // reset counter to 0.
-                    }
-                    else{
-                        ++es_counter;
+                //  save ensemble_state
+                    if( (save_state_for_N_steps > 0) ){
+                        if( es_counter == save_state_for_N_steps ){
+                            save_state(i);
+                            es_counter = 0; // reset counter to 0.
+                        }
                     }
                 }
 
@@ -244,7 +232,7 @@ namespace imcmc{
             MPI::COMM_WORLD.Barrier();
 
         //  after one chain is finished, you can choose to skip some steps
-            if( (skip_step > 0)  && (i < chain_num) ){
+            if( (skip_step > 0)  && (i < chain_num+existed_chain_num) ){
 
                 if( rank == ROOT_RANK )
                     std::cout << "\n ****** skipping some chains, can be viewed as extra burn-in ******\n";
@@ -252,17 +240,13 @@ namespace imcmc{
                 for( int j=0; j<skip_step; ++j ){
                 
                     update_walkers( false, j, skip_step );
-                    // MPI::COMM_WORLD.Barrier();
+                    ++es_counter;
 
-                    // save ensemble_state
-                    if( (es != NULL) && (save_state_for_N_steps > 0) ){
-                        if( es_counter == save_state_for_N_steps-1 ){
-                            es->take_a_snapshot(*this);
-                            es->save_state(i);
+                //  save ensemble_state
+                    if( (save_state_for_N_steps > 0) && (rank == ROOT_RANK) ){
+                        if( es_counter == save_state_for_N_steps ){
+                            save_state(i);
                             es_counter = 0; // reset counter to 0.
-                        }
-                        else{
-                            ++es_counter;
                         }
                     }
                 }

@@ -5,172 +5,22 @@ using namespace imcmc::parser;
 
 namespace imcmc{
 
-    ensemble_state::ensemble_state(){
-        walker_num  = 0;
-        sampling_param_num = 0;
-        derived_param_num  = 0;
-        use_cosmomc_format = true;
-        walker.clear();
-        walker_io.clear();
-        sampling_param_name.clear();
-        derived_param_name.clear();
-    }
-
-    ensemble_state::~ensemble_state(){
-
-        delete[] walker["LnPost"];
-        delete[] walker["LnDet"];
-        delete[] walker["Chisq"];
-
-        if( use_cosmomc_format ){
-            delete[] walker_io["Weight"];
-            delete[] walker_io["LnPost"];
-            delete[] walker_io["LnDet"];
-            delete[] walker_io["Chisq"];
-        }
-
-        imcmc_vector_string_iterator it;
-
-        if( sampling_param_name.size() > 0 ){
-            it = sampling_param_name.begin();
-            while( it != sampling_param_name.end() ){
-                delete[] walker[*it];
-                if( use_cosmomc_format )
-                    delete[] walker_io[*it];
-                ++it;
-            }
-        }
-
-        if( derived_param_name.size() > 0 ){
-            it = derived_param_name.begin();
-            while( it != derived_param_name.end() ){
-                delete[] walker[*it];
-                if( use_cosmomc_format )
-                    delete[] walker_io[*it];
-                ++it;
-            }
-        }
-    }
-
-    void ensemble_state::init( ensemble_workspace& ew ){
-
-        chkfile_root= ew.chain_root;
-        walker_num  = ew.walker_num;
-        use_cosmomc_format = ew.use_cosmomc_format;
-        
-        setw();
-        setp();
-
-        imcmc_vector_string_iterator it;
-
-    //  allocate memory for walkers and walker_io
-        it = ew.sampling_param_name.begin();
-        sampling_param_num = 0;
-        while( it != ew.sampling_param_name.end() ){
-            sampling_param_name.push_back(*it);
-            walker[*it]     = new double[walker_num];
-
-            if( use_cosmomc_format )
-                walker_io[*it]  = new double[walker_num];
-
-            ++it;
-            ++sampling_param_num;
-        }
-
-        it = ew.derived_param_name.begin();
-        while( it != ew.derived_param_name.end() ){
-            derived_param_name.push_back(*it);
-            walker[*it]     = new double[walker_num];
-
-            if( use_cosmomc_format )
-                walker_io[*it]  = new double[walker_num];
-
-            ++it;
-            ++derived_param_num;
-        }
-
-        //  add LnPost, LnDet, and Chisq to walkers
-        walker["LnPost"]    = new double[walker_num];
-        walker["LnDet"]     = new double[walker_num];
-        walker["Chisq"]     = new double[walker_num];
-
-        if( use_cosmomc_format ){
-            walker_io["Weight"] = new double[walker_num];
-            walker_io["LnPost"] = new double[walker_num];
-            walker_io["LnDet"]  = new double[walker_num];
-            walker_io["Chisq"]  = new double[walker_num];
-        }
-
-    //  copy initialized walkers & walker_io to ensemble_state
-        take_a_snapshot(ew);
+    void ensemble_workspace::set_chkfile_width(int width){
+        chkfile_width = width;
     }
     
-    void ensemble_state::setw(int width){
-        this->width = width;
-    }
-    
-    void ensemble_state::setp(int precision){
-        this->precision = precision;
-
-        if( this->width < precision )
-            this->width = precision + 2;
-    }
-
-    void ensemble_state::take_a_snapshot( ensemble_workspace& ew ){
-
-        if( ew.walker_initialized == false ){
-            std::string errmsg = "";
-            errmsg += "==> void ensemble_state::take_shapshot( ensemble_workspace& ew ):\n";
-            errmsg += " ew.walker_initialized = false, stop!\n";
-            throw std::runtime_error(errmsg);
+    void ensemble_workspace::set_chkfile_precision(int precision){
+        chkfile_precision = precision;
+        if( precision >= chkfile_width ){
+            chkfile_width = precision+2;
         }
+    }
+
+    void ensemble_workspace::save_state( int idx ){
 
         imcmc_vector_string_iterator it;
-
-        it = sampling_param_name.begin();
-        while( it != sampling_param_name.end() ){
-
-            for( int i=0; i<walker_num; ++i ){
-                walker[*it][i]      = ew.walker[*it][i];
-                walker_io[*it][i]   = ew.walker_io[*it][i];
-            }
-
-            ++it;
-        }
-
-        it = derived_param_name.begin();
-        while( it != derived_param_name.end() ){
-
-            for( int i=0; i<walker_num; ++i ){
-                walker[*it][i]      = ew.walker[*it][i];
-                walker_io[*it][i]   = ew.walker_io[*it][i];
-            }
-
-            ++it;
-        }
-        
-        for( int i=0; i<walker_num; ++i ){
-
-            walker["LnPost"][i] = ew.walker["LnPost"][i];
-            walker["LnDet"][i] = ew.walker["LnDet"][i];
-            walker["Chisq"][i] = ew.walker["Chisq"][i];
-
-            if( use_cosmomc_format == true ){
-                walker_io["Weight"][i] = ew.walker_io["Weight"][i];
-                walker_io["LnPost"][i] = ew.walker_io["LnPost"][i];
-                walker_io["LnDet"][i] = ew.walker_io["LnDet"][i];
-                walker_io["Chisq"][i] = ew.walker_io["Chisq"][i];
-            }
-        }
-        
-        MPI::COMM_WORLD.Barrier();
-    }
-
-    bool ensemble_state::save_state( int idx ){
-
-        imcmc_vector_string_iterator it;
-        std::string chkfile = chkfile_root + ".chk";
-        std::string chkfile2 = chkfile_root + ".chk.temp";
+        std::string chkfile = chain_root + ".chk";
+        std::string chkfile2 = chain_root + ".chk.temp";
 
         if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
 
@@ -178,6 +28,7 @@ namespace imcmc{
                 std::cout << "==> making a backup of pre-existing check point file ...\n";
                 backup_file(chkfile,chkfile2);
             }
+
             std::ofstream outfile(chkfile.c_str());
             
             std::cout << "==> saving new check point file ...\n\n";
@@ -187,9 +38,9 @@ namespace imcmc{
 
             outfile << "LnPost = ";
             for( int i=0; i<walker_num; ++i ){
-                outfile << std::setw(width)
+                outfile << std::setw(chkfile_width)
                         << std::scientific
-                        << std::setprecision(precision)
+                        << std::setprecision(chkfile_precision)
                         << std::uppercase
                         << walker["LnPost"][i] << " ";
             }
@@ -197,9 +48,9 @@ namespace imcmc{
 
             outfile << "LnDet = ";
             for( int i=0; i<walker_num; ++i ){
-                outfile << std::setw(width)
+                outfile << std::setw(chkfile_width)
                         << std::scientific
-                        << std::setprecision(precision)
+                        << std::setprecision(chkfile_precision)
                         << std::uppercase
                         << walker["LnDet"][i] << " ";
             }
@@ -207,9 +58,9 @@ namespace imcmc{
 
             outfile << "Chisq = ";
             for( int i=0; i<walker_num; ++i ){
-                outfile << std::setw(width)
+                outfile << std::setw(chkfile_width)
                         << std::scientific
-                        << std::setprecision(precision)
+                        << std::setprecision(chkfile_precision)
                         << std::uppercase
                         << walker["Chisq"][i] << " ";
             }
@@ -219,9 +70,9 @@ namespace imcmc{
             while( it != sampling_param_name.end() ){
                 outfile << *it << " = ";
                 for( int i=0; i<walker_num; ++i ){
-                    outfile << std::setw(width)
+                    outfile << std::setw(chkfile_width)
                             << std::scientific
-                            << std::setprecision(precision)
+                            << std::setprecision(chkfile_precision)
                             << std::uppercase
                             << walker[*it][i] << " ";
                 }
@@ -233,9 +84,9 @@ namespace imcmc{
             while( it != derived_param_name.end() ){
                 outfile << *it << " = ";
                 for( int i=0; i<walker_num; ++i ){
-                    outfile << std::setw(width)
+                    outfile << std::setw(chkfile_width)
                             << std::scientific
-                            << std::setprecision(precision)
+                            << std::setprecision(chkfile_precision)
                             << std::uppercase
                             << walker[*it][i] << " ";
                 }
@@ -259,9 +110,9 @@ namespace imcmc{
 
             outfile << "LnPost* = ";
             for( int i=0; i<walker_num; ++i ){
-                outfile << std::setw(width)
+                outfile << std::setw(chkfile_width)
                         << std::scientific
-                        << std::setprecision(precision)
+                        << std::setprecision(chkfile_precision)
                         << std::uppercase
                         << walker_io["LnPost"][i] << " ";
             }
@@ -269,9 +120,9 @@ namespace imcmc{
 
             outfile << "LnDet* = ";
             for( int i=0; i<walker_num; ++i ){
-                outfile << std::setw(width)
+                outfile << std::setw(chkfile_width)
                         << std::scientific
-                        << std::setprecision(precision)
+                        << std::setprecision(chkfile_precision)
                         << std::uppercase
                         << walker_io["LnDet"][i] << " ";
             }
@@ -279,9 +130,9 @@ namespace imcmc{
 
             outfile << "Chisq* = ";
             for( int i=0; i<walker_num; ++i ){
-                outfile << std::setw(width)
+                outfile << std::setw(chkfile_width)
                         << std::scientific
-                        << std::setprecision(precision)
+                        << std::setprecision(chkfile_precision)
                         << std::uppercase
                         << walker_io["Chisq"][i] << " ";
             }
@@ -291,9 +142,9 @@ namespace imcmc{
             while( it != sampling_param_name.end() ){
                 outfile << *it + "*"  << " = ";
                 for( int i=0; i<walker_num; ++i ){
-                    outfile << std::setw(width)
+                    outfile << std::setw(chkfile_width)
                             << std::scientific
-                            << std::setprecision(precision)
+                            << std::setprecision(chkfile_precision)
                             << std::uppercase
                             << walker_io[*it][i] << " ";
                 }
@@ -305,9 +156,9 @@ namespace imcmc{
             while( it != derived_param_name.end() ){
                 outfile << *it + "*"  << " = ";
                 for( int i=0; i<walker_num; ++i ){
-                    outfile << std::setw(width)
+                    outfile << std::setw(chkfile_width)
                             << std::scientific
-                            << std::setprecision(precision)
+                            << std::setprecision(chkfile_precision)
                             << std::uppercase
                             << walker_io[*it][i] << " ";
                 }
@@ -320,33 +171,32 @@ namespace imcmc{
             outfile.close();
         }
         
-        MPI::COMM_WORLD.Barrier();
-
     }
 
-    bool ensemble_state::read_state(){
+    bool ensemble_workspace::read_state(){
     
+        existed_chain_num = 0;
         bool read_success = true;
 
         std::string errmsg;
         imcmc_vector_string_iterator it;
 
-        std::string chkfile = chkfile_root + ".chk";
+        std::string chkfile = chain_root + ".chk";
 
 //  Update is needed here !
 //  should only the root rank do the check !
 
         if( Read::Has_File(chkfile) == false ){
-            errmsg = "";
-            errmsg += "failed to detect check point file: " + chkfile;
-            throw std::runtime_error(chkfile);
+            std::cout << "==> failed to find check point file: " + chkfile;
+            read_success = false;
+            return read_success;
         }
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
 
-        existed_chain_num = Read::Read_Int_from_File(chkfile,"chain_idx") + 1;
+        existed_chain_num = Read::Read_Int_from_File(chkfile,"chain_idx");
 
-        //  only the root rank reads backup file.
+    //  only the root rank reads backup file.
         if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
 
         //  make a simple check of the chkfile
@@ -452,7 +302,7 @@ namespace imcmc{
             delete[] temp;
         }
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
 
     //  broadcast root rank's backup to all other ranks.
 
@@ -524,52 +374,8 @@ namespace imcmc{
                                     MPI::DOUBLE,
                                     ROOT_RANK    );
         }
+
+        return read_success;
     }
 
-    void ensemble_state::reset_ensemble_workspace( ensemble_workspace& ew ){
-        // each rank copies exactly the same ensemble_state !
-
-        imcmc_vector_string_iterator it;
-
-        it = ew.sampling_param_name.begin();
-        while( it != ew.sampling_param_name.end() ){
-
-            for( int i=0; i<walker_num; ++i ){
-                ew.walker[*it][i] = walker[*it][i];
-
-                if( use_cosmomc_format == true )
-                    ew.walker_io[*it][i] = walker_io[*it][i];
-            }
-
-            ++it;
-        }
-
-        it = ew.derived_param_name.begin();
-        while( it != ew.derived_param_name.end() ){
-
-            for( int i=0; i<walker_num; ++i ){
-                ew.walker[*it][i] = walker[*it][i];
-
-                if( use_cosmomc_format == true )
-                    ew.walker_io[*it][i] = walker_io[*it][i];
-            }
-
-            ++it;
-        }
-
-        for( int i=0; i<walker_num; ++i ){
-
-            ew.walker["LnPost"][i] = walker["LnPost"][i];
-            ew.walker["LnDet"][i] = walker["LnDet"][i];
-            ew.walker["Chisq"][i] = walker["Chisq"][i];
-
-            if( use_cosmomc_format == true ){
-                ew.walker_io["Weight"][i] = walker_io["Weight"][i];
-                ew.walker_io["LnPost"][i] = walker_io["LnPost"][i];
-                ew.walker_io["LnDet"][i] = walker_io["LnDet"][i];
-                ew.walker_io["Chisq"][i] = walker_io["Chisq"][i];
-            }
-        }
-
-    }
 }
