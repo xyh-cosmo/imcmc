@@ -40,25 +40,25 @@ namespace imcmc{
 
         bool no_burnin = false;
 
-        // if( start_from_check_point ){
+        if( start_from_check_point ){
 
-        //     std::string chkfile = chain_root + ".chk";
+            std::string chkfile = chain_root + ".chk";
             
-        //     if( Read::Has_File(chkfile) ){
-        //         no_burnin = read_state();
-        //     }
+            if( Read::Has_File(chkfile) ){
+                no_burnin = read_state();
+            }
 
-        //     if( !no_burnin ){
-        //     //  no check point file found ...
-        //         std::string msg = "no existing check point file found.";
-        //         imcmc_verbose(rank,msg);
-        //     }
-        // }
+            if( !no_burnin ){
+            //  no check point file found ...
+                std::string msg = "no existing check point file found.";
+                imcmc_verbose(rank,msg);
+            }
+        }
         
         // MPI::COMM_WORLD.Barrier();
 
-        // if( no_burnin )
-        //     burnin_loops = 0;
+        if( no_burnin )
+            burnin_loops = 0;
 
         // make sure searching lndet_min and chisq_min will be done at least one time during burn-in
         _searched_lndet_min_chisq_min_ = false;
@@ -132,12 +132,12 @@ namespace imcmc{
             }
             
             // save ensemble_state
-            // if( (save_state_for_N_steps > 0) && (rank == ROOT_RANK) ){
-            //     if( es_counter == save_state_for_N_steps ){
-            //         save_state(0);
-            //         es_counter = 0; // reset counter to 0.
-            //     }
-            // }
+            if( (save_state_for_N_steps > 0) && (rank == ROOT_RANK) ){
+                if( es_counter == save_state_for_N_steps ){
+                    save_state(0);
+                    es_counter = 0; // reset counter to 0.
+                }
+            }
             
             // MPI::COMM_WORLD.Barrier();
         }
@@ -211,7 +211,7 @@ namespace imcmc{
                     // }
                 }
 
-                MPI::COMM_WORLD.Barrier();
+                // MPI::COMM_WORLD.Barrier();
             }
 
             if( rank == ROOT_RANK ){
@@ -242,15 +242,15 @@ namespace imcmc{
                     ++es_counter;
 
                 //  save ensemble_state
-                    // if( (save_state_for_N_steps > 0) && (rank == ROOT_RANK) ){
-                    //     if( es_counter == save_state_for_N_steps ){
-                    //         save_state(i);
-                    //         es_counter = 0; // reset counter to 0.
-                    //     }
-                    // }
+                    if( (save_state_for_N_steps > 0) && (rank == ROOT_RANK) ){
+                        if( es_counter == save_state_for_N_steps ){
+                            save_state(i);
+                            es_counter = 0; // reset counter to 0.
+                        }
+                    }
                 }
                 
-                MPI::COMM_WORLD.Barrier();
+                // MPI::COMM_WORLD.Barrier();
             }
 
             MPI::COMM_WORLD.Barrier();
