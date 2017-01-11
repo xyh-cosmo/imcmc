@@ -139,6 +139,7 @@ namespace imcmc{
                 }
             }
             
+            // when running on cluster, the barrier() may cause unexpected stop, but not quit.
             // MPI::COMM_WORLD.Barrier();
         }
 
@@ -203,12 +204,12 @@ namespace imcmc{
                     write_walkers(out_stream);
 
                 //  save ensemble_state
-                    // if( (save_state_for_N_steps > 0) ){
-                    //     if( es_counter == save_state_for_N_steps ){
-                    //         save_state(i);
-                    //         es_counter = 0; // reset counter to 0.
-                    //     }
-                    // }
+                    if( (save_state_for_N_steps > 0) ){
+                        if( es_counter == save_state_for_N_steps ){
+                            save_state(i);
+                            es_counter = 0; // reset counter to 0.
+                        }
+                    }
                 }
 
                 // MPI::COMM_WORLD.Barrier();
