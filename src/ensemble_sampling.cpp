@@ -30,19 +30,18 @@ namespace imcmc{
 
     void ensemble_workspace::do_sampling(){
 
-        bool no_burnin = true;
 
     //  counter for saving ensemble_state
         int es_counter = 0;
 
-        std::string chkfile = chain_root + ".chk";
+        bool no_burnin = false;
 
         if( start_from_check_point ){
 
+            std::string chkfile = chain_root + ".chk";
+            
             if( Read::Has_File(chkfile) ){
                 no_burnin = read_state();
-
-
             }
 
             if( !no_burnin ){
