@@ -139,8 +139,7 @@ namespace imcmc{
                 }
             }
             
-
-            MPI::COMM_WORLD.Barrier();
+            // MPI::COMM_WORLD.Barrier();
         }
 
     //  DONT forget to close out_stream before start REAL sampling

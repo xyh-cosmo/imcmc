@@ -192,8 +192,6 @@ namespace imcmc{
             return read_success;
         }
 
-        // MPI::COMM_WORLD.Barrier();
-
         existed_chain_num = Read::Read_Int_from_File(chkfile,"chain_idx");
 
     //  only the root rank reads backup file.
@@ -301,8 +299,6 @@ namespace imcmc{
 
             delete[] temp;
         }
-
-        // MPI::COMM_WORLD.Barrier();
 
     //  broadcast root rank's backup to all other ranks.
 
