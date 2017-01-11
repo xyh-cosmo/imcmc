@@ -34,7 +34,6 @@ namespace imcmc{
         walker_initialized              = false;
         _searched_lndet_min_chisq_min_  = false;
 
-        use_cosmomc_format  = true; //  default use CosmoMC format
         write_chain_header  = true; //  default true
         save_burned_ashes   = true;
         start_from_fiducial = true;
@@ -66,12 +65,10 @@ namespace imcmc{
             delete[] accept;
             delete[] error;
 
-            if( use_cosmomc_format ){
-                delete[] walker_io["Weight"];
-                delete[] walker_io["LnPost"];
-                delete[] walker_io["LnDet"];
-                delete[] walker_io["Chisq"];
-            }
+            delete[] walker_io["Weight"];
+            delete[] walker_io["LnPost"];
+            delete[] walker_io["LnDet"];
+            delete[] walker_io["Chisq"];
 
             imcmc_vector_string_iterator it;
 
@@ -79,10 +76,7 @@ namespace imcmc{
 
             while( it != sampling_param_name.end() ){
                 delete[] walker[*it];
-
-                if( use_cosmomc_format )
-                    delete[] walker_io[*it];
-
+                delete[] walker_io[*it];
                 ++it;
             }
 
@@ -90,10 +84,7 @@ namespace imcmc{
 
             while( it != derived_param_name.end() ){
                 delete[] walker[*it];
-
-                if( use_cosmomc_format )
-                    delete[] walker_io[*it];
-
+                delete[] walker_io[*it];
                 ++it;
             }
         }

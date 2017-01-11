@@ -87,22 +87,15 @@ namespace imcmc{
             if( !out_stream.good() )
                 imcmc_runtime_error( "Filed to open file: " + chain_name );
 
-            //  write parameter names into the first line of the chain file
+        //  write parameter names into the first line of the chain file
             imcmc_vector_string_iterator it = output_param_name.begin();
 
-            //  Write the first line
-            if( use_cosmomc_format && write_chain_header ){
-                out_stream << "# standard cosmomc format.  This is the burned ashes ...\n";
-                out_stream << "#";
-                out_stream << std::setw(_OUT_WIDTH_-1) << "weight" << std::setw(_OUT_WIDTH_) << "-2log(L)";
-            }
-            else{
-                out_stream << "# using MultiNest, the first column is exp(-0.5*chisq)\n";
-                out_stream << "#";
-                out_stream << std::setw(_OUT_WIDTH_-1) << "probability" << std::setw(_OUT_WIDTH_) << "chisq";
-            }
+        //  Write the first line
+            out_stream << "# using MultiNest, the first column is exp(-0.5*chisq)\n";
+            out_stream << "#";
+            out_stream << std::setw(_OUT_WIDTH_-1) << "probability" << std::setw(_OUT_WIDTH_) << "chisq";
 
-            //  Write the second line
+        //  Write the second line
             if( write_chain_header ){
                 while( it != output_param_name.end() ){   //  updates only the sampling parameters
                     out_stream << std::setw(_OUT_WIDTH_) << *it << "";
@@ -121,15 +114,12 @@ namespace imcmc{
             update_walkers( false, j, burnin_loops );
             ++es_counter;
 
-            if( use_cosmomc_format ){
-
-                if( save_burned_ashes ){
-                    if( rank == ROOT_RANK )
-                        write_walkers(out_stream);
-                }
-                else
-                    update_walkers_io();
+            if( save_burned_ashes ){
+                if( rank == ROOT_RANK )
+                    write_walkers(out_stream);
             }
+            else
+                update_walkers_io();
             
             // save ensemble_state
             if( (save_state_for_N_steps > 0) && (rank == ROOT_RANK) ){
@@ -164,16 +154,9 @@ namespace imcmc{
                 imcmc_vector_string_iterator it = output_param_name.begin();
 
             //  Write the first line
-                if( use_cosmomc_format && write_chain_header ){
-                    out_stream << "# standard cosmomc format\n";
-                    out_stream << "#";
-                    out_stream << std::setw(_OUT_WIDTH_-1) << "weight" << std::setw(_OUT_WIDTH_) << "-2log(L)";
-                }
-                else{
-                    out_stream << "# ensemble format, exactly the same with MultiNest\n";
-                    out_stream << "#";
-                    out_stream << std::setw(_OUT_WIDTH_-1) << "probability" << std::setw(_OUT_WIDTH_) << "chisq";
-                }
+                out_stream << "# ensemble format, exactly the same with MultiNest\n";
+                out_stream << "#";
+                out_stream << std::setw(_OUT_WIDTH_-1) << "probability" << std::setw(_OUT_WIDTH_) << "chisq";
 
             //  Write the second line
                 if( write_chain_header ){

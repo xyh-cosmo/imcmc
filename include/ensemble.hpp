@@ -41,7 +41,6 @@ namespace imcmc{
             std::ofstream   out_stream;
 
         //  whether use cosmomc standard form? "weight like param1 param2 param3 ..."
-            bool    use_cosmomc_format;  //  default: false. NOTE: like is actually -2*ln(L) = chisq
             bool    write_chain_header;  //  default: true
             bool    save_burned_ashes;   //  whether save the burn-in chains, default yes
 

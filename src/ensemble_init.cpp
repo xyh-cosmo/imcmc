@@ -142,10 +142,6 @@ namespace imcmc{
             }
         }
 
-        if( Read::Has_Key_in_File( paramfile, "use_cosmomc_format" ) ){
-            use_cosmomc_format    = Read::Read_Bool_from_File(paramfile, "use_cosmomc_format");
-        }
-
         if( Read::Has_Key_in_File( paramfile, "write_chain_header" ) ){
             write_chain_header = Read::Read_Bool_from_File(paramfile, "write_chain_header");
         }
@@ -261,11 +257,6 @@ namespace imcmc{
             else
                 used_settings << std::setw(iterm_width) << std::left << " start_from_fiducial" << " = false\n";
 
-            if( use_cosmomc_format )
-                used_settings << std::setw(iterm_width) << std::left << " used_cosmomc_format" << " = true\n";
-            else
-                used_settings << std::setw(iterm_width) << std::left << " used_cosmomc_format" << " = false\n";
-
             if( save_burned_ashes )
                 used_settings << std::setw(iterm_width) << std::left << " save_burned_ashes" << " = true\n";
             else
@@ -290,11 +281,7 @@ namespace imcmc{
             std::cout << " ===> seetings have been saved\n\n";
         }
 
-        // MPI::COMM_WORLD.Barrier();
-
         init_param();
-
-        // MPI::COMM_WORLD.Barrier();
 
         init_walkers();
 
@@ -719,9 +706,7 @@ namespace imcmc{
         while( it != sampling_param_name.end() ){
 
             walker[*it] = new double[walker_num];
-
-            if( use_cosmomc_format )
-                walker_io[*it] = new double[walker_num];
+            walker_io[*it] = new double[walker_num];
 
             ++it;
         }
@@ -736,15 +721,11 @@ namespace imcmc{
         while( it_derived != derived_param_name.end() ){
 
             walker[*it_derived] = new double[walker_num];
+            walker_io[*it_derived] = new double[walker_num];
 
-            for( int i=0; i<walker_num; ++i )
+            for( int i=0; i<walker_num; ++i ){
                 walker[*it_derived][i] = 0.0;
-
-            if( use_cosmomc_format ){
-                walker_io[*it_derived] = new double[walker_num];
-
-                for( int i=0; i<walker_num; ++i )
-                    walker_io[*it_derived][i] = 0.0;
+                walker_io[*it_derived][i] = 0.0;
             }
 
             ++it_derived;
@@ -759,12 +740,10 @@ namespace imcmc{
         walker["LnDet"]     = new double[walker_num];
         walker["Chisq"]     = new double[walker_num];
 
-        if( use_cosmomc_format ){
-            walker_io["Weight"] = new double[walker_num];
-            walker_io["LnPost"] = new double[walker_num];
-            walker_io["LnDet"]  = new double[walker_num];
-            walker_io["Chisq"]  = new double[walker_num];
-        }
+        walker_io["Weight"] = new double[walker_num];
+        walker_io["LnPost"] = new double[walker_num];
+        walker_io["LnDet"]  = new double[walker_num];
+        walker_io["Chisq"]  = new double[walker_num];
 
         //  Now initialize
         imcmc_double    full_param_temp(full_param);
@@ -980,7 +959,7 @@ namespace imcmc{
                                 ROOT_RANK    );
 
         // copy walker into walker_io.
-        if( use_cosmomc_format && (rank == ROOT_RANK) ){
+        if( rank == ROOT_RANK ){
 
             for( int i=0; i<walker_num; ++i ){  // set all initial weights to 1.0
                 walker_io["Weight"][i] = 1.0;   //  because these walkers were born for then first time

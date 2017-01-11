@@ -183,9 +183,6 @@ namespace imcmc{
 
         std::string chkfile = chain_root + ".chk";
 
-//  Update is needed here !
-//  should only the root rank do the check !
-
         if( Read::Has_File(chkfile) == false ){
             std::cout << "==> failed to find check point file: " + chkfile;
             read_success = false;
@@ -194,8 +191,8 @@ namespace imcmc{
 
         existed_chain_num = Read::Read_Int_from_File(chkfile,"chain_idx");
 
-    //  only the root rank reads backup file.
-        if( MPI::COMM_WORLD.Get_rank() == ROOT_RANK ){
+    //  only the root rank reads backup check point file.
+        if( rank == ROOT_RANK ){
 
         //  make a simple check of the chkfile
             int walker_num_last_time = Read::Read_Int_from_File(chkfile,"walker_num");
@@ -276,6 +273,7 @@ namespace imcmc{
 
             it = sampling_param_name.begin();
             while( it != sampling_param_name.end() ){
+
                 Read::Read_Array_of_Double_from_File(   chkfile,
                                                         *it,
                                                         temp,
@@ -296,6 +294,26 @@ namespace imcmc{
             }
 
             it = derived_param_name.begin();
+            while( it != derived_param_name.end() ){
+
+                Read::Read_Array_of_Double_from_File(   chkfile,
+                                                        *it,
+                                                        temp,
+                                                        walker_num );
+                for( int i=0; i<walker_num; ++i ){
+                    walker[*it][i] = temp[i];
+                }
+
+                Read::Read_Array_of_Double_from_File(   chkfile,
+                                                        *it+"*",
+                                                        temp,
+                                                        walker_num );
+                for( int i=0; i<walker_num; ++i ){
+                    walker_io[*it][i] = temp[i];
+                }
+                
+                ++it;
+            }
 
             delete[] temp;
         }
@@ -348,28 +366,25 @@ namespace imcmc{
                                 MPI::DOUBLE,
                                 ROOT_RANK    );
 
-        if( use_cosmomc_format == true ){
+        MPI::COMM_WORLD.Bcast(  walker_io["LnPost"],
+                                walker_num,
+                                MPI::DOUBLE,
+                                ROOT_RANK    );
 
-            MPI::COMM_WORLD.Bcast(  walker_io["LnPost"],
-                                    walker_num,
-                                    MPI::DOUBLE,
-                                    ROOT_RANK    );
+        MPI::COMM_WORLD.Bcast(  walker_io["LnDet"],
+                                walker_num,
+                                MPI::DOUBLE,
+                                ROOT_RANK    );
 
-            MPI::COMM_WORLD.Bcast(  walker_io["LnDet"],
-                                    walker_num,
-                                    MPI::DOUBLE,
-                                    ROOT_RANK    );
+        MPI::COMM_WORLD.Bcast(  walker_io["Chisq"],
+                                walker_num,
+                                MPI::DOUBLE,
+                                ROOT_RANK    );
 
-            MPI::COMM_WORLD.Bcast(  walker_io["Chisq"],
-                                    walker_num,
-                                    MPI::DOUBLE,
-                                    ROOT_RANK    );
-
-            MPI::COMM_WORLD.Bcast(  walker_io["Weight"],
-                                    walker_num,
-                                    MPI::DOUBLE,
-                                    ROOT_RANK    );
-        }
+        MPI::COMM_WORLD.Bcast(  walker_io["Weight"],
+                                walker_num,
+                                MPI::DOUBLE,
+                                ROOT_RANK    );
 
         return read_success;
     }
