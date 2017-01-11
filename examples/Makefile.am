@@ -8,6 +8,9 @@ AM_CPPFLAGS = -I$(top_srcdir)/include
 # in that case, just un-comment " #gaussian_test_LDFLAGS = -Wl,--no-as-needed ", and run autoreconf to update configure file,
 # after that run ./conifgure to generate new Makefiles.
 
+
+# notice here that the compiler option: -Wl,--no-as-needed is for new versions of gnu compilers
+
 gaussian_test_CPPFLAGS = -I$(top_srcdir)/include
 gaussian_test_LDFLAGS = -Wl,--no-as-needed
 gaussian_test_LDADD = ../src/libimcmc.la -lgsl -lgslcblas

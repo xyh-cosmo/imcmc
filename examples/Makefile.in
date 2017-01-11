@@ -516,7 +516,6 @@ pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
-runstatedir = @runstatedir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
@@ -531,6 +530,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/include
 #  NOTE: for some versions of GNU compilers, errors like "undefined reference to ..." might happen,
 # in that case, just un-comment " #gaussian_test_LDFLAGS = -Wl,--no-as-needed ", and run autoreconf to update configure file,
 # after that run ./conifgure to generate new Makefiles.
+
+# notice here that the compiler option: -Wl,--no-as-needed is for new versions of gnu compilers
 gaussian_test_CPPFLAGS = -I$(top_srcdir)/include
 gaussian_test_LDFLAGS = -Wl,--no-as-needed
 gaussian_test_LDADD = ../src/libimcmc.la -lgsl -lgslcblas

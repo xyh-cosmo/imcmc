@@ -115,6 +115,8 @@ namespace imcmc{
 
         infile.close();
         outfile.close();
+
+        return true;
     }
 
 }
