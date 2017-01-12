@@ -753,8 +753,10 @@ namespace imcmc{
         int *displace   = new int[rank_size];
 
         if( rank == ROOT_RANK ){
-            std::cout << std::setw(60) << std::left << "# --> start initializing walkers ...";
-            std::cout << "\n";
+            if( start_from_check_point )
+                std::cout << std::setw(60) << std::left << "# --> re-start from check point ...\n";
+            else
+                std::cout << std::setw(60) << std::left << "# --> start initializing walkers ...";
         }
 
         //  each rank will only calculate some of the likelihoods of the walkers.
@@ -793,66 +795,90 @@ namespace imcmc{
         }
 
         // MPI::COMM_WORLD.Barrier();
+        
+        if( start_from_check_point ){
+        
+        //  just set walker[][] to zeros, they will be replaced by walker state stored 
+        //  in the check file before sampling re-starts
+        
+            for(int i=i_start; i<=i_end; ++i){
 
-        for(int i=i_start; i<=i_end; ++i){
+                it = sampling_param_name.begin();
 
-            double lndet, chisq;
-            double start_value, value_width;
+                while( it != sampling_param_name.end() ){
+                    walker[*it][i] = 0.;
+                    ++it;
+                }
 
-            //  initialize full_param randomly. Note that full_param includes sampling parameters, fixed parameters and derived parameters
-            it = sampling_param_name.begin();
+                walker["LnPost"][i] = 0.;
+                walker["LnDet"][i]  = 0.;
+                walker["Chisq"][i]  = 0.;
+            }
+        
+        }
+        else{
 
-            while( it != sampling_param_name.end() ){
+            for(int i=i_start; i<=i_end; ++i){
 
-                if( start_from_fiducial ){
-                //  fiducial values are usually close to the best fittings positions in the parameter space.
-                    start_value = full_param[*it];
+                double lndet, chisq;
+                double start_value, value_width;
+
+                //  initialize full_param randomly. Note that full_param includes sampling parameters, fixed parameters and derived parameters
+                it = sampling_param_name.begin();
+
+                while( it != sampling_param_name.end() ){
+
+                    if( start_from_fiducial ){
+                    //  fiducial values are usually close to the best fittings positions in the parameter space.
+                        start_value = full_param[*it];
+                    }
+                    else{
+                    //  central values might not as good as fiducial values, but should not be bad either.
+                        start_value = 0.5*(full_param_min[*it] + full_param_max[*it]);
+                    }
+
+                //  initial guess of value_width
+                    value_width  = full_param_max[*it] - full_param_min[*it];
+
+                    if( start_from_fiducial ){  // fid-values are not necessarily the middle values.
+                        double width_left  = fabs(start_value - full_param_min[*it]);
+                        double width_right = fabs(start_value - full_param_max[*it]);
+
+                        if( value_width > width_left )
+                            value_width = width_left;
+
+                        if( value_width > width_right )
+                            value_width = width_right;
+                    }
+
+                //  ==============================================================================
+                //  just give the walkers some reasonable values...
+                //  0.25 can be replaced by other values whoes absolute values are less than 0.5
+                //  ==============================================================================
+                    walker[*it][i]      = gsl_ran_flat( rand_seed,
+                                                        start_value - 0.5*init_ball_radius*value_width,
+                                                        start_value + 0.5*init_ball_radius*value_width );
+
+                    full_param_temp[*it] = walker[*it][i];
+                    ++it;
+                }
+
+                //  if error happens during initialization, LnPost will be _IMCMC_LNPOST_MIN_
+
+                walker["LnPost"][i] = likelihood_eval( full_param_temp, lndet, chisq );
+                walker["LnDet"][i]  = lndet;
+                walker["Chisq"][i]  = chisq;
+
+                if( likelihood_state.this_like_is_ok ){
+                    error[i] = 0;
                 }
                 else{
-                //  central values might not as good as fiducial values, but should not be bad either.
-                    start_value = 0.5*(full_param_min[*it] + full_param_max[*it]);
+                    error[i] = 1;
+                    std::cout << " # ++++> RANK: " << rank << "  error happened when initializing walker["
+                              << i << "],  [ i_start = " << i_start << ", i_end = " << i_end << "]\n";
                 }
-
-            //  initial guess of value_width
-                value_width  = full_param_max[*it] - full_param_min[*it];
-
-                if( start_from_fiducial ){  // fid-values are not necessarily the middle values.
-                    double width_left  = fabs(start_value - full_param_min[*it]);
-                    double width_right = fabs(start_value - full_param_max[*it]);
-
-                    if( value_width > width_left )
-                        value_width = width_left;
-
-                    if( value_width > width_right )
-                        value_width = width_right;
-                }
-
-            //  ==============================================================================
-            //  just give the walkers some reasonable values...
-            //  0.25 can be replaced by other values whoes absolute values are less than 0.5
-            //  ==============================================================================
-                walker[*it][i]      = gsl_ran_flat( rand_seed,
-                                                    start_value - 0.5*init_ball_radius*value_width,
-                                                    start_value + 0.5*init_ball_radius*value_width );
-
-                full_param_temp[*it] = walker[*it][i];
-                ++it;
             }
-
-            //  if error happens during initialization, LnPost will be _IMCMC_LNPOST_MIN_
-
-            walker["LnPost"][i] = likelihood_eval( full_param_temp, lndet, chisq );
-            walker["LnDet"][i]  = lndet;
-            walker["Chisq"][i]  = chisq;
-
-            if( likelihood_state.this_like_is_ok ){
-                error[i] = 0;
-            }
-            else{
-                error[i] = 1;
-                std::cout << " # ++++> RANK: " << rank << "  error happened when initializing walker["
-                          << i << "],  [ i_start = " << i_start << ", i_end = " << i_end << "]\n";
-            }
+        
         }
 
         if( rank == ROOT_RANK ){

@@ -40,6 +40,7 @@ namespace imcmc{
 
         bool no_burnin = false;
 
+// TODO: this part will be moved into ensemble_ini.cpp
         if( start_from_check_point ){
 
             std::string chkfile = chain_root + ".chk";
