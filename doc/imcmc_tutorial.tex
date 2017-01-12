@@ -1,27 +1,51 @@
-\documentclass[11pt,a4paper]{article}
+\documentclass[ a4paper,
+%                draft,
+                10pt, 
+%                twocolumn,
+		onecolumn,
+%                nobalancelastpage,
+%                aip,cha,
+                aps,
+%                reprint,
+%                preprintnumbers,
+                amsfonts,
+                amssymb,
+                amsmath,
+                eqsecnum,
+                nofootinbib,  % control position of footnote
+                superscriptaddress]{revtex4}
+
+\usepackage[colorlinks=true,linkcolor=blue]{hyperref}
+\usepackage{docs}
 \usepackage{bm}
-\usepackage{caption}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
-\usepackage{xcolor}
-\usepackage{amsmath}
-\usepackage{geometry}
-
-\newcommand{\hide}[1]{}
-
-
-\title{imcmc: tutorial}
-\author{Youhua Xu\\
-	yhxu@nao.cas.cn\\
-	NJU $\&$ NAOC}
-
+\usepackage{graphicx}
+\usepackage{bookmark}   % to display bookmarks when using xelatex
+\usepackage{pifont}
+% \usepackage{xeCJK}
 
 \begin{document}
+\title{Quick start with imcmc}
+
+\author{Youhua Xu}
+\email{yhxu@nao.cas.cn}
+\affiliation{School of Physics, Nanjing University,
+22 Hankou Road, Nanjing, Jiangsu 210093, China}
+\affiliation{Key Laboratory of Space Astronomy and Technology,
+National Astronomical Observatories,
+CAS, Beijing 100012, China}
+
+\date{\today}
+
+
+\begin{abstract}
+This document demonstrates how to use the MCMC library -- \textbf{imcmc}, with a few simple
+examples.
+\end{abstract}
+
 \maketitle
 
-\section{What this tutorial is about?}
-This tutorial is written as a gadience as how to use the Markov Chain
-Monte Carlo (MCMC) library: imcmc.
+\section{Why build a library?}
+It's a nightmare when if you're managing a project with lots of source files.
 
 \section{Basics: Bayesian Analysis $\&$ MCMC}
 Before getting start to generate MC samples with imcmc, I will brieflly
@@ -29,11 +53,23 @@ review the basics of Bayesian analysis and MCMC (use Metropolis-Hastings
 algorithm as the example)
 
 
-\section{Affine-invariant ensemble sampler}
+\section{Algrithms}
 
-\section{Structure of \textbf{imcmc}}
+\subsection{Affine-invariant ensemble}
 
 
+\subsection{Metropolis-Hastings}
+
+
+\subsection{Hamitonian-Monte Carlo}
+
+
+\subsection{Nested sampling}
+
+\section{Structure of the code}
+
+
+\appendix
 \section{Parser}
 Usually one will use may parameters in her/his codes, which might be model parameters, names/paths of data and even precision
 controlling parameters, thus a well-designed parser is very helpful.
