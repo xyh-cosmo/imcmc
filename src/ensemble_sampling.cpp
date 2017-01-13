@@ -91,6 +91,7 @@ namespace imcmc{
             out_stream << "\n";
         }
 
+		imcmc_verbose(rank, "[debug] a barrier in front of you ....");
         MPI::COMM_WORLD.Barrier();
         
         imcmc_verbose(rank,"[debug] yeap, passed a barrrer and start burn things!");
