@@ -28,6 +28,10 @@ Oct-21-2015 [not finished]
     void ensemble_workspace::restart(***);
 
     inside this function, the number of walkers should not be changed!!!
+-------------------------------------------------------------------------------
+--> finished, but not using ensemble_workspace::restart(**).  Instead, restart
+--> from pre-saved check point file.
+-------------------------------------------------------------------------------
 
 Jan-07-2016 [not finished]
 	implement additional check of sample points, those who have NOT move for MANY
