@@ -148,13 +148,6 @@ void ensemble_workspace::init( std::string paramfile ) {
 
     if( Read::Has_Key_in_File( paramfile, "save_burned_ashes" ) ) {
         save_burned_ashes   = Read::Read_Bool_from_File(paramfile, "save_burned_ashes");
-
-        if( rank == ROOT_RANK ) {
-            if( save_burned_ashes )
-                std::cout << " ===> " << "burned chains (ashes) will be save to disk\n";
-            else
-                std::cout << " ===> " << "burned chains (ashes) will not be written into disk\n";
-        }
     }
 
     //  initially there should not be any chain files
