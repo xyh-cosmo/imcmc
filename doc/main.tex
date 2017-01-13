@@ -1,27 +1,22 @@
-\documentclass[ a4paper,
-%                draft,
-                10pt, 
-%                twocolumn,
-		onecolumn,
-%                nobalancelastpage,
-%                aip,cha,
-                aps,
-%                reprint,
-%                preprintnumbers,
-                amsfonts,
-                amssymb,
-                amsmath,
-                eqsecnum,
-                nofootinbib,  % control position of footnote
-                superscriptaddress]{revtex4}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Code Snippet
+% LaTeX Template
+% Version 1.0 (14/2/13)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Velimir Gayevskiy (vel@latextemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage[colorlinks=true,linkcolor=blue]{hyperref}
-\usepackage{docs}
-\usepackage{bm}
-\usepackage{graphicx}
-\usepackage{bookmark}   % to display bookmarks when using xelatex
-\usepackage{pifont}
-%\usepackage{xcolor}
+\documentclass{article}
+
+%----------------------------------------------------------------------------------------
 
 \usepackage{listings} % Required for inserting code snippets
 \usepackage[usenames,dvipsnames]{color} % Required for specifying custom colors and referring to colors by name
@@ -58,63 +53,14 @@ tabsize=2, % Number of spaces per tab in the code
 % Create a command to cleanly insert a snippet with the style above anywhere in the document
 \newcommand{\insertcode}[2]{\begin{itemize}\item[]\lstinputlisting[caption=#2,label=#1,style=Style1]{#1}\end{itemize}} % The first argument is the script location/filename and the second is a caption for the listing
 
+%----------------------------------------------------------------------------------------
+
 \begin{document}
-\title{Quick start with imcmc}
 
-\author{Youhua Xu}
-\email{yhxu@nao.cas.cn}
-\affiliation{School of Physics, Nanjing University,
-22 Hankou Road, Nanjing, Jiangsu 210093, China}
-\affiliation{Key Laboratory of Space Astronomy and Technology,
-National Astronomical Observatories,
-CAS, Beijing 100012, China}
+%----------------------------------------------------------------------------------------
 
-\date{\today}
+\insertcode{"/home/xyh/GitHub/imcmc/examples/gaussian.cpp"}{Nena would be proud.} % The first argument is the script location/filename and the second is a caption for the listing
 
-
-\begin{abstract}
-This document demonstrates how to use the MCMC library -- \textbf{imcmc}, with a few simple
-examples.
-\end{abstract}
-
-\maketitle
-
-\section{Why build a library?}
-It's a nightmare when if you're managing a project with lots of source files.
-
-\section{Basics: Bayesian Analysis $\&$ MCMC}
-Before getting start to generate MC samples with imcmc, I will brieflly
-review the basics of Bayesian analysis and MCMC (use Metropolis-Hastings
-algorithm as the example)
-
-
-%\section{Algrithms}
-%
-%\subsection{Affine-invariant ensemble}
-%
-%
-%\subsection{Metropolis-Hastings}
-%
-%
-%\subsection{Hamitonian-Monte Carlo}
-%
-%
-%\subsection{Nested sampling}
-%
-%\section{Structure of the code}
-
-
-\section{Examples}
-
-\subsection{Mutil-Gaussian}
-
-\insertcode{''../examples/gaussian.cpp''}
-
-\subsection{CMB}
-
-\appendix
-\section{Parser}
-Usually one will use may parameters in her/his codes, which might be model parameters, names/paths of data and even precision
-controlling parameters, thus a well-designed parser is very helpful.
+%----------------------------------------------------------------------------------------
 
 \end{document}
