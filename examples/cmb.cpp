@@ -128,11 +128,11 @@ struct LCDM{
 	}
 };
 
-double Like_CMB( imcmc_double&  full_param, 
-                 double&        lndet, 
-                 double&        chisq, 
-                 void*          model, 
-                 void*          data, 
+double Like_CMB( imcmc_double&  full_param,
+                 double&        lndet,
+                 double&        chisq,
+                 void*          model,
+                 void*          data,
                  istate&        state){
 
     state.this_like_is_ok = true;
@@ -177,7 +177,7 @@ double Like_CMB( imcmc_double&  full_param,
 					* gsl_matrix_get(wmap7_cov_inv, i, j);
 		}
 	}
-
+// cout << "Chi2_CMB = " << chisq << endl;
 	gsl_matrix_free(wmap7_cov_inv);
 	return -0.5*chisq;
 }

@@ -8,7 +8,7 @@ namespace imcmc{
     void ensemble_workspace::set_chkfile_width(int width){
         chkfile_width = width;
     }
-    
+
     void ensemble_workspace::set_chkfile_precision(int precision){
         chkfile_precision = precision;
         if( precision >= chkfile_width ){
@@ -30,7 +30,7 @@ namespace imcmc{
             }
 
             std::ofstream outfile(chkfile.c_str());
-            
+
             std::cout << "==> saving new check point file ...\n\n";
 
             outfile << " walker_num = " << walker_num << std::endl;
@@ -170,11 +170,11 @@ namespace imcmc{
 
             outfile.close();
         }
-        
+
     }
 
     bool ensemble_workspace::read_state(){
-    
+
         existed_chain_num = 0;
         bool read_success = true;
 
@@ -196,17 +196,16 @@ namespace imcmc{
 
         //  make a simple check of the chkfile
             int walker_num_last_time = Read::Read_Int_from_File(chkfile,"walker_num");
-            if( walker_num_last_time < walker_num ){
+            if( walker_num_last_time != walker_num ){
                 std::cout << "==> *** Fatal Error in reading check point file ***\n"
                           << "==> Number of walkers used in the last MCMC sampling is: "
                           << walker_num_last_time << "\n"
                           << "==> But in this new run, you're using "
                           << walker_num << " walkers.\n"
-                          << "==> please reset a smaller walker number, no more than: "
-                          << walker_num_last_time << "\n";
+                          << "==> please use the same number of walkers!\n";
                 read_success = false;
             }
-            
+
             if( !read_success ){
                 std::string nw = Read::IntToString(walker_num_last_time);
                 throw std::runtime_error("==> please reset a smaller walker number, no more than: "+nw);
@@ -289,7 +288,7 @@ namespace imcmc{
                 for( int i=0; i<walker_num; ++i ){
                     walker_io[*it][i] = temp[i];
                 }
-                
+
                 ++it;
             }
 
@@ -311,12 +310,15 @@ namespace imcmc{
                 for( int i=0; i<walker_num; ++i ){
                     walker_io[*it][i] = temp[i];
                 }
-                
+
                 ++it;
             }
 
             delete[] temp;
         }
+
+        // std::cout << "==> Root rank finished re-loading check point file!\n";
+        // exit(0);
 
     //  broadcast root rank's backup to all other ranks.
 
@@ -393,6 +395,21 @@ namespace imcmc{
                                 walker_num,
                                 MPI::DOUBLE,
                                 ROOT_RANK    );
+
+// output the readed walkers ...
+        // if( rank == ROOT_RANK ){
+        //     imcmc_vector_string_iterator it = sampling_param_name.begin();
+        //     while( it != sampling_param_name.end() ){
+        //         std::cout << "param: " << *it << " = ";
+        //         for( int i=0; i<walker_num; ++i ){
+        //             std::cout << walker[*it][i] << " ";
+        //         }
+        //         std::cout << "\n";
+        //         ++it;
+        //     }
+        // }
+        //
+        // exit(0);
 
         return read_success;
     }

@@ -38,26 +38,6 @@ namespace imcmc{
     //  counter for saving ensemble_state
         int es_counter = 0;
 
-        bool no_burnin = false;
-
-// TODO: this part will be moved into ensemble_ini.cpp
-        if( start_from_check_point ){
-
-            std::string chkfile = chain_root + ".chk";
-            
-            if( Read::Has_File(chkfile) ){
-                no_burnin = read_state();
-            }
-
-            if( !no_burnin ){
-            //  no check point file found ...
-                std::string msg = "no existing check point file found.";
-                imcmc_verbose(rank,msg);
-            }
-        }
-        
-        // MPI::COMM_WORLD.Barrier();
-
         if( no_burnin )
             burnin_loops = 0;
 
@@ -109,7 +89,6 @@ namespace imcmc{
 
         MPI::COMM_WORLD.Barrier();
 
-
         for( int j=0; j<burnin_loops; ++j ){    //  Burn in
 
             update_walkers( false, j, burnin_loops );
@@ -121,7 +100,7 @@ namespace imcmc{
             }
             else
                 update_walkers_io();
-            
+
             // save ensemble_state
             if( (save_state_for_N_steps > 0) && (rank == ROOT_RANK) ){
                 if( es_counter == save_state_for_N_steps ){
@@ -129,7 +108,7 @@ namespace imcmc{
                     es_counter = 0; // reset counter to 0.
                 }
             }
-            
+
             // when running on cluster, the barrier() may cause unexpected stop, but not quit.
             // MPI::COMM_WORLD.Barrier();
         }
@@ -222,7 +201,7 @@ namespace imcmc{
                     std::cout << "\n ****** skipping some chains, can be viewed as extra burn-in ******\n";
 
                 for( int j=0; j<skip_step; ++j ){
-                
+
                     update_walkers( false, j, skip_step );
                     ++es_counter;
 
@@ -234,7 +213,7 @@ namespace imcmc{
                         }
                     }
                 }
-                
+
                 // MPI::COMM_WORLD.Barrier();
             }
 

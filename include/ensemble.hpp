@@ -130,7 +130,7 @@ namespace imcmc{
                                  void                *model,
                                  void                *data,
                                  const std::string&        likelihood_name );
-                                 
+
 //            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
 //                                 const imcmc_vector_string& modelparam,
 //                                 void                       *model,
@@ -176,6 +176,7 @@ namespace imcmc{
         //  save check point files & re-start from check point files
             // std::ofstream   io_save_state;
             bool start_from_check_point;
+            bool no_burnin; // if start_from_check_point = true, then no_burnin = true. (default: false)
             int save_state_for_N_steps;     // after every N steps, save the ensemble_state
             int chkfile_width;
             int chkfile_precision;
