@@ -30,7 +30,7 @@ namespace imcmc{
 
     void ensemble_workspace::do_sampling(){
     
-        imcmc_verbose(rank, "[debug] ready to start sampling");
+//        imcmc_verbose(rank, "[debug] ready to start sampling");
 
         int burnin_loops, sampling_loops;
 
@@ -61,7 +61,7 @@ namespace imcmc{
             }
         }
         
-        imcmc_verbose(rank, "[debug] trying to open/create ashes file");
+//        imcmc_verbose(rank, "[debug] trying to open/create ashes file");
 
         if( save_burned_ashes && (rank == ROOT_RANK) && !no_burnin ){
 
@@ -91,10 +91,10 @@ namespace imcmc{
             out_stream << "\n";
         }
 
-		imcmc_verbose(rank, "[debug] a barrier in front of you ....");
+//		imcmc_verbose(rank, "[debug] a barrier in front of you ....");
         MPI::COMM_WORLD.Barrier();
         
-        imcmc_verbose(rank,"[debug] yeap, passed a barrrer and start burn things!");
+//        imcmc_verbose(rank,"[debug] yeap, passed a barrrer and start burn things!");
 
         for( int j=0; j<burnin_loops; ++j ){    //  Burn in
 
@@ -127,12 +127,12 @@ namespace imcmc{
         _searched_lndet_min_chisq_min_ = true;  //  once searched during the burning, change its state to TRUE.
 
 
-        imcmc_verbose(rank, "[debug] now it's time to generate useful chains");
+//        imcmc_verbose(rank, "[debug] now it's time to generate useful chains");
 
         for( int i=1+existed_chain_num; i<=chain_num+existed_chain_num; ++i ){
 
 
-            imcmc_verbose(rank,"[debug] open chain output stream");
+//            imcmc_verbose(rank,"[debug] open chain output stream");
 
             if( rank == ROOT_RANK ){
 
@@ -173,14 +173,14 @@ namespace imcmc{
             for( int j=0; j<sampling_loops; ++j ){
 
 
-                imcmc_verbose(rank,"[debug] updating walkers ...");
+//                imcmc_verbose(rank,"[debug] updating walkers ...");
 
                 update_walkers( true, j, sampling_loops );
                 ++es_counter;
 
                 if( rank == ROOT_RANK ){
                 
-                    imcmc_verbose(rank,"[debug] writing walkers ...");
+//                    imcmc_verbose(rank,"[debug] writing walkers ...");
 
                     write_walkers(out_stream);
 
