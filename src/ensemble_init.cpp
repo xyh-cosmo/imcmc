@@ -217,17 +217,23 @@ void ensemble_workspace::init( std::string paramfile ) {
 
     gsl_rng_set(rand_seed_walker_id, rand());
 
+	MPI::COMM_WORLD.Barrier();
+
     rand_num = gsl_rng_get(rand_seed);  // get the first random number for this rank
 
-	imcmc_verbose(rank, "NO gathering random number seeds from all ranks");
+	imcmc_verbose(rank, "gathering random number seeds from all ranks");
 	
     MPI::COMM_WORLD.Gather( &seed, 1, MPI::UNSIGNED_LONG,
                             random_seeds, 1, MPI::UNSIGNED_LONG,
                             ROOT_RANK );
 
+	imcmc_verbose(rank, "gatherred random_seeds");
+
     MPI::COMM_WORLD.Gather( &rand_num, 1, MPI::UNSIGNED_LONG,
                             first_number, 1, MPI::UNSIGNED_LONG,
                             ROOT_RANK );
+
+	imcmc_verbose(rank, "gatherred first_number");
 
     if( rank == ROOT_RANK ) {
 
