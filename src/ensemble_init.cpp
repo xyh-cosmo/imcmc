@@ -889,7 +889,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
             std::cout << " [Done]\n";
         }
 
-        MPI::COMM_WORLD.Barrier();
+        // MPI::COMM_WORLD.Barrier();
 
         //  ===================================
         //  collecting all sampling parameters
