@@ -86,7 +86,7 @@ namespace imcmc{
     }
 
 //  new added verbose information displayer (@ Jan-28-2016)
-	void imcmc_verbose( int rank, std::string& verbose_info ){
+	void imcmc_verbose( int rank, const std::string& verbose_info ){
 		if( rank == ROOT_RANK ){
 			std::cout << "# --> " << verbose_info << "\n";
 		}
