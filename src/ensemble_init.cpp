@@ -283,12 +283,14 @@ void ensemble_workspace::init( std::string paramfile ) {
     }
 
     init_param();
+    MPI::COMM_WORLD.Barrier();
 
     init_walkers();
+    MPI::COMM_WORLD.Barrier();
 
     walker_initialized = true;
 
-    MPI::COMM_WORLD.Barrier();
+    // MPI::COMM_WORLD.Barrier();
 }
 
 
@@ -669,7 +671,7 @@ void ensemble_workspace::init_param() {   //    loop over FullParams
         outfile.close();
     }
 
-    MPI::COMM_WORLD.Barrier();
+    // MPI::COMM_WORLD.Barrier();
 }
 
 
@@ -1046,8 +1048,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
         delete[] displace;
     }
 
-
-    MPI::COMM_WORLD.Barrier();
+    // MPI::COMM_WORLD.Barrier();
 }
 
 
