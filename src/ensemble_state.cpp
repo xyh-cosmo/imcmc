@@ -317,20 +317,55 @@ namespace imcmc{
 
             delete[] temp;
         }
+        else{
 
-//        MPI::COMM_WORLD.Barrier();
+            for( int i=0; i<walker_num; ++i ){
+                walker["LnPost"][i] = 0.0;
+                walker["LnDet"][i] = 0.0;
+                walker["Chisq"][i] = 0.0;
+                walker_io["Weight"][i] = 0.0;
+                walker_io["LnPost"][i] = 0.0;
+                walker_io["LnDet"][i] = 0.0;
+                walker_io["Chisq"][i] = 0.0;
+            }
+
+            it = sampling_param_name.begin();
+            while( it != sampling_param_name.end() ){
+
+                for( int i=0; i<walker_num; ++i ){
+                    walker[*it][i]      = 0.0;
+                    walker_io[*it][i]   = 0.0;
+                }
+
+                ++it;
+            }
+
+            it = derived_param_name.begin();
+            while( it != derived_param_name.end() ){
+
+                for( int i=0; i<walker_num; ++i ){
+                    walker[*it][i]      = 0.0;
+                    walker_io[*it][i]   = 0.0;
+                }
+
+                ++it;
+            }
+
+        }
+
+        MPI::COMM_WORLD.Barrier();
 
         // std::cout << "==> Root rank finished re-loading check point file!\n";
         // exit(0);
 
     //  broadcast root rank's backup to all other ranks.
 
-        it = sampling_param_name.end();
+        it = sampling_param_name.begin();
         while( it != sampling_param_name.end() ){
 
-//            if( rank == ROOT_RANK ){
-//                std::cout << "Bacsting: " << *it << std::endl;
-//            }
+           // if( rank == ROOT_RANK ){
+           //     std::cout << "Bacsting: " << *it << std::endl;
+           // }
 
             MPI::COMM_WORLD.Bcast(  walker[*it],
                                     walker_num,
@@ -342,14 +377,15 @@ namespace imcmc{
                                     MPI::DOUBLE,
                                     ROOT_RANK    );
             ++it;
+            MPI::COMM_WORLD.Barrier();
         }
 
         it = derived_param_name.begin();
         while( it != derived_param_name.end() ){
 
-//            if( rank == ROOT_RANK ){
-//                std::cout << "Bacsting: " << *it << std::endl;
-//            }
+           // if( rank == ROOT_RANK ){
+           //     std::cout << "Bacsting: " << *it << std::endl;
+           // }
 
             MPI::COMM_WORLD.Bcast(  walker[*it],
                                     walker_num,
@@ -362,6 +398,7 @@ namespace imcmc{
                                     ROOT_RANK   );
 
             ++it;
+            MPI::COMM_WORLD.Barrier();
         }
 
         MPI::COMM_WORLD.Bcast(  walker["LnPost"],
@@ -399,23 +436,25 @@ namespace imcmc{
                                 MPI::DOUBLE,
                                 ROOT_RANK    );
 
+        MPI::COMM_WORLD.Barrier();
+
 //  DEBUG
 // output the readed walkers ...
-        // if( rank == ROOT_RANK ){
-        //     imcmc_vector_string_iterator it = sampling_param_name.begin();
-        //     while( it != sampling_param_name.end() ){
-        //         std::cout << "param: " << *it << " = ";
-        //         for( int i=0; i<walker_num; ++i ){
-        //             std::cout << walker[*it][i] << " ";
-        //         }
-        //         std::cout << "\n";
-        //         ++it;
-        //     }
-        // }
-        //
-        // exit(0);
+        // if( rank == ROOT_RANK+1 ){
+        //  // if( rank == ROOT_RANK ){
+        //      imcmc_vector_string_iterator it = sampling_param_name.begin();
+        //      while( it != sampling_param_name.end() ){
+        //          std::cout << "param: " << *it << " = ";
+        //          for( int i=0; i<walker_num; ++i ){
+        //              std::cout << walker[*it][i] << " ";
+        //          }
+        //          std::cout << "\n";
+        //          ++it;
+        //      }
+        //  }
+        
+        //  exit(0);
 
-//        MPI::COMM_WORLD.Barrier();
 
         return read_success;
     }

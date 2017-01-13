@@ -772,54 +772,54 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
     }
 
 
-    if( rank == ROOT_RANK ) {
-        std::cout << std::setw(60) << std::left << "# --> distributing tasks to each rank ...";
-    }
-
-    int *sendcounts = new int[rank_size];
-    int *recvcounts = new int[rank_size];
-    int *displace   = new int[rank_size];
-
-    //  each rank will only calculate some of the likelihoods of the walkers.
-    int i_start, i_end;
-
-    if( (walker_num % rank_size) == 0 ) {   //    each rank will evaluate the same number of likelihoods
-
-        i_start = ( walker_num / rank_size ) * rank;
-        i_end   = i_start + ( walker_num / rank_size ) - 1;
-
-        for( int i=0; i<rank_size; ++i ) {
-            sendcounts[i]    = (i_end - i_start) + 1;
-            recvcounts[i]    = sendcounts[i];
-            displace[i]      = i * ( walker_num / rank_size );
-        }
-    }
-    else {   //    rank_root will evaluate more likelihoods
-
-        //  set for root rank
-        i_start         = 0;
-        i_end           = walker_num/rank_size + walker_num%rank_size - 1;
-
-        sendcounts[0]   = (i_end - i_start) + 1;
-        recvcounts[0]   = sendcounts[0];
-        displace[0]     = 0;
-
-        for( int i=1; i<rank_size; ++i ) {  //  set for the remaining ranks
-
-            i_start = walker_num/rank_size + walker_num%rank_size + (i-1)*(walker_num/rank_size);
-            i_end   = i_start + (walker_num/rank_size - 1);
-
-            sendcounts[i] = (i_end - i_start) + 1;
-            recvcounts[i] = sendcounts[i];
-            displace[i]   = sendcounts[0] + (i-1) * ( walker_num / rank_size );
-        }
-    }
-    
-    if( rank == ROOT_RANK ) {
-        std::cout << " [done]\n";
-    }
-
     if( !restart_successed ) {
+
+        if( rank == ROOT_RANK ) {
+            std::cout << std::setw(60) << std::left << "# --> distributing tasks to each rank ...";
+        }
+
+        int *sendcounts = new int[rank_size];
+        int *recvcounts = new int[rank_size];
+        int *displace   = new int[rank_size];
+
+        //  each rank will only calculate some of the likelihoods of the walkers.
+        int i_start, i_end;
+
+        if( (walker_num % rank_size) == 0 ) {   //    each rank will evaluate the same number of likelihoods
+
+            i_start = ( walker_num / rank_size ) * rank;
+            i_end   = i_start + ( walker_num / rank_size ) - 1;
+
+            for( int i=0; i<rank_size; ++i ) {
+                sendcounts[i]    = (i_end - i_start) + 1;
+                recvcounts[i]    = sendcounts[i];
+                displace[i]      = i * ( walker_num / rank_size );
+            }
+        }
+        else {   //    rank_root will evaluate more likelihoods
+
+            //  set for root rank
+            i_start         = 0;
+            i_end           = walker_num/rank_size + walker_num%rank_size - 1;
+
+            sendcounts[0]   = (i_end - i_start) + 1;
+            recvcounts[0]   = sendcounts[0];
+            displace[0]     = 0;
+
+            for( int i=1; i<rank_size; ++i ) {  //  set for the remaining ranks
+
+                i_start = walker_num/rank_size + walker_num%rank_size + (i-1)*(walker_num/rank_size);
+                i_end   = i_start + (walker_num/rank_size - 1);
+
+                sendcounts[i] = (i_end - i_start) + 1;
+                recvcounts[i] = sendcounts[i];
+                displace[i]   = sendcounts[0] + (i-1) * ( walker_num / rank_size );
+            }
+        }
+        
+        if( rank == ROOT_RANK ) {
+            std::cout << " [done]\n";
+        }
     
         for(int i=i_start; i<=i_end; ++i) {
 
@@ -963,7 +963,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
                                     recvcounts, displace, MPI::INT,
                                     ROOT_RANK );
 
-        //  broadcast walkers to each proc
+    //  broadcast walkers to each proc
         MPI::COMM_WORLD.Bcast(  walker["LnPost"],
                                 walker_num,
                                 MPI::DOUBLE,
