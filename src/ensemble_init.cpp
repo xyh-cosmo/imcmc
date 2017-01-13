@@ -308,7 +308,7 @@ void ensemble_workspace::init( std::string paramfile ) {
     MPI::COMM_WORLD.Barrier();
 
 
-	imcmc_verbose(rank, "[debug] initializing walkers");
+//	imcmc_verbose(rank, "[debug] initializing walkers");
     init_walkers();
     MPI::COMM_WORLD.Barrier();
 
@@ -851,231 +851,233 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
         }
     }
 
-//    if( !restart_successed ) {
+    for(int i=i_start; i<=i_end; ++i) {
 
-        for(int i=i_start; i<=i_end; ++i) {
+        double lndet, chisq;
+        double start_value, value_width;
 
-            double lndet, chisq;
-            double start_value, value_width;
+        //  initialize full_param randomly. Note that full_param includes sampling
+        //  parameters, fixed parameters and derived parameters
+        it = sampling_param_name.begin();
 
-            //  initialize full_param randomly. Note that full_param includes sampling
-            //  parameters, fixed parameters and derived parameters
-            it = sampling_param_name.begin();
+        while( it != sampling_param_name.end() ) {
 
-            while( it != sampling_param_name.end() ) {
-
-                if( start_from_fiducial ) {
-                    //  fiducial values are usually close to the best fittings positions in the parameter space.
-                    start_value = full_param[*it];
-                }
-                else {
-                    //  central values might not as good as fiducial values, but should not be bad either.
-                    start_value = 0.5*(full_param_min[*it] + full_param_max[*it]);
-                }
-
-                //  initial guess of value_width
-                value_width  = full_param_max[*it] - full_param_min[*it];
-
-                if( start_from_fiducial ) { // fid-values are not necessarily the middle values.
-                    double width_left  = fabs(start_value - full_param_min[*it]);
-                    double width_right = fabs(start_value - full_param_max[*it]);
-
-                    if( value_width > width_left )
-                        value_width = width_left;
-
-                    if( value_width > width_right )
-                        value_width = width_right;
-                }
-
-                //  ==============================================================================
-                //  just give the walkers some reasonable values...
-                //  0.25 can be replaced by other values whoes absolute values are less than 0.5
-                //  ==============================================================================
-                walker[*it][i]      = gsl_ran_flat( rand_seed,
-                                                    start_value - 0.5*init_ball_radius*value_width,
-                                                    start_value + 0.5*init_ball_radius*value_width );
-
-                full_param_temp[*it] = walker[*it][i];
-                ++it;
-            }
-
-            //  if error happens during initialization, LnPost will be _IMCMC_LNPOST_MIN_
-
-            walker["LnPost"][i] = likelihood_eval( full_param_temp, lndet, chisq );
-            walker["LnDet"][i]  = lndet;
-            walker["Chisq"][i]  = chisq;
-
-            if( likelihood_state.this_like_is_ok ) {
-                error[i] = 0;
+            if( start_from_fiducial ) {
+                //  fiducial values are usually close to the best fittings positions in the parameter space.
+                start_value = full_param[*it];
             }
             else {
-                error[i] = 1;
-                std::cout << " # ++++> RANK: " << rank << "  error happened when initializing walker["
-                          << i << "],  [ i_start = " << i_start << ", i_end = " << i_end << "]\n";
+                //  central values might not as good as fiducial values, but should not be bad either.
+                start_value = 0.5*(full_param_min[*it] + full_param_max[*it]);
             }
-//        }
 
-        if( rank == ROOT_RANK ) {
-            std::cout << std::setw(60) << std::left << "# --> Initializing walkers ...";
-            std::cout << " [Done]\n";
+            //  initial guess of value_width
+            value_width  = full_param_max[*it] - full_param_min[*it];
+
+            if( start_from_fiducial ) { // fid-values are not necessarily the middle values.
+                double width_left  = fabs(start_value - full_param_min[*it]);
+                double width_right = fabs(start_value - full_param_max[*it]);
+
+                if( value_width > width_left )
+                    value_width = width_left;
+
+                if( value_width > width_right )
+                    value_width = width_right;
+            }
+
+            //  ==============================================================================
+            //  just give the walkers some reasonable values...
+            //  0.25 can be replaced by other values whoes absolute values are less than 0.5
+            //  ==============================================================================
+            walker[*it][i]      = gsl_ran_flat( rand_seed,
+                                                start_value - 0.5*init_ball_radius*value_width,
+                                                start_value + 0.5*init_ball_radius*value_width );
+
+            full_param_temp[*it] = walker[*it][i];
+            ++it;
         }
+
+        //  if error happens during initialization, LnPost will be _IMCMC_LNPOST_MIN_
+
+        walker["LnPost"][i] = likelihood_eval( full_param_temp, lndet, chisq );
+        walker["LnDet"][i]  = lndet;
+        walker["Chisq"][i]  = chisq;
+
+        if( likelihood_state.this_like_is_ok ) {
+            error[i] = 0;
+        }
+        else {
+            error[i] = 1;
+            std::cout << " # ++++> RANK: " << rank << "  error happened when initializing walker["
+                      << i << "],  [ i_start = " << i_start << ", i_end = " << i_end << "]\n";
+        }
+    }
+
+    if( rank == ROOT_RANK ) {
+        std::cout << std::setw(60) << std::left << "# --> Initializing walkers ...";
+        std::cout << " [Done]\n";
+    }
+    
+
+    // MPI::COMM_WORLD.Barrier();
+
+    //  ===================================
+    //  collecting all sampling parameters
+    //  ===================================
+
+    it = sampling_param_name.begin();
+
+    while( it != sampling_param_name.end() ) {
+
+        MPI::COMM_WORLD.Gatherv(    &walker[*it][i_start],
+                                    sendcounts[rank], MPI::DOUBLE,
+                                    walker[*it],
+                                    recvcounts, displace, MPI::DOUBLE,
+                                    ROOT_RANK );
 
         // MPI::COMM_WORLD.Barrier();
 
-        //  ===================================
-        //  collecting all sampling parameters
-        //  ===================================
+        MPI::COMM_WORLD.Bcast(  walker[*it],
+                                walker_num,
+                                MPI::DOUBLE,
+                                ROOT_RANK    );
+
+        ++it;
+    }
+
+    //  ===================================
+    //  collecting all derived parameters
+    //  ===================================
+
+    it = derived_param_name.begin();
+
+    while( it != derived_param_name.end() ) {
+
+        MPI::COMM_WORLD.Gatherv(    &walker[*it][i_start],
+                                    sendcounts[rank], MPI::DOUBLE,
+                                    walker[*it],
+                                    recvcounts, displace, MPI::DOUBLE,
+                                    ROOT_RANK );
+
+        MPI::COMM_WORLD.Bcast(  walker[*it],
+                                walker_num,
+                                MPI::DOUBLE,
+                                ROOT_RANK    );
+
+        ++it;
+    }
+
+
+    MPI::COMM_WORLD.Gatherv(    &walker["LnPost"][i_start],
+                                sendcounts[rank], MPI::DOUBLE,
+                                walker["LnPost"],
+                                recvcounts, displace, MPI::DOUBLE,
+                                ROOT_RANK );
+
+
+    MPI::COMM_WORLD.Gatherv(    &walker["LnDet"][i_start],
+                                sendcounts[rank], MPI::DOUBLE,
+                                walker["LnDet"],
+                                recvcounts, displace, MPI::DOUBLE,
+                                ROOT_RANK );
+
+    MPI::COMM_WORLD.Gatherv(    &walker["Chisq"][i_start],
+                                sendcounts[rank], MPI::DOUBLE,
+                                walker["Chisq"],
+                                recvcounts, displace, MPI::DOUBLE,
+                                ROOT_RANK );
+
+    MPI::COMM_WORLD.Gatherv(    &error[i_start],
+                                sendcounts[rank], MPI::INT,
+                                error,
+                                recvcounts, displace, MPI::INT,
+                                ROOT_RANK );
+
+    //  broadcast walkers to each proc
+    MPI::COMM_WORLD.Bcast(  walker["LnPost"],
+                            walker_num,
+                            MPI::DOUBLE,
+                            ROOT_RANK    );
+
+    MPI::COMM_WORLD.Bcast(  walker["LnDet"],
+                            walker_num,
+                            MPI::DOUBLE,
+                            ROOT_RANK    );
+
+    MPI::COMM_WORLD.Bcast(  walker["Chisq"],
+                            walker_num,
+                            MPI::DOUBLE,
+                            ROOT_RANK    );
+
+//        exit(0);
+
+    // copy walker into walker_io.
+    if( rank == ROOT_RANK ) {
+
+        for( int i=0; i<walker_num; ++i ) { // set all initial weights to 1.0
+            walker_io["Weight"][i] = 1.0;   //  because these walkers were born for then first time
+            walker_io["LnPost"][i] = walker["LnPost"][i];
+            walker_io["LnDet"][i]  = walker["LnDet"][i];
+            walker_io["Chisq"][i]  = walker["Chisq"][i];
+        }
+
+        //  =====================
+        //  initialize walker_io
+        //  =====================
 
         it = sampling_param_name.begin();
 
         while( it != sampling_param_name.end() ) {
 
-            MPI::COMM_WORLD.Gatherv(    &walker[*it][i_start],
-                                        sendcounts[rank], MPI::DOUBLE,
-                                        walker[*it],
-                                        recvcounts, displace, MPI::DOUBLE,
-                                        ROOT_RANK );
-
-            // MPI::COMM_WORLD.Barrier();
-
-            MPI::COMM_WORLD.Bcast(  walker[*it],
-                                    walker_num,
-                                    MPI::DOUBLE,
-                                    ROOT_RANK    );
+            for( int i=0; i<walker_num; ++i )
+                walker_io[*it][i] = walker[*it][i];
 
             ++it;
         }
-
-        //  ===================================
-        //  collecting all derived parameters
-        //  ===================================
 
         it = derived_param_name.begin();
 
         while( it != derived_param_name.end() ) {
-
-            MPI::COMM_WORLD.Gatherv(    &walker[*it][i_start],
-                                        sendcounts[rank], MPI::DOUBLE,
-                                        walker[*it],
-                                        recvcounts, displace, MPI::DOUBLE,
-                                        ROOT_RANK );
-
-            MPI::COMM_WORLD.Bcast(  walker[*it],
-                                    walker_num,
-                                    MPI::DOUBLE,
-                                    ROOT_RANK    );
+            for( int i=0; i<walker_num; ++i )
+                walker_io[*it][i] = walker[*it][i]; //  all these initial values are zero
 
             ++it;
         }
-
-        MPI::COMM_WORLD.Gatherv(    &walker["LnPost"][i_start],
-                                    sendcounts[rank], MPI::DOUBLE,
-                                    walker["LnPost"],
-                                    recvcounts, displace, MPI::DOUBLE,
-                                    ROOT_RANK );
-
-        MPI::COMM_WORLD.Gatherv(    &walker["LnDet"][i_start],
-                                    sendcounts[rank], MPI::DOUBLE,
-                                    walker["LnDet"],
-                                    recvcounts, displace, MPI::DOUBLE,
-                                    ROOT_RANK );
-
-        MPI::COMM_WORLD.Gatherv(    &walker["Chisq"][i_start],
-                                    sendcounts[rank], MPI::DOUBLE,
-                                    walker["Chisq"],
-                                    recvcounts, displace, MPI::DOUBLE,
-                                    ROOT_RANK );
-
-        MPI::COMM_WORLD.Gatherv(    &error[i_start],
-                                    sendcounts[rank], MPI::INT,
-                                    error,
-                                    recvcounts, displace, MPI::INT,
-                                    ROOT_RANK );
-
-        //  broadcast walkers to each proc
-        MPI::COMM_WORLD.Bcast(  walker["LnPost"],
-                                walker_num,
-                                MPI::DOUBLE,
-                                ROOT_RANK    );
-
-        MPI::COMM_WORLD.Bcast(  walker["LnDet"],
-                                walker_num,
-                                MPI::DOUBLE,
-                                ROOT_RANK    );
-
-        MPI::COMM_WORLD.Bcast(  walker["Chisq"],
-                                walker_num,
-                                MPI::DOUBLE,
-                                ROOT_RANK    );
-
-        // copy walker into walker_io.
-        if( rank == ROOT_RANK ) {
-
-            for( int i=0; i<walker_num; ++i ) { // set all initial weights to 1.0
-                walker_io["Weight"][i] = 1.0;   //  because these walkers were born for then first time
-                walker_io["LnPost"][i] = walker["LnPost"][i];
-                walker_io["LnDet"][i]  = walker["LnDet"][i];
-                walker_io["Chisq"][i]  = walker["Chisq"][i];
-            }
-
-            //  =====================
-            //  initialize walker_io
-            //  =====================
-
-            it = sampling_param_name.begin();
-
-            while( it != sampling_param_name.end() ) {
-
-                for( int i=0; i<walker_num; ++i )
-                    walker_io[*it][i] = walker[*it][i];
-
-                ++it;
-            }
-
-            it = derived_param_name.begin();
-
-            while( it != derived_param_name.end() ) {
-                for( int i=0; i<walker_num; ++i )
-                    walker_io[*it][i] = walker[*it][i]; //  all these initial values are zero
-
-                ++it;
-            }
-        }
-
-        //    search the _lndet_min_ & _chisq_min_
-        _lndet_min_ = 1.0E99;
-        _chisq_min_ = 1.0E99;
-
-        int error_tot = 0;
-
-        for( int i=0; i<walker_num; ++i ) {
-            if( walker["LnDet"][i] < _lndet_min_ )
-                _lndet_min_ = walker["LnDet"][i];
-
-            if( walker["Chisq"][i] < _chisq_min_ )
-                _chisq_min_ = walker["Chisq"][i];
-
-            error_tot += error[i];
-        }
-
-        if( rank == ROOT_RANK && !start_from_check_point ) {
-
-            std::cout << "\n#  =============================================================\n"
-                      << ">  searched _lndet_min_: " << _lndet_min_ << "\n"
-                      << ">  searched _chisq_min_: " << _chisq_min_ << "\n"
-                      << "#  they will be updated again in the burn-in process\n\n";
-
-            std::cout << "#  ***  Note that this searching will be done only once  ***\n"
-                      << "#  =============================================================\n";
-            //  _lndet_min_, _chisq_min_ are used only when writing probability into chains.
-            //
-            std::cout << "#  " << error_tot << " likelihood errors encountered in the initialization\n\n";
-        }
-
-        delete[] sendcounts;
-        delete[] recvcounts;
-        delete[] displace;
     }
+
+    //    search the _lndet_min_ & _chisq_min_
+    _lndet_min_ = 1.0E99;
+    _chisq_min_ = 1.0E99;
+
+    int error_tot = 0;
+
+    for( int i=0; i<walker_num; ++i ) {
+        if( walker["LnDet"][i] < _lndet_min_ )
+            _lndet_min_ = walker["LnDet"][i];
+
+        if( walker["Chisq"][i] < _chisq_min_ )
+            _chisq_min_ = walker["Chisq"][i];
+
+        error_tot += error[i];
+    }
+
+    if( rank == ROOT_RANK && !start_from_check_point ) {
+
+        std::cout << "\n#  =============================================================\n"
+                  << ">  searched _lndet_min_: " << _lndet_min_ << "\n"
+                  << ">  searched _chisq_min_: " << _chisq_min_ << "\n"
+                  << "#  they will be updated again in the burn-in process\n\n";
+
+        std::cout << "#  ***  Note that this searching will be done only once  ***\n"
+                  << "#  =============================================================\n";
+        //  _lndet_min_, _chisq_min_ are used only when writing probability into chains.
+        //
+        std::cout << "#  " << error_tot << " likelihood errors encountered in the initialization\n\n";
+    }
+
+    delete[] sendcounts;
+    delete[] recvcounts;
+    delete[] displace;
 
     // MPI::COMM_WORLD.Barrier();
 }
