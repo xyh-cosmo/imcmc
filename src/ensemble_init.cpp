@@ -851,7 +851,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
         }
     }
 
-    if( !restart_successed ) {
+//    if( !restart_successed ) {
 
         for(int i=i_start; i<=i_end; ++i) {
 
@@ -913,7 +913,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
                 std::cout << " # ++++> RANK: " << rank << "  error happened when initializing walker["
                           << i << "],  [ i_start = " << i_start << ", i_end = " << i_end << "]\n";
             }
-        }
+//        }
 
         if( rank == ROOT_RANK ) {
             std::cout << std::setw(60) << std::left << "# --> Initializing walkers ...";
