@@ -130,6 +130,9 @@ namespace imcmc{
 
         for( int i=1+existed_chain_num; i<=chain_num+existed_chain_num; ++i ){
 
+
+            imcmc_verbose(rank,"[debug] open chain output stream");
+
             if( rank == ROOT_RANK ){
 
                 chain_name = chain_root + "_" + Read::IntToString(i) + ".txt";
@@ -164,14 +167,19 @@ namespace imcmc{
                 std::cout << "#  ===================================================\n\n";
             }
 
-            MPI::COMM_WORLD.Barrier();
+//            MPI::COMM_WORLD.Barrier();
 
             for( int j=0; j<sampling_loops; ++j ){
+
+
+                imcmc_verbose(rank,"[debug] updating walkers ...");
 
                 update_walkers( true, j, sampling_loops );
                 ++es_counter;
 
                 if( rank == ROOT_RANK ){
+                
+                    imcmc_verbose(rank,"[debug] writing walkers ...");
 
                     write_walkers(out_stream);
 
