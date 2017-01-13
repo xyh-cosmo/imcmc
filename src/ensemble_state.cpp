@@ -328,9 +328,9 @@ namespace imcmc{
         it = sampling_param_name.end();
         while( it != sampling_param_name.end() ){
 
-            if( rank == ROOT_RANK ){
-                std::cout << "Bacsting: " << *it << std::endl;
-            }
+//            if( rank == ROOT_RANK ){
+//                std::cout << "Bacsting: " << *it << std::endl;
+//            }
 
             MPI::COMM_WORLD.Bcast(  walker[*it],
                                     walker_num,
@@ -347,9 +347,9 @@ namespace imcmc{
         it = derived_param_name.begin();
         while( it != derived_param_name.end() ){
 
-            if( rank == ROOT_RANK ){
-                std::cout << "Bacsting: " << *it << std::endl;
-            }
+//            if( rank == ROOT_RANK ){
+//                std::cout << "Bacsting: " << *it << std::endl;
+//            }
 
             MPI::COMM_WORLD.Bcast(  walker[*it],
                                     walker_num,
@@ -399,6 +399,7 @@ namespace imcmc{
                                 MPI::DOUBLE,
                                 ROOT_RANK    );
 
+//  DEBUG
 // output the readed walkers ...
         // if( rank == ROOT_RANK ){
         //     imcmc_vector_string_iterator it = sampling_param_name.begin();
