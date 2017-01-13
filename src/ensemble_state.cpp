@@ -171,7 +171,7 @@ namespace imcmc{
             outfile.close();
         }
 
-        MPI::COMM_WORLD.Barrier();
+//        MPI::COMM_WORLD.Barrier();
     }
 
     bool ensemble_workspace::read_state(){
@@ -318,7 +318,7 @@ namespace imcmc{
             delete[] temp;
         }
 
-        MPI::COMM_WORLD.Barrier();
+//        MPI::COMM_WORLD.Barrier();
 
         // std::cout << "==> Root rank finished re-loading check point file!\n";
         // exit(0);
@@ -414,7 +414,7 @@ namespace imcmc{
         //
         // exit(0);
 
-        MPI::COMM_WORLD.Barrier();
+//        MPI::COMM_WORLD.Barrier();
 
         return read_success;
     }
