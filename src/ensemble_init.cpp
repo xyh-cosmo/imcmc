@@ -35,11 +35,8 @@ void ensemble_workspace::init( std::string paramfile ) {
     }
 
     likelihood_state.init();
-//	imcmc_verbose(rank, "[debug] initialized likelihood_state");
 
     srand(time(NULL));
-
-//	imcmc_verbose(rank, "[debug] start configurating ensemble_workspace from: "+paramfile);
 
     config_file = paramfile;
 
@@ -47,7 +44,6 @@ void ensemble_workspace::init( std::string paramfile ) {
         imcmc_runtime_error("Cannot open parameter file: " + paramfile + " !");
     }
 
-//	imcmc_verbose(rank, "[debug] getting walker number");
     if( Read::Has_Key_in_File( paramfile, "walker_num" ) ) {
 
         Read::Read_Value_from_File(paramfile, "walker_num", walker_num);
@@ -74,7 +70,6 @@ void ensemble_workspace::init( std::string paramfile ) {
     else
         imcmc_runtime_error("\'walker_num\' not found in:" + paramfile + " !");
 
-//	imcmc_verbose(rank, "[debug] getting burin_step");
     if( Read::Has_Key_in_File( paramfile, "burnin_step" ) ) {
         Read::Read_Value_from_File(paramfile, "burnin_step", burnin_step);
 
@@ -96,9 +91,6 @@ void ensemble_workspace::init( std::string paramfile ) {
         imcmc_runtime_warning("\'skip_step\' not found in: " + paramfile + ", so we set it to default value 10.");
     }
 
-
-//	imcmc_verbose(rank, "[debug] getting chain_num");
-
     if( Read::Has_Key_in_File( paramfile, "chain_num" ) ) {
         Read::Read_Value_from_File(paramfile, "chain_num", chain_num);
 
@@ -107,8 +99,6 @@ void ensemble_workspace::init( std::string paramfile ) {
         }
     }
 
-//	imcmc_verbose(rank, "[debug] getting sample_step");
-
     if( Read::Has_Key_in_File( paramfile, "sample_step" ) ) {
         Read::Read_Value_from_File(paramfile, "sample_step", sample_step);
     }
@@ -116,8 +106,6 @@ void ensemble_workspace::init( std::string paramfile ) {
         imcmc_runtime_warning("\'sample_step\' not found, so the default value 50 will be used.");
         sample_step = 50;
     }
-
-//	imcmc_verbose(rank, "[debug] getting efficient factor a");
 
     if( Read::Has_Key_in_File( paramfile, "efficient_a" ) ) {
         Read::Read_Value_from_File(paramfile, "efficient_a", efficient_a);
@@ -142,8 +130,6 @@ void ensemble_workspace::init( std::string paramfile ) {
     if( Read::Has_Key_in_File( paramfile, "start_from_fiducial" ) ) {
         start_from_fiducial = Read::Read_Bool_from_File(paramfile, "start_from_fiducial");
     }
-
-//	imcmc_verbose(rank, "[debug] getting chain_root");
 
     if( Read::Has_Key_in_File( paramfile, "chain_root" ) ) {
         Read::Read_Value_from_File(paramfile, "chain_root", chain_root);
@@ -198,8 +184,6 @@ void ensemble_workspace::init( std::string paramfile ) {
             imcmc_runtime_warning("you choose to ignore likelihood warning messages ...");
     }
 
-
-//	imcmc_verbose(rank, "[debug] setting random number seeds");
 //  setup seeds for the random number generators
     unsigned long seed, rand_num;
     unsigned long *random_seeds = new unsigned long[rank_size];
@@ -220,20 +204,14 @@ void ensemble_workspace::init( std::string paramfile ) {
 	MPI::COMM_WORLD.Barrier();
 
     rand_num = gsl_rng_get(rand_seed);  // get the first random number for this rank
-
-//	imcmc_verbose(rank, "[debug] gathering random number seeds from all ranks");
 	
     MPI::COMM_WORLD.Gather( &seed, 1, MPI::UNSIGNED_LONG,
                             random_seeds, 1, MPI::UNSIGNED_LONG,
                             ROOT_RANK );
 
-//	imcmc_verbose(rank, "[debug] gatherred random_seeds");
-
     MPI::COMM_WORLD.Gather( &rand_num, 1, MPI::UNSIGNED_LONG,
                             first_number, 1, MPI::UNSIGNED_LONG,
                             ROOT_RANK );
-
-//	imcmc_verbose(rank, "[debug] gatherred first_number");
 
     if( rank == ROOT_RANK ) {
 
@@ -254,10 +232,6 @@ void ensemble_workspace::init( std::string paramfile ) {
 
     delete[] random_seeds;
     delete[] first_number;
-
-//	imcmc_verbose(rank, "[debug] finished setting random number seeds");
-
-//	imcmc_verbose(rank, "[debug] start saving used settings");
 
     //  save used settings:
     if( rank == ROOT_RANK ) {
@@ -303,22 +277,15 @@ void ensemble_workspace::init( std::string paramfile ) {
         std::cout << " ===> seetings have been saved\n\n";
     }
 
-//	imcmc_verbose(rank, "[debug] initializing parameters");
     init_param();
     MPI::COMM_WORLD.Barrier();
 
-
-//	imcmc_verbose(rank, "[debug] initializing walkers");
     init_walkers();
     MPI::COMM_WORLD.Barrier();
 
     walker_initialized = true;
 
-
-//	imcmc_verbose(rank, "[debug] ensemble_workspace initialization done!");
 //    MPI::COMM_WORLD.Barrier();
-
-//	imcmc_verbose(rank, "[debug] debug info!!!");
 }
 
 
