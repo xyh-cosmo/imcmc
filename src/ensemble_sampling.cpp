@@ -29,6 +29,8 @@ namespace imcmc{
     }
 
     void ensemble_workspace::do_sampling(){
+    
+        imcmc_verbose(rank, "[debug] ready to start sampling");
 
         int burnin_loops, sampling_loops;
 
@@ -58,6 +60,8 @@ namespace imcmc{
                 std::cout << "#  =====================================================\n\n";
             }
         }
+        
+        imcmc_verbose(rank, "[debug] trying to open/create ashes file");
 
         if( save_burned_ashes && (rank == ROOT_RANK) && !no_burnin ){
 
@@ -88,6 +92,8 @@ namespace imcmc{
         }
 
         MPI::COMM_WORLD.Barrier();
+        
+        imcmc_verbose(rank,"[debug] yeap, passed a barrrer and start burn things!");
 
         for( int j=0; j<burnin_loops; ++j ){    //  Burn in
 
@@ -118,6 +124,9 @@ namespace imcmc{
             out_stream.close();
 
         _searched_lndet_min_chisq_min_ = true;  //  once searched during the burning, change its state to TRUE.
+
+
+        imcmc_verbose(rank, "[debug] now it's time to generate useful chains");
 
         for( int i=1+existed_chain_num; i<=chain_num+existed_chain_num; ++i ){
 
