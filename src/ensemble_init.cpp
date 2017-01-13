@@ -806,10 +806,8 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
 
 
     if( rank == ROOT_RANK ) {
-        if( start_from_check_point ) {
-            std::cout << std::setw(60) << std::left << "# --> distributing tasks to each rank ...";
-            std::cout << "\n";
-        }
+        std::cout << std::setw(60) << std::left << "# --> distributing tasks to each rank ...";
+        std::cout << "\n";
     }
 
     int *sendcounts = new int[rank_size];
@@ -919,7 +917,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
     }
     
 
-    // MPI::COMM_WORLD.Barrier();
+    MPI::COMM_WORLD.Barrier();
 
     //  ===================================
     //  collecting all sampling parameters
@@ -935,7 +933,6 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
                                     recvcounts, displace, MPI::DOUBLE,
                                     ROOT_RANK );
 
-        // MPI::COMM_WORLD.Barrier();
 
         MPI::COMM_WORLD.Bcast(  walker[*it],
                                 walker_num,
@@ -943,6 +940,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
                                 ROOT_RANK    );
 
         ++it;
+        MPI::COMM_WORLD.Barrier();
     }
 
     //  ===================================
@@ -965,6 +963,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
                                 ROOT_RANK    );
 
         ++it;
+        MPI::COMM_WORLD.Barrier();
     }
 
 
