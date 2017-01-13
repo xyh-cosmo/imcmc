@@ -305,18 +305,18 @@ void ensemble_workspace::init( std::string paramfile ) {
 
 	imcmc_verbose(rank, "[debug] initializing parameters");
     init_param();
-    MPI::COMM_WORLD.Barrier();
+//    MPI::COMM_WORLD.Barrier();
 
 
 //	imcmc_verbose(rank, "[debug] initializing walkers");
     init_walkers();
-    MPI::COMM_WORLD.Barrier();
+//    MPI::COMM_WORLD.Barrier();
 
     walker_initialized = true;
 
 
 	imcmc_verbose(rank, "[debug] ensemble_workspace initialization done!");
-    MPI::COMM_WORLD.Barrier();
+//    MPI::COMM_WORLD.Barrier();
 
 	imcmc_verbose(rank, "[debug] debug info!!!");
 }
