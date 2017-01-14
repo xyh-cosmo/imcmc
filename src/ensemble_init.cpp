@@ -204,7 +204,7 @@ void ensemble_workspace::init( std::string paramfile ) {
 	MPI::COMM_WORLD.Barrier();
 
     rand_num = gsl_rng_get(rand_seed);  // get the first random number for this rank
-	
+
     MPI::COMM_WORLD.Gather( &seed, 1, MPI::UNSIGNED_LONG,
                             random_seeds, 1, MPI::UNSIGNED_LONG,
                             ROOT_RANK );
@@ -816,11 +816,11 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
                 displace[i]   = sendcounts[0] + (i-1) * ( walker_num / rank_size );
             }
         }
-        
+
         if( rank == ROOT_RANK ) {
             std::cout << " [done]\n";
         }
-    
+
         for(int i=i_start; i<=i_end; ++i) {
 
             double lndet, chisq;
@@ -878,7 +878,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
             }
             else {
                 error[i] = 1;
-                std::cout << " # ++++> RANK: " << rank << "  error happened when initializing walker["
+                std::cout << "==> RANK: " << rank << "  error happened when initializing walker["
                           << i << "],  [ i_start = " << i_start << ", i_end = " << i_end << "]\n";
             }
         }
@@ -886,7 +886,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
         if( rank == ROOT_RANK ) {
             std::cout << std::setw(60) << std::left << "# --> Initializing walkers ...";
         }
-        
+
 
 //        MPI::COMM_WORLD.Barrier();
 
@@ -982,7 +982,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
         if( rank == ROOT_RANK ) {
             std::cout << " [Done]\n";
         }
-        
+
         // copy walker into walker_io.
         if( rank == ROOT_RANK ) {
 
@@ -1017,7 +1017,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
 
                 ++it;
             }
-            
+
             std::cout << " [Done]\n";
         }
 
