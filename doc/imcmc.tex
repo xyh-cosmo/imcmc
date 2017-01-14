@@ -14,7 +14,23 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\documentclass{article}
+\documentclass[a4paper,11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{epsfig}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{caption}
+\usepackage{subcaption}	% to support subfigure
+% \usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{calc}
+\usepackage{authblk}
+\usepackage{multicol}
+\usepackage{here}
+\usepackage{stfloats}
+\usepackage{hyperref}
 
 %----------------------------------------------------------------------------------------
 
@@ -51,15 +67,62 @@ tabsize=2, % Number of spaces per tab in the code
 }
 
 % Create a command to cleanly insert a snippet with the style above anywhere in the document
-\newcommand{\insertcode}[2]{\begin{itemize}\item[]\lstinputlisting[caption=#2,label=#1,style=Style1]{#1}\end{itemize}} % The first argument is the script location/filename and the second is a caption for the listing
+\newcommand{\insertcode}[2]{\begin{itemize}\item[]\lstinputlisting[caption=#2,label=#1,style=Style1]{#1}\end{itemize}}
+% The first argument is the script location/filename and the second is a caption for the listing
+
+%	set text width and heights
+\setlength\textwidth{7in}
+\setlength\textheight{10in}
+\setlength\oddsidemargin{(\paperwidth-\textwidth)/2 - 1in}
+\setlength\topmargin{(\paperheight-\textheight-\headheight-\headsep-\footskip)/2 - 1 in}
 
 %----------------------------------------------------------------------------------------
 
 \begin{document}
+    
+\title{imcmc: tutorial}
+
+\author[1,2]{Youhua Xu}
+\affil[1]{School of Physics, Nanjing University, Nanjing Jiangsu, 210093, China}
+\affil[2]{Key Laboratory of Space Astronomy and Technology, National Astronomical
+Observatories, CAS, Beijing 100012, China}
+% \href{mailto:me}{yhxu@nao.cas.cn}
+
+\maketitle
+
+\begin{abstract}
+Why create imcmc?
+\end{abstract}
+
+\maketitle
+
+\section{Why build a library?}
+It's a nightmare when if you're managing a project with lots of source files.
+
+\section{Basics: Bayesian Analysis $\&$ MCMC}
+Before getting start to generate MC samples with imcmc, I will brieflly
+review the basics of Bayesian analysis and MCMC (use Metropolis-Hastings
+algorithm as the example)
+
+
+%\section{Algrithms}
+%
+%\subsection{Affine-invariant ensemble}
+%
+%
+%\subsection{Metropolis-Hastings}
+%
+%
+%\subsection{Hamitonian-Monte Carlo}
+%
+%
+%\subsection{Nested sampling}
+%
+%\section{Structure of the code}
 
 %----------------------------------------------------------------------------------------
 
-\insertcode{"/home/xyh/GitHub/imcmc/examples/gaussian.cpp"}{Nena would be proud.} % The first argument is the script location/filename and the second is a caption for the listing
+\insertcode{"../examples/gaussian.cpp"}{Example of multi-dimensional Gaussian likelihood distribution.} % The first argument is the script location/filename and the second is a caption for the listing
 
 %----------------------------------------------------------------------------------------
 
