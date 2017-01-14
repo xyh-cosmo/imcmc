@@ -129,7 +129,7 @@ namespace imcmc{
 
     //  use the name 'logpost' might be better
     //  double (*logpost)( imcmc_double&, double&, double&, void*, void* );
-        // double (*loglike)( imcmc_double&, double&, double&, void*, void* );
+    // double (*loglike)( imcmc_double&, double&, double&, void*, void* );
         double (*loglike)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& );
 
         ~likelihood_(){
@@ -149,6 +149,8 @@ namespace imcmc{
 
 //  create backup files
     bool backup_file( std::string& file_old, std::string& file_new );
+
+    void imcmc_mpi_stop( const std::string& errmsg );
 }
 
 #endif

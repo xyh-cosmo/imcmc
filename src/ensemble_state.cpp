@@ -355,9 +355,6 @@ namespace imcmc{
 
         MPI::COMM_WORLD.Barrier();
 
-        // std::cout << "==> Root rank finished re-loading check point file!\n";
-        // exit(0);
-
     //  broadcast root rank's backup to all other ranks.
 
         it = sampling_param_name.begin();

@@ -119,4 +119,18 @@ namespace imcmc{
         return true;
     }
 
+
+    void imcmc_mpi_stop( const std::string& errmsg ){
+        
+        int rank = MPI::COMM_WORLD.Get_rank();
+        
+        if( rank == ROOT_RANK ){
+            std::cout << "==> MPI_stop() is called:\n";
+            std::cout << "==> Errmsg: " << errmsg << "\n";
+        }
+
+        MPI::Finalize();
+        exit(0);
+    }
+
 }
