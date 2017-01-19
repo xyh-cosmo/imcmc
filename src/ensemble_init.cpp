@@ -192,13 +192,16 @@ void ensemble_workspace::init( std::string paramfile ) {
     rand_seed           = gsl_rng_alloc(gsl_rng_mt19937);
     rand_seed_walker_id = gsl_rng_alloc(gsl_rng_mt19937);
 
-    seed = rand();  //  inital seed
+    seed = rand();                  //  inital seed
+    seed += seed / (rank+1);        //  let different rank has a different FIRST seed @Jan-20-2017
 
-    for( int i=0; i<=rank; ++i ) { //  make sure differen ranks use differen random number seed
+    for( int i=0; i<=rank; ++i ) {  //  make sure differen ranks use different random number seed
         gsl_rng_set( rand_seed, seed );
         seed = gsl_rng_get(rand_seed);
     }
 
+//  no need to set different rank_seed_walker_id for each rank, since the root rank
+//  will pair the walkers and broadcast the whole information to all ranks.
     gsl_rng_set(rand_seed_walker_id, rand());
 
 	MPI::COMM_WORLD.Barrier();
