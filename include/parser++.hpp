@@ -56,12 +56,22 @@
 }
 
 //  stop on given condition
+#if defined(__IMCMC_MPI__)
 #define StopOnError(condition,msg)      \
 {                                       \
     DetectError(condition,msg);         \
     std::cout << "==> Stop Now!\n";     \
-    exit(0);                            \
+	MPI::COMM_WORLD.Abort(MPI::COMM_WORLD.Get_rank());	\
 }
+#else
+#define StopOnError(condition,msg)		\
+{										\
+	DetectError(condition,msg);			\
+	std::cout << "==> Stop Now!\n";		\
+	exit(0);							\
+}
+#endif
+
 
 namespace imcmc{
 namespace parser{
