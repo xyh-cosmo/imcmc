@@ -73,11 +73,11 @@ namespace parser{
     //  Note: this function should be applied only to NON-commented lines
         std::string Remove_Comments( std::string line ){
 
-//            if( Is_Commented(line) ){
-//                Info::ErrorInfo( "the line: " + line + " is commented out !");
-//            }
+           if( Is_Commented(line) ){
+               Info::ErrorInfo( "the line: " + line + " is commented out !");
+           }
             
-            StopOnError( Is_Commented(line), "the line: " + line + " is commented out !" );
+            // StopOnError( Is_Commented(line), "the line: " + line + " is commented out !" );
 
             std::string::size_type idx_of_comments = line.find_first_of("#;");
 
@@ -200,15 +200,15 @@ namespace parser{
                     ++nkey;
             }
             
-            StopOnError(nkey>1,"more than one " + key + " ...");
+            // StopOnError(nkey>1,"more than one " + key + " ...");
 
             if(nkey < 1)
                 has_key = false;
             else if(nkey == 1)
                 has_key = true;
-//            else if(nkey > 1){
-//                Info::ErrorInfo( "more than one " + key + " ..." );
-//            }
+           else if(nkey > 1){
+               Info::ErrorInfo( "more than one " + key + " ..." );
+           }
 
             return has_key;
         }
@@ -228,7 +228,7 @@ namespace parser{
         //    @2015-4-30, a bug was found here
             infile.close();    //    I forgot to add this line ...
 
-            StopOnError( count>1, "more than one " + key + " in paramfile, ambiguous" );
+            // StopOnError( count>1, "more than one " + key + " in paramfile, ambiguous" );
 
             if( count == 0 ){
                 has = false;
@@ -236,9 +236,9 @@ namespace parser{
             else if( count == 1 ){
                 has = true;
             }
-//            else{
-//                Info::ErrorInfo( "more than one " + key + " in paramfile, ambiguous" );
-//            }
+           else{
+               Info::ErrorInfo( "more than one " + key + " in paramfile, ambiguous" );
+           }
             return has;
         }
 
@@ -270,11 +270,11 @@ namespace parser{
                 double value;
                 while( stream >> value ) ++num_of_value;
             }
-            else{
-                StopOnError( true, "unrecognized data type" );
-            }
-//            else
-//                Info::ErrorInfo( "unrecognized data type" );
+            // else{
+            //     StopOnError( true, "unrecognized data type" );
+            // }
+           else
+               Info::ErrorInfo( "unrecognized data type" );
 
             return num_of_value;
         }
@@ -596,9 +596,9 @@ namespace parser{
 
             in.close();
             
-            StopOnError( readed==false, "Failed to read value for " + key );
-//            if( !readed )
-//                Info::ErrorInfo( "Failed to read value for " + key );
+            // StopOnError( readed==false, "Failed to read value for " + key );
+           if( !readed )
+               Info::ErrorInfo( "Failed to read value for " + key );
         }
 
     //  Now some overloaded functions of the above Read_Value
@@ -618,9 +618,9 @@ namespace parser{
             }
 
             in.close();
-//            if( !readed )
-//                Info::ErrorInfo( "Failed to read value for " + key );
-            StopOnError( readed==false, "Failed to read value for " + key );
+           if( !readed )
+               Info::ErrorInfo( "Failed to read value for " + key );
+            // StopOnError( readed==false, "Failed to read value for " + key );
         }
 
         void Read_Value_from_File(  std::string infile,
@@ -639,9 +639,9 @@ namespace parser{
             }
 
             in.close();
-//            if( !readed )
-//                Info::ErrorInfo( "Failed to read value for " + key );
-            StopOnError( readed==false, "Failed to read value for " + key );
+           if( !readed )
+               Info::ErrorInfo( "Failed to read value for " + key );
+            // StopOnError( readed==false, "Failed to read value for " + key );
         }
 
     //  bool version
@@ -714,9 +714,9 @@ namespace parser{
             }
 
             in.close();
-//            if( !readed )
-//                Info::ErrorInfo( "Failed to read value for " + key );
-            StopOnError( readed==false, "Failed to read value for " + key );
+           if( !readed )
+               Info::ErrorInfo( "Failed to read value for " + key );
+            // StopOnError( readed==false, "Failed to read value for " + key );
             
             return value;
         }
@@ -753,8 +753,8 @@ namespace parser{
                     else if( value == "F" || value == "FALSE" || value == "" )
                         bool_value = false;
                     else{
-//                        Info::ErrorInfo( "unrecognized bool value: " + value );
-                        StopOnError( true, "unrecognized bool value: " + value );
+                       Info::ErrorInfo( "unrecognized bool value: " + value );
+                        // StopOnError( true, "unrecognized bool value: " + value );
                     }
                 }
             }
@@ -777,9 +777,9 @@ namespace parser{
             }
 
             in.close();
-//            if( !readed )
-//                Info::ErrorInfo( "Failed to read value for " + key );
-            StopOnError( readed==false, "Failed to read value for " + key );
+           if( !readed )
+               Info::ErrorInfo( "Failed to read value for " + key );
+            // StopOnError( readed==false, "Failed to read value for " + key );
             return value;
         }
 
@@ -798,9 +798,9 @@ namespace parser{
             }
 
             in.close();
-//            if( !readed )
-//                Info::ErrorInfo( "Failed to read value for " + key );
-            StopOnError( readed==false, "Failed to read value for " + key );
+           if( !readed )
+               Info::ErrorInfo( "Failed to read value for " + key );
+            // StopOnError( readed==false, "Failed to read value for " + key );
             return value;
         }
 
@@ -823,8 +823,8 @@ namespace parser{
 
             in.close();
             if( !readed ){
-//                Info::WarningInfo("Failed to read value for "+key);
-                DetectWarning( readed==false, "Failed to read value for "+key );
+               Info::WarningInfo("Failed to read value for "+key);
+                // DetectWarning( readed==false, "Failed to read value for "+key );
                 return NULL;
             }
             else
@@ -891,9 +891,9 @@ namespace parser{
                 }
             }
             in.close();
-//            if( !readed )
-//                Info::ErrorInfo( "Failed to read str_array[] for " + key );
-            StopOnError( readed==false, "Failed to read value for " + key );
+           if( !readed )
+               Info::ErrorInfo( "Failed to read str_array[] for " + key );
+            // StopOnError( readed==false, "Failed to read value for " + key );
         }
 
         void Read_Array_of_Int_from_File( std::string infile, std::string key, int int_array[], int array_size ){
@@ -910,9 +910,9 @@ namespace parser{
             }
 
             in.close();
-//            if( !readed )
-//                Info::ErrorInfo( "Failed to read int_array[] for " + key );
-            StopOnError( readed==false, "Failed to read value for " + key );
+           if( !readed )
+               Info::ErrorInfo( "Failed to read int_array[] for " + key );
+            // StopOnError( readed==false, "Failed to read value for " + key );
         }
 
         void Read_Array_of_Double_from_File( std::string infile, std::string key, double double_array[], int array_size ){
@@ -930,9 +930,9 @@ namespace parser{
             }
 
             in.close();
-//            if( !readed )
-//                Info::ErrorInfo( "Failed to read double_array[] for " + key );
-            StopOnError( readed==false, "Failed to read value for " + key );
+           if( !readed )
+               Info::ErrorInfo( "Failed to read double_array[] for " + key );
+            // StopOnError( readed==false, "Failed to read value for " + key );
         }
 
         void Read_Array_from_File(std::string infile, std::string key, std::string array[], int array_size){

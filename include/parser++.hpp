@@ -22,55 +22,52 @@
 #include <cstdlib>
 #include <stdexcept>
 
-#ifndef __TRUE__
-    #define __TRUE__    1
-#endif
 
-#ifndef __FALSE__
-    #define __FALSE__   0
-#endif
-
-//  Detector warnings
-#define DetectWarning(condition,msg)                        \
-{                                                           \
-    if( condition == __TRUE__ ) {                           \
-        std::cout << "\n==> Warning detected: \n"           \
-             << "==> File: " << __FILE__ << "\n"            \
-             << "==> Line: " << __LINE__ << "\n"            \
-             << "==> Func: " << __FUNCTION__ << "\n"        \
-             << "==> Warning Info: " << msg << std::endl;   \
-    }                                                       \
-}
+// //  Detector warnings
+// #define DetectWarning(condition,msg)                        \
+// {                                                           \
+//     if( condition == true ) {                               \
+//         std::cout << "\n==> Warning detected: \n"           \
+//              << "==> File: " << __FILE__ << "\n"            \
+//              << "==> Line: " << __LINE__ << "\n"            \
+//              << "==> Func: " << __FUNCTION__ << "\n"        \
+//              << "==> Warning Info: " << msg << std::endl;   \
+//     }                                                       \
+// }
 
 
-//  Detector error for given condition
-#define DetectError(condition,msg)                      \
-{                                                       \
-    if( condition == __TRUE__ ) {                       \
-        std::cout << "\n==> Error detected: \n"         \
-             << "==> File: " << __FILE__ << "\n"        \
-             << "==> Line: " << __LINE__ << "\n"        \
-             << "==> Func: " << __FUNCTION__ << "\n"    \
-             << "==> Error Info: " << msg << std::endl; \
-    }                                                   \
-}
+// //  Detector error for given condition
+// #define DetectError(condition,msg)                      \
+// {                                                       \
+//     if( condition == true ) {                           \
+//         std::cout << "\n==> Error detected: \n"         \
+//              << "==> File: " << __FILE__ << "\n"        \
+//              << "==> Line: " << __LINE__ << "\n"        \
+//              << "==> Func: " << __FUNCTION__ << "\n"    \
+//              << "==> Error Info: " << msg << std::endl; \
+//     }                                                   \
+// }
 
-//  stop on given condition
-#if defined(__IMCMC_MPI__)
-#define StopOnError(condition,msg)      \
-{                                       \
-    DetectError(condition,msg);         \
-    std::cout << "==> Stop Now!\n";     \
-	MPI::COMM_WORLD.Abort(MPI::COMM_WORLD.Get_rank());	\
-}
-#else
-#define StopOnError(condition,msg)		\
-{										\
-	DetectError(condition,msg);			\
-	std::cout << "==> Stop Now!\n";		\
-	exit(0);							\
-}
-#endif
+// //  stop on given condition
+// #if defined(__IMCMC_MPI__)
+
+// #define StopOnError(condition,msg)      \
+// {                                       \
+//     DetectError(condition,msg);         \
+//     std::cout << "==> Stop Now!\n";     \
+// 	MPI::COMM_WORLD.Abort(MPI::COMM_WORLD.Get_rank());	\
+// }
+
+// #else
+
+// #define StopOnError(condition,msg)		\
+// {										\
+// 	DetectError(condition,msg);			\
+// 	std::cout << "==> Stop Now!\n";		\
+// 	exit(0);							\
+// }
+
+// #endif
 
 
 namespace imcmc{
