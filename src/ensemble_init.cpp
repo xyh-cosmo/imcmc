@@ -821,7 +821,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
             }
         }
 
-        if( rank == ROOT_RANK ) {
+        if( (rank == ROOT_RANK) && (rank_size > 1) ) {
             std::cout << " [Done]\n";
         }
 
