@@ -778,7 +778,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
 
     if( !restart_successed ) {
 
-        if( rank == ROOT_RANK ) {
+        if( (rank == ROOT_RANK) && (rank_size > 1) ) {
             std::cout << std::setw(60) << std::left << "# --> distributing tasks to each rank ...";
         }
 
