@@ -822,7 +822,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
         }
 
         if( rank == ROOT_RANK ) {
-            std::cout << " [done]\n";
+            std::cout << " [Done]\n";
         }
 
         for(int i=i_start; i<=i_end; ++i) {
