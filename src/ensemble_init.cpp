@@ -49,17 +49,17 @@ void ensemble_workspace::init( std::string paramfile ) {
         Read::Read_Value_from_File(paramfile, "walker_num", walker_num);
 
         if( (walker_num%2) != 0 ) {
-            imcmc_runtime_warning("We strongly suggest to use even number of walkers, while you set a odd number, so we increase it by 1.");
+            imcmc_runtime_warning("We strongly suggest to use 2*N walkers, while you used an odd number, so we increase walker_num by 1.");
         }
 
         if( rank_size == 1 )
             parallel_mode   = 0;
-        else if( rank_size < (walker_num/2) )
+        else if( rank_size <= (walker_num/2) )
             parallel_mode   = 1;
-        else if( rank_size >= (walker_num/2) ) {
+        else if( rank_size > (walker_num/2) ) {
             parallel_mode   = 2;
             walker_num      = 2*rank_size;
-            std::cout << "ensemble_workspace::Init() --> you have lots of cores, set the number of \
+            std::cout << "ensemble_workspace::Init() --> you choose more ranks than half the walker numbers, so set the number of \
                              walkers to 2 * n_ranks\n";
         }
 
