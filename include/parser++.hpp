@@ -22,44 +22,53 @@
 #include <cstdlib>
 #include <stdexcept>
 
-//  The new parser class: IniFile, still placed under namespace imcmc
 
-namespace imcmc{
-
-//	define some base structures to hold parameter names and their values.
-
-	struct IniFileBaseInt{
-
-	};
-
-	struct IniFileBaseDouble{
-
-	};
-
-	struct IniFileBaseString{
-
-	};
-
-    class IniFile{
-        public:
-            IniFile();
-			~IniFile();
-
-			void Init( std::string& inifile );			//	
-			void Update( std::string& new_inifile );	//	this will make reading multiple ini file possible
+// //  Detector warnings
+// #define DetectWarning(condition,msg)                        \
+// {                                                           \
+//     if( condition == true ) {                               \
+//         std::cout << "\n==> Warning detected: \n"           \
+//              << "==> File: " << __FILE__ << "\n"            \
+//              << "==> Line: " << __LINE__ << "\n"            \
+//              << "==> Func: " << __FUNCTION__ << "\n"        \
+//              << "==> Warning Info: " << msg << std::endl;   \
+//     }                                                       \
+// }
 
 
-		//	after inifile object is initialized, you can get any parameter's value(s)
-			void get_value( std::string& pname, int& pvalue );
-			void get_value( std::string& pname, double& pvalue );
-			void get_value( std::string& pname, std::string& pvalue );
+// //  Detector error for given condition
+// #define DetectError(condition,msg)                      \
+// {                                                       \
+//     if( condition == true ) {                           \
+//         std::cout << "\n==> Error detected: \n"         \
+//              << "==> File: " << __FILE__ << "\n"        \
+//              << "==> Line: " << __LINE__ << "\n"        \
+//              << "==> Func: " << __FUNCTION__ << "\n"    \
+//              << "==> Error Info: " << msg << std::endl; \
+//     }                                                   \
+// }
 
-			void get_values( std::string& pname, int *pvalues, int psize );
-			void get_values( std::string& pname, double *pvalues, int psize );
-			void get_values( std::string& pname, std::string *pvalues, int psize );
-    };
+// //  stop on given condition
+// #if defined(__IMCMC_MPI__)
 
-}
+// #define StopOnError(condition,msg)      \
+// {                                       \
+//     DetectError(condition,msg);         \
+//     std::cout << "==> Stop Now!\n";     \
+// 	MPI::COMM_WORLD.Abort(MPI::COMM_WORLD.Get_rank());	\
+// }
+
+// #else
+
+// #define StopOnError(condition,msg)		\
+// {										\
+// 	DetectError(condition,msg);			\
+// 	std::cout << "==> Stop Now!\n";		\
+// 	exit(0);							\
+// }
+
+// #endif
+
 
 namespace imcmc{
 namespace parser{

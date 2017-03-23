@@ -49,17 +49,17 @@ void ensemble_workspace::init( std::string paramfile ) {
         Read::Read_Value_from_File(paramfile, "walker_num", walker_num);
 
         if( (walker_num%2) != 0 ) {
-            imcmc_runtime_warning("We strongly suggest to use even number of walkers, while you set a odd number, so we increase it by 1.");
+            imcmc_runtime_warning("We strongly suggest to use 2*N walkers, while you used an odd number, so we increase walker_num by 1.");
         }
 
         if( rank_size == 1 )
             parallel_mode   = 0;
-        else if( rank_size < (walker_num/2) )
+        else if( rank_size <= (walker_num/2) )
             parallel_mode   = 1;
-        else if( rank_size >= (walker_num/2) ) {
+        else if( rank_size > (walker_num/2) ) {
             parallel_mode   = 2;
             walker_num      = 2*rank_size;
-            std::cout << "ensemble_workspace::Init() --> you have lots of cores, set the number of \
+            std::cout << "ensemble_workspace::Init() --> you choose more ranks than half the walker numbers, so set the number of \
                              walkers to 2 * n_ranks\n";
         }
 
@@ -94,9 +94,10 @@ void ensemble_workspace::init( std::string paramfile ) {
     if( Read::Has_Key_in_File( paramfile, "chain_num" ) ) {
         Read::Read_Value_from_File(paramfile, "chain_num", chain_num);
 
-        if( chain_num <= 0 ) {
-            Info::ErrorInfo( "chain_num is <= 0, which means you do want any chains, so quit..." );
-        }
+       if( chain_num <= 0 ) {
+           Info::ErrorInfo( "chain_num is <= 0, which means you do want any chains, so quit..." );
+       }
+        // StopOnError( chain_num <= 0, "chain_num is <= 0, which means you do want any chains, so quit..." );
     }
 
     if( Read::Has_Key_in_File( paramfile, "sample_step" ) ) {
@@ -192,13 +193,16 @@ void ensemble_workspace::init( std::string paramfile ) {
     rand_seed           = gsl_rng_alloc(gsl_rng_mt19937);
     rand_seed_walker_id = gsl_rng_alloc(gsl_rng_mt19937);
 
-    seed = rand();  //  inital seed
+    seed = rand();                  //  inital seed
+    seed += seed / (rank+1);        //  let different rank has a different FIRST seed @Jan-20-2017
 
-    for( int i=0; i<=rank; ++i ) { //  make sure differen ranks use differen random number seed
+    for( int i=0; i<=rank; ++i ) {  //  make sure differen ranks use different random number seed
         gsl_rng_set( rand_seed, seed );
         seed = gsl_rng_get(rand_seed);
     }
 
+//  no need to set different rank_seed_walker_id for each rank, since the root rank
+//  will pair the walkers and broadcast the whole information to all ranks.
     gsl_rng_set(rand_seed_walker_id, rand());
 
 	MPI::COMM_WORLD.Barrier();
@@ -774,7 +778,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
 
     if( !restart_successed ) {
 
-        if( rank == ROOT_RANK ) {
+        if( (rank == ROOT_RANK) && (rank_size > 1) ) {
             std::cout << std::setw(60) << std::left << "# --> distributing tasks to each rank ...";
         }
 
@@ -817,8 +821,8 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
             }
         }
 
-        if( rank == ROOT_RANK ) {
-            std::cout << " [done]\n";
+        if( (rank == ROOT_RANK) && (rank_size > 1) ) {
+            std::cout << " [Done]\n";
         }
 
         for(int i=i_start; i<=i_end; ++i) {
