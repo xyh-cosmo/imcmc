@@ -26,7 +26,7 @@ struct Gaussian{   //  test model
         imcmc_double_iterator it = p.begin();
         double i=1;
         while( it != p.end() ){
-            chisq += p[it->first]*p[it->first]/(i*i)*0.5;
+            chisq += p[it->first]*p[it->first]/(i*i);
             i += 1.;
             ++it;
         }
@@ -64,7 +64,7 @@ double TestLike( imcmc_double&  full_param,
         chisq = g->GD();
     }
 
-    return -1.0*chisq;
+    return -0.5*chisq;
 }
 
 int main( int argc, char *argv[] )
