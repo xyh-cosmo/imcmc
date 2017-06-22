@@ -30,7 +30,8 @@ struct Rosenbrock{
 
     double Chisq(){
         double chisq = 0;
-        chisq = (1-p["x2"])*(1-p["x2"]) + 100*pow(p["x1"]-p["x2"]*p["x2"], 2);
+        chisq = (1-p["x1"])*(1-p["x1"]) + 100*pow(p["x2"]-p["x1"]*p["x1"], 2);
+        chisq /= 20.;
         return chisq;
     }
 };
