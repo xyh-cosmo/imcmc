@@ -1,6 +1,6 @@
 /*
  *  New parser class for imcmc.
- *  -- Can be viewed as a clone of inifile of cosmomc which is written in fortran.
+ *  -- Can be viewed as a clone of inifile included in cosmomc which is written in fortran.
  */
 
 #ifndef __IMCMC_INIFILE__
@@ -21,19 +21,31 @@
 #include <stdexcept>
 
 struct ArrayInt{
-
+    std::string         VarName;
+    int                 VarNum;
+    std::vector<int>    Value;
+    int getValue(int idx=0);
 };
 
 struct ArrayBool{
-
+    std::string         VarName;
+    int                 VarNum;
+    std::vector<bool>   Value;
+    bool getValue(int idx=0);
 };
 
 struct ArrayDouble{
-
+    std::string         VarName;
+    int                 VarNum;
+    std::vector<double> Value;
+    double getValue(int idx=0);
 };
 
 struct ArrayString{
-
+    std::string         VarName;
+    int                 VarNum;
+    std::vector<std::string>    Value;
+    std::string getValue(int idx=0);
 };
 
 class IniFile{
