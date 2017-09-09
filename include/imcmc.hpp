@@ -17,13 +17,13 @@
 //  use macro __IMCMC_MPI__ to control source files.
 #ifndef __IMCMC_MPI__
 #define __IMCMC_MPI__
-    #include "mpi.h"
+#include "mpi.h"
 #endif
 
-extern "C"{
-    #include <gsl/gsl_math.h>
-    #include <gsl/gsl_rng.h>
-    #include <gsl/gsl_randist.h>
+extern "C" {
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 }
 
 //  ============================================================================
@@ -35,49 +35,49 @@ extern "C"{
 
 //  Version information
 #ifndef __IMCMC_VERSION__
-    #define __IMCMC_VERSION__   "0.1.1"
+#define __IMCMC_VERSION__   "0.1.1"
 #endif
 
 //  ==============
 //  Author's Name
 //  ==============
 #ifndef __IMCMC_AUTHOR__
-    #define __IMCMC_AUTHOR__    "Youhua Xu"
+#define __IMCMC_AUTHOR__    "Youhua Xu"
 #endif
 
 //  ==========
 //  My E-mail
 //  ==========
 #ifndef __IMCMC_EMAIL__
-    #define __IMCMC_EMAIL__     "yhxu@nao.cas.cn"
+#define __IMCMC_EMAIL__     "yhxu@nao.cas.cn"
 #endif
 
 //  ============================================================================
 //  ============================================================================
 
 #ifndef _OUT_WIDTH_
-    #define _OUT_WIDTH_ 18  //  the width of the outputs of the chains.
+#define _OUT_WIDTH_ 18  //  the width of the outputs of the chains.
 #endif
 
 #ifndef ROOT_RANK
-    #define ROOT_RANK    0
+#define ROOT_RANK    0
 #endif
 
 //  Maximum length of error information passed to imcmc_likelihood_state.
 #ifndef _IMCMC_mesg_lenth_
-    #define _IMCMC_MESG_LENGTH_ 1024
+#define _IMCMC_MESG_LENGTH_ 1024
 #endif
 
 #ifndef _IMCMC_LNPOST_MAX_
-    #define _IMCMC_LNPOST_MIN_ -1.0E50
+#define _IMCMC_LNPOST_MIN_ -1.0E50
 #endif
 
 #ifndef _IMCMC_CHISQ_MAX_
-	#define _IMCMC_CHISQ_MAX_ 1.0E50
+#define _IMCMC_CHISQ_MAX_ 1.0E50
 #endif
 
 
-namespace imcmc{
+namespace imcmc {
 
 //  imcmc key-value(s) date type
     typedef std::map<std::string, double>       imcmc_double;
@@ -89,17 +89,17 @@ namespace imcmc{
 
     typedef std::map<std::string, double>::iterator         imcmc_double_iterator;
     typedef std::map<std::string, std::string>::iterator    imcmc_string_iterator;
-    
+
     typedef std::map<std::string, double>::const_iterator         imcmc_double_citerator;
     typedef std::map<std::string, std::string>::const_iterator    imcmc_string_citerator;
 
     typedef std::vector<double>::iterator       imcmc_vector_double_iterator;
     typedef std::vector<std::string>::iterator  imcmc_vector_string_iterator;
-    
+
     typedef std::vector<double>::const_iterator       imcmc_vector_double_citerator;
     typedef std::vector<std::string>::const_iterator  imcmc_vector_string_citerator;
 
-    struct imcmc_likelihood_state{  //  this will be used by user, so there is no suffix '_'
+    struct imcmc_likelihood_state { //  this will be used by user, so there is no suffix '_'
 
         bool this_like_is_ok;
         bool stop_on_error;
@@ -109,30 +109,30 @@ namespace imcmc{
 
         void store_mesg( std::string& why );
 
-    //  ========================================================================
-    //  Note added @ Oct-28, 2016
-    //  ISO C++ forbids converting a string constant to ‘char*’
-    //  so I change older declaration "char *why" to "const char *why"
+        //  ========================================================================
+        //  Note added @ Oct-28, 2016
+        //  ISO C++ forbids converting a string constant to ‘char*’
+        //  so I change older declaration "char *why" to "const char *why"
         void store_mesg( const char *why );
         void what_happened();
 
         imcmc_likelihood_state();
-		void init();
+        void init();
     };
 
     typedef struct imcmc_likelihood_state istate;
 
-    struct likelihood_{
+    struct likelihood_ {
 
         void   *data;
         void   *model;
 
-    //  use the name 'logpost' might be better
-    //  double (*logpost)( imcmc_double&, double&, double&, void*, void* );
-    // double (*loglike)( imcmc_double&, double&, double&, void*, void* );
+        //  use the name 'logpost' might be better
+        //  double (*logpost)( imcmc_double&, double&, double&, void*, void* );
+        // double (*loglike)( imcmc_double&, double&, double&, void*, void* );
         double (*loglike)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& );
 
-        ~likelihood_(){
+        ~likelihood_() {
             data    = NULL;
             model   = NULL;
             loglike = NULL;
@@ -145,7 +145,7 @@ namespace imcmc{
     void imcmc_runtime_warning( std::string warn_info );
 
 //	new added verbose information displayer (@ Jan-28-2016)
-	void imcmc_verbose( int rank, const std::string& verbose_info );
+    void imcmc_verbose( int rank, const std::string& verbose_info );
 
 //  create backup files
     bool backup_file( std::string& file_old, std::string& file_new );

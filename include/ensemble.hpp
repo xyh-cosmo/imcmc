@@ -14,92 +14,92 @@
 #include "parser++.hpp"
 #include "imcmc.hpp"
 
-namespace imcmc{
+namespace imcmc {
 
-    class ensemble_workspace{
-        public:
-            ensemble_workspace();
-            ~ensemble_workspace();
+    class ensemble_workspace {
+      public:
+        ensemble_workspace();
+        ~ensemble_workspace();
 
-            std::string config_file;
+        std::string config_file;
 
-            std::ofstream   used_settings; // to save used settings
+        std::ofstream   used_settings; // to save used settings
 
         //  Parallel mode: 0, 1, 2
         //  0: serial version
         //  1: parallel version with small number of cores
         //  2: parallel version with large number of cores
-            int parallel_mode;
-            int rank_size, rank;
-            int burnin_step, skip_step, sample_step;
-            int walker_num, chain_num;
-            int existed_chain_num;  // use to correctly assign post-fix to chains filenames, default: 0
+        int parallel_mode;
+        int rank_size, rank;
+        int burnin_step, skip_step, sample_step;
+        int walker_num, chain_num;
+        int existed_chain_num;  // use to correctly assign post-fix to chains filenames, default: 0
 
         //  name of current writing chain
-            std::string     chain_root;
-            std::string     chain_name;
-            std::ofstream   out_stream;
+        std::string     chain_root;
+        std::string     chain_name;
+        std::ofstream   out_stream;
 
         //  whether use cosmomc standard form? "weight like param1 param2 param3 ..."
-            bool    write_chain_header;  //  default: true
-            bool    save_burned_ashes;   //  whether save the burn-in chains, default yes
+        bool    write_chain_header;  //  default: true
+        bool    save_burned_ashes;   //  whether save the burn-in chains, default yes
 
         //  filename of the parameters' limits
-            std::string     param_limits;
-            std::ofstream   param_limits_os;
+        std::string     param_limits;
+        std::ofstream   param_limits_os;
 
         //  random numbers
-            gsl_rng *rand_seed;
-            gsl_rng *rand_seed_walker_id;   // for preparing walker_id[]
+        gsl_rng *rand_seed;
+        gsl_rng *rand_seed_walker_id;   // for preparing walker_id[]
 
         //  efficient controling parameter
-            double  efficient_a;
+        double  efficient_a;
 
         //  radius of the initialization "ball", default value: 0.5
-            double  init_ball_radius;
-            bool    start_from_fiducial;
+        double  init_ball_radius;
+        bool    start_from_fiducial;
 
         //  state of acception or rejection, 1 or 0
-            int *accept;            // = new int[walker_num];
-            int *error;
-            int total_accepts;      //  total number of acceptance of each chain
-            int total_rejects;      //  total number of rejections of each chain
-            int total_errors;       //  record how many likelihood error happens
+        int *accept;            // = new int[walker_num];
+        int *error;
+        int total_accepts;      //  total number of acceptance of each chain
+        int total_rejects;      //  total number of rejections of each chain
+        int total_errors;       //  record how many likelihood error happens
 
-            int full_param_num;     //  number of full parameters
-            int sampling_param_num; //  number of sampling parameters
-            int derived_param_num;  //  number of derived parameters
+        int full_param_num;     //  number of full parameters
+        int sampling_param_num; //  number of sampling parameters
+        int derived_param_num;  //  number of derived parameters
 
-            imcmc_double    full_param;
-            imcmc_double    full_param_min; // max values
-            imcmc_double    full_param_max; // min values
+        imcmc_double    full_param;
+        imcmc_double    full_param_min; // max values
+        imcmc_double    full_param_max; // min values
 
-            imcmc_double    derived_param;  //  just for adding
+        imcmc_double    derived_param;  //  just for adding
 
         //  Walkers
-            imcmc_double_pointer    walker;                 //  includes LnPost, LnDet and Chisq
-            imcmc_double_pointer    walker_io;              //  this is acutally a backup of walker, and it will be used to write chains into files.
-            imcmc_vector_string     sampling_param_name;    //  hold the names of parameters being sampled
-            imcmc_vector_string     derived_param_name;     //  hold the names of derived parameters
-            imcmc_vector_string     output_param_name;      //  if not set, then output_param_name = sampling_param_name
+        imcmc_double_pointer    walker;                 //  includes LnPost, LnDet and Chisq
+        imcmc_double_pointer    walker_io;              //  this is acutally a backup of walker, and it will be used to write chains into files.
+        imcmc_vector_string     sampling_param_name;    //  hold the names of parameters being sampled
+        imcmc_vector_string     derived_param_name;     //  hold the names of derived parameters
+        imcmc_vector_string     output_param_name;      //  if not set, then output_param_name = sampling_param_name
 
-            imcmc_likelihood_state  likelihood_state;       //  save current likelihood state, i.e., possible error information
+        imcmc_likelihood_state  likelihood_state;       //  save current likelihood state, i.e., possible error information
 
         //  Likelihoof functions , include both MODELs and DATA
-            std::vector<likelihood_*>   likelihood;
+        std::vector<likelihood_*>   likelihood;
 
-            void set_efficient_a( double a );   //    control the range of Z, narrower Z range will increase the acceptance ratio.
+        void set_efficient_a( double a );   //    control the range of Z, narrower Z range will increase the acceptance ratio.
 
         //  used to generate random variable 'Z'
-            inline double  g( double z );
-            inline double  gz();
+        inline double  g( double z );
+        inline double  gz();
 
-            bool walker_initialized;            // inidicate whether the walkers are initialized.
+        bool walker_initialized;            // inidicate whether the walkers are initialized.
 
-            void init( std::string infile );    // read initialization & other settings from the input *ini file
-            void init_param();                  // initialize relavant parameters, some might be set to default values.
-            void init_walkers();                // initialize the walkers.
-            void reset_walkers();               // reset the walkers to a random state.
+        void init( std::string infile );    // read initialization & other settings from the input *ini file
+        void init_param();                  // initialize relavant parameters, some might be set to default values.
+        void init_walkers();                // initialize the walkers.
+        void reset_walkers();               // reset the walkers to a random state.
 
         //  =======================================================================================================================
         //  add likelihood functions.  If you have many likelihoods functions, which share some common parameters, it'd better to
@@ -107,29 +107,29 @@ namespace imcmc{
         //  be used.  This is quite common when someone is trying to constraining model parameters using different combinations of
         //  data sets, which may share some common nuisance parameters.
 
-            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
-                                 imcmc_vector_string modelparam,
-                                 void                *model,
-                                 void                *data );
+        void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
+                             imcmc_vector_string modelparam,
+                             void                *model,
+                             void                *data );
 
-            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
-                                 imcmc_vector_string modelparam,
-                                 imcmc_vector_string derivedparam,
-                                 void                *model,
-                                 void                *data );
+        void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
+                             imcmc_vector_string modelparam,
+                             imcmc_vector_string derivedparam,
+                             void                *model,
+                             void                *data );
 
-            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
-                                 imcmc_vector_string modelparam,
-                                 void                *model,
-                                 void                *data,
-                                 const std::string&        likelihood_name );
+        void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
+                             imcmc_vector_string modelparam,
+                             void                *model,
+                             void                *data,
+                             const std::string&        likelihood_name );
 
-            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
-                                 imcmc_vector_string modelparam,
-                                 imcmc_vector_string derivedparam,
-                                 void                *model,
-                                 void                *data,
-                                 const std::string&        likelihood_name );
+        void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
+                             imcmc_vector_string modelparam,
+                             imcmc_vector_string derivedparam,
+                             void                *model,
+                             void                *data,
+                             const std::string&        likelihood_name );
 
 //            void add_likelihood( double (*like)( imcmc_double&, double&, double&, void*, void*, imcmc_likelihood_state& ),
 //                                 const imcmc_vector_string& modelparam,
@@ -155,36 +155,36 @@ namespace imcmc{
 //                                 void                       *data,
 //                                 const std::string&         likelihood_name );
 
-            bool prior( imcmc_double& full_param );    //    check Samplingparams, if out of prior range, return false
+        bool prior( imcmc_double& full_param );    //    check Samplingparams, if out of prior range, return false
 
         //  return log(posterior) = -lndet - 0.5*chisq
         //  det is the determinat in the denominator of the prefactor, plus some constant
-            double likelihood_eval( imcmc_double& full_param, double& lndet, double& chisq );
+        double likelihood_eval( imcmc_double& full_param, double& lndet, double& chisq );
 
         //  these two numbers will be used to re-scale the probability, in case that the chisq might be too large
         //  so that exp(-lndet-0.5*chisq) --> 0
-            double  _lndet_min_, _chisq_min_;
-            bool    _searched_lndet_min_chisq_min_;
+        double  _lndet_min_, _chisq_min_;
+        bool    _searched_lndet_min_chisq_min_;
 
-            int  update_a_walker( imcmc_double& full_param, int current_id, int rand_id );
-            void update_walkers( bool do_sampling, int ith, int num );   // Update walkers
-            void update_walkers_io();                                    // needed when use_cosmomc_format == true
-            void write_walkers( std::ofstream& of );                     // Write walkers into text files
-            void do_sampling();
+        int  update_a_walker( imcmc_double& full_param, int current_id, int rand_id );
+        void update_walkers( bool do_sampling, int ith, int num );   // Update walkers
+        void update_walkers_io();                                    // needed when use_cosmomc_format == true
+        void write_walkers( std::ofstream& of );                     // Write walkers into text files
+        void do_sampling();
 
         //  ====================================================================
         //  save check point files & re-start from check point files
-            // std::ofstream   io_save_state;
-            bool start_from_check_point;
-            bool no_burnin; // if start_from_check_point = true, then no_burnin = true. (default: false)
-            int save_state_for_N_steps;     // after every N steps, save the ensemble_state
-            int chkfile_width;
-            int chkfile_precision;
-            // void save_state( std::ofstream& of, int idx );  // save walkers' state into disk
-            void save_state( int idx );  // save walkers' state into disk
-            bool read_state();  // read walkers' state from state file stored on disk.
-            void set_chkfile_width(int width=8);
-            void set_chkfile_precision(int precision=6);
+        // std::ofstream   io_save_state;
+        bool start_from_check_point;
+        bool no_burnin; // if start_from_check_point = true, then no_burnin = true. (default: false)
+        int save_state_for_N_steps;     // after every N steps, save the ensemble_state
+        int chkfile_width;
+        int chkfile_precision;
+        // void save_state( std::ofstream& of, int idx );  // save walkers' state into disk
+        void save_state( int idx );  // save walkers' state into disk
+        bool read_state();  // read walkers' state from state file stored on disk.
+        void set_chkfile_width(int width=8);
+        void set_chkfile_precision(int precision=6);
     };
 
 }
