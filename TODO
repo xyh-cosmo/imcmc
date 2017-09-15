@@ -64,4 +64,4 @@ Dec-07-2016 [NOT finished]
     add parallel termpering sampler
     
 Sep-09-2016 [NOT finished]
-    convert configuration system from AutoMake to CMake
+    change configuration system from AutoMake to CMake
