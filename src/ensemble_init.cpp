@@ -327,7 +327,9 @@ void ensemble_workspace::init_param() {   //    loop over FullParams
         param_limits_os << "# -------------------------------------------------------------------------\n"
                         << "# UPDATE (Nov-12-2015): GetDist now use new format of ranges: \n"
                         << "# 'parname min max',\n"
-                        << "# so the old format limits[param] = min max is no longer used.\n"
+                        << "# so the old format limits[param] = min max is no longer used;\n"
+                        << "# if you want to set bounds on derived parameters, then ranges of these\n"
+                        << "# derived parameters should be placed here, TOO! (Good Luck!)\n"
                         << "# -------------------------------------------------------------------------\n\n";
     }
 
