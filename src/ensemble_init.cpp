@@ -484,7 +484,8 @@ void ensemble_workspace::init_param() {   //    loop over FullParams
 
                 if ( count == 1 ) {
                     if( rank == ROOT_RANK )
-                        std::cout << "*\tparam[" << std::setw(4) << i << "] : " << name[i] << "\t\t... sampling\n";
+                        std::cout << "* param[" << std::setw(3) << std::right << i << "] : "
+                                  << std::setw(20) << std::left << name[i] << "\t... sampling\n";
 
                     output_param_name.push_back( name[i] );
                     ++i;
@@ -565,7 +566,8 @@ void ensemble_workspace::init_param() {   //    loop over FullParams
 
                 if ( count == 1 ) {
                     if( rank == ROOT_RANK )
-                        std::cout << "*\tdparam[" << std::setw(4) << i << "] : " << name[i] << "\n";
+                        std::cout << "* dparam[" << std::setw(3) << std::right << i << "] : " 
+                                  << std::setw(20) << std::left << name[i] << "\n";
 
                     output_param_name.push_back( name[i] );
                     ++i;
@@ -871,7 +873,8 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
                 ++it;
             }
 
-            //  if error happens during initialization, LnPost will be _IMCMC_LNPOST_MIN_
+            //  if error happens during initialization, LnPost will be set to "_IMCMC_LNPOST_MIN_"
+            //  and chisq will be set to "_IMCMC_CHISQ_MAX_"
 
             walker["LnPost"][i] = likelihood_eval( full_param_temp, lndet, chisq );
             walker["LnDet"][i]  = lndet;
