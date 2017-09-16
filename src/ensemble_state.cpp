@@ -209,7 +209,8 @@ namespace imcmc{
 
             if( !read_success ){
                 std::string nw = Read::IntToString(walker_num_last_time);
-                throw std::runtime_error("==> please reset a smaller walker number, no more than: "+nw);
+                // throw std::runtime_error("==> please reset a smaller walker number, no more than: "+nw);
+                MPI_IMCMC_ERROR("==> please reset a smaller walker number, no more than: "+nw);
             }
 
         //  now let's read the chkfile ....

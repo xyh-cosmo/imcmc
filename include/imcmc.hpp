@@ -20,6 +20,9 @@
 #include "mpi.h"
 #endif
 
+
+#include "parser++.hpp"
+
 extern "C" {
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_rng.h>

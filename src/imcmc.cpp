@@ -45,7 +45,8 @@ namespace imcmc{
                       << " " << errmesg << "\n"
                       << " #  ========================================================= #\n";
 
-            throw std::runtime_error(" #  ---> Likelihood Error Ecountered\n");
+            // throw std::runtime_error(" #  ---> Likelihood Error Ecountered\n");
+            MPI_IMCMC_ERROR(" #  ---> Likelihood Error Ecountered\n");
         }
         else if( prompt_warning ){
             std::cout << "\n #  ===================  Likelihood Warning  ================== #\n"
@@ -67,7 +68,8 @@ namespace imcmc{
         std::cout << " ---@ Fun Name: " << __FUNCTION__ << "\n";
         std::cout << " +++> ";
 
-        throw std::runtime_error(err_info);
+        // throw std::runtime_error(err_info);
+        MPI_IMCMC_ERROR(err_info);
     }
 
     void imcmc_runtime_warning( std::string warn_info ){

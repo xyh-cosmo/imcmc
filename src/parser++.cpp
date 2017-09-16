@@ -74,7 +74,8 @@ namespace parser{
         std::string Remove_Comments( std::string line ){
 
            if( Is_Commented(line) ){
-               Info::ErrorInfo( "the line: " + line + " is commented out !");
+               // Info::ErrorInfo( "the line: " + line + " is commented out !");
+             MPI_IMCMC_ERROR( "the line: " + line + " is commented out !");
            }
             
             // StopOnError( Is_Commented(line), "the line: " + line + " is commented out !" );
@@ -146,7 +147,8 @@ namespace parser{
             std::string::size_type idx = line.find_first_of("=") + 1;
 
             if( idx == std::string::npos ){
-                Info::WarningInfo( "no \'=\' found" );
+                // Info::WarningInfo( "no \'=\' found" );
+                MPI_IMCMC_WARNING( "no \'=\' found" );
                 return std::string::npos;
             }
             else{   //  values are sperated by spaces or comma
@@ -207,7 +209,8 @@ namespace parser{
             else if(nkey == 1)
                 has_key = true;
            else if(nkey > 1){
-               Info::ErrorInfo( "more than one " + key + " ..." );
+               // Info::ErrorInfo( "more than one " + key + " ..." );
+                MPI_IMCMC_ERROR( "more than one " + key + " ..." );
            }
 
             return has_key;
@@ -237,7 +240,8 @@ namespace parser{
                 has = true;
             }
            else{
-               Info::ErrorInfo( "more than one " + key + " in paramfile, ambiguous" );
+               // Info::ErrorInfo( "more than one " + key + " in paramfile, ambiguous" );
+                MPI_IMCMC_ERROR( "more than one " + key + " in paramfile, ambiguous" );
            }
             return has;
         }
@@ -273,8 +277,10 @@ namespace parser{
             // else{
             //     StopOnError( true, "unrecognized data type" );
             // }
-           else
-               Info::ErrorInfo( "unrecognized data type" );
+           else{
+               // Info::ErrorInfo( "unrecognized data type" );
+                MPI_IMCMC_ERROR( "unrecognized data type" );
+           }
 
             return num_of_value;
         }
@@ -504,8 +510,10 @@ namespace parser{
                 for(int i=0; i<num_of_value; ++i)
                     str_array[i] = array[i];
             }
-            else if(warn)
-                Info::WarningInfo( "number of values does not match" );
+            else if(warn){
+                // Info::WarningInfo( "number of values does not match" );
+                MPI_IMCMC_WARNING( "number of values does not match" );
+            }
         }
 
         void Read_Array_of_Int_from_Line(   std::string line,
@@ -536,8 +544,10 @@ namespace parser{
                 for(int i=0; i<num_of_value; ++i)
                     int_array[i] = array[i];
             }
-            else if(warn)
-                Info::WarningInfo( "number of values does not match" );
+            else if(warn){
+                // Info::WarningInfo( "number of values does not match" );
+                MPI_IMCMC_WARNING( "number of values does not match" );
+            }
         }
 
         void Read_Array_of_Double_from_Line(    std::string line,
@@ -568,8 +578,10 @@ namespace parser{
                 for(int i=0; i<num_of_value; ++i)
                     double_array[i] = array[i];
             }
-            else if(warn)
-                Info::WarningInfo( "number of values does not match" );
+            else if(warn){
+                // Info::WarningInfo( "number of values does not match" );
+                MPI_IMCMC_WARNING( "number of values does not match" );
+            }
         }
 
     //  ====================================
@@ -597,8 +609,10 @@ namespace parser{
             in.close();
             
             // StopOnError( readed==false, "Failed to read value for " + key );
-           if( !readed )
-               Info::ErrorInfo( "Failed to read value for " + key );
+           if( !readed ){
+               // Info::ErrorInfo( "Failed to read value for " + key );
+                MPI_IMCMC_ERROR( "Failed to read value for " + key );
+           }
         }
 
     //  Now some overloaded functions of the above Read_Value
@@ -618,8 +632,10 @@ namespace parser{
             }
 
             in.close();
-           if( !readed )
-               Info::ErrorInfo( "Failed to read value for " + key );
+           if( !readed ){
+               // Info::ErrorInfo( "Failed to read value for " + key );
+                MPI_IMCMC_ERROR( "Failed to read value for " + key );
+           }
             // StopOnError( readed==false, "Failed to read value for " + key );
         }
 
@@ -639,9 +655,10 @@ namespace parser{
             }
 
             in.close();
-           if( !readed )
-               Info::ErrorInfo( "Failed to read value for " + key );
-            // StopOnError( readed==false, "Failed to read value for " + key );
+           if( !readed ){
+               // Info::ErrorInfo( "Failed to read value for " + key );
+                MPI_IMCMC_ERROR( "Failed to read value for " + key );
+           }
         }
 
     //  bool version
@@ -714,8 +731,10 @@ namespace parser{
             }
 
             in.close();
-           if( !readed )
-               Info::ErrorInfo( "Failed to read value for " + key );
+           if( !readed ){
+               // Info::ErrorInfo( "Failed to read value for " + key );
+                MPI_IMCMC_ERROR( "Failed to read value for " + key );
+           }
             // StopOnError( readed==false, "Failed to read value for " + key );
             
             return value;
@@ -740,7 +759,8 @@ namespace parser{
                 in.close();
 
                 if( !readed ){
-                    Info::WarningInfo( "Failed to read value for "+key+", so false is return");
+                    // Info::WarningInfo( "Failed to read value for "+key+", so false is return");
+                    MPI_IMCMC_WARNING( "Failed to read value for "+key+", so false is return");
                     bool_value = false;
                 }
                 else{
@@ -753,7 +773,8 @@ namespace parser{
                     else if( value == "F" || value == "FALSE" || value == "" )
                         bool_value = false;
                     else{
-                       Info::ErrorInfo( "unrecognized bool value: " + value );
+                       // Info::ErrorInfo( "unrecognized bool value: " + value );
+                        MPI_IMCMC_ERROR( "unrecognized bool value: " + value );
                         // StopOnError( true, "unrecognized bool value: " + value );
                     }
                 }
@@ -777,8 +798,10 @@ namespace parser{
             }
 
             in.close();
-           if( !readed )
-               Info::ErrorInfo( "Failed to read value for " + key );
+           if( !readed ){
+               // Info::ErrorInfo( "Failed to read value for " + key );
+                MPI_IMCMC_ERROR( "Failed to read value for " + key );
+           }
             // StopOnError( readed==false, "Failed to read value for " + key );
             return value;
         }
@@ -798,8 +821,10 @@ namespace parser{
             }
 
             in.close();
-           if( !readed )
-               Info::ErrorInfo( "Failed to read value for " + key );
+           if( !readed ){
+               // Info::ErrorInfo( "Failed to read value for " + key );
+                MPI_IMCMC_ERROR( "Failed to read value for " + key );
+           }
             // StopOnError( readed==false, "Failed to read value for " + key );
             return value;
         }
@@ -823,7 +848,8 @@ namespace parser{
 
             in.close();
             if( !readed ){
-               Info::WarningInfo("Failed to read value for "+key);
+               // Info::WarningInfo("Failed to read value for "+key);
+                MPI_IMCMC_WARNING("Failed to read value for "+key);
                 // DetectWarning( readed==false, "Failed to read value for "+key );
                 return NULL;
             }
@@ -847,7 +873,8 @@ namespace parser{
 
             in.close();
             if( !readed ){
-                Info::WarningInfo("Failed to read value for "+key);
+                // Info::WarningInfo("Failed to read value for "+key);
+                MPI_IMCMC_WARNING("Failed to read value for "+key);
                 return NULL;
             }
             else
@@ -870,7 +897,8 @@ namespace parser{
 
             in.close();
             if( !readed ){
-                Info::WarningInfo("Failed to read value for "+key);
+                // Info::WarningInfo("Failed to read value for "+key);
+                MPI_IMCMC_WARNING("Failed to read value for "+key);
                 return NULL;
             }
             else
@@ -891,8 +919,10 @@ namespace parser{
                 }
             }
             in.close();
-           if( !readed )
-               Info::ErrorInfo( "Failed to read str_array[] for " + key );
+           if( !readed ){
+               // Info::ErrorInfo( "Failed to read str_array[] for " + key );
+                MPI_IMCMC_ERROR( "Failed to read str_array[] for " + key );
+           }
             // StopOnError( readed==false, "Failed to read value for " + key );
         }
 
@@ -910,8 +940,10 @@ namespace parser{
             }
 
             in.close();
-           if( !readed )
-               Info::ErrorInfo( "Failed to read int_array[] for " + key );
+           if( !readed ){
+               // Info::ErrorInfo( "Failed to read int_array[] for " + key );
+                MPI_IMCMC_ERROR( "Failed to read int_array[] for " + key );
+           }
             // StopOnError( readed==false, "Failed to read value for " + key );
         }
 
@@ -930,8 +962,10 @@ namespace parser{
             }
 
             in.close();
-           if( !readed )
-               Info::ErrorInfo( "Failed to read double_array[] for " + key );
+           if( !readed ){
+               // Info::ErrorInfo( "Failed to read double_array[] for " + key );
+                MPI_IMCMC_ERROR( "Failed to read double_array[] for " + key );
+           }
             // StopOnError( readed==false, "Failed to read value for " + key );
         }
 

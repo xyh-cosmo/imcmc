@@ -41,7 +41,8 @@ namespace imcmc{
             }
             else{
             //  This should never happen.
-                imcmc_runtime_error("unknown accept value, must be 0 or 1!");
+                // imcmc_runtime_error("unknown accept value, must be 0 or 1!");
+                MPI_IMCMC_ERROR("unknown accept value, must be 0 or 1!");
             }
         }
 

@@ -8,8 +8,10 @@ namespace imcmc {
 
 void ensemble_workspace::set_efficient_a( double a ) {
 
-    if( a <= 0 )
-        imcmc_runtime_error("\nensemble_workspace::set_efficient_a():\n a must be a positive number !");
+    if( a <= 0 ){
+        // imcmc_runtime_error("\nensemble_workspace::set_efficient_a():\n a must be a positive number !");
+        MPI_IMCMC_ERROR("\nensemble_workspace::set_efficient_a():\n a must be a positive number !");
+    }
     else if( a < 1.0 )
         efficient_a = 1.0 / a;
     else
@@ -49,7 +51,8 @@ void ensemble_workspace::init( std::string paramfile ) {
         Read::Read_Value_from_File(paramfile, "walker_num", walker_num);
 
         if( (walker_num%2) != 0 ) {
-            imcmc_runtime_warning("We strongly suggest to use 2*N walkers, while you used an odd number, so we increase walker_num by 1.");
+            // imcmc_runtime_warning("We strongly suggest to use 2*N walkers, while you used an odd number, so we increase walker_num by 1.");
+            MPI_IMCMC_WARNING("We strongly suggest to use 2*N walkers, while you used an odd number, so we increase walker_num by 1.");
         }
 
         if( rank_size == 1 )
@@ -67,20 +70,24 @@ void ensemble_workspace::init( std::string paramfile ) {
         error   = new int[walker_num];
 
     }
-    else
-        imcmc_runtime_error("\'walker_num\' not found in:" + paramfile + " !");
+    else{
+        // imcmc_runtime_error("\'walker_num\' not found in:" + paramfile + " !");
+        MPI_IMCMC_ERROR("\'walker_num\' not found in:" + paramfile + " !");
+    }
 
     if( Read::Has_Key_in_File( paramfile, "burnin_step" ) ) {
         Read::Read_Value_from_File(paramfile, "burnin_step", burnin_step);
 
         if( burnin_step <=0 ) {
             burnin_step = 10;
-            imcmc_runtime_warning("\'burnin_step\' not found in:" + paramfile + ", so we set it to default value 10.");
+            // imcmc_runtime_warning("\'burnin_step\' not found in:" + paramfile + ", so we set it to default value 10.");
+            MPI_IMCMC_WARNING("\'burnin_step\' not found in:" + paramfile + ", so we set it to default value 10.");
         }
     }
     else {
         burnin_step = 10;   //  this period is necessary, cannot be ignored.
-        imcmc_runtime_warning("\'burnin_step\' not found in:" + paramfile + ", so we set it to default value 10.");
+        // imcmc_runtime_warning("\'burnin_step\' not found in:" + paramfile + ", so we set it to default value 10.");
+        MPI_IMCMC_WARNING("\'burnin_step\' not found in:" + paramfile + ", so we set it to default value 10.");
     }
 
     if( Read::Has_Key_in_File( paramfile, "skip_step" ) ) {
@@ -88,14 +95,16 @@ void ensemble_workspace::init( std::string paramfile ) {
     }
     else {   //    set to default value 10
         skip_step = 10;
-        imcmc_runtime_warning("\'skip_step\' not found in: " + paramfile + ", so we set it to default value 10.");
+        // imcmc_runtime_warning("\'skip_step\' not found in: " + paramfile + ", so we set it to default value 10.");
+        MPI_IMCMC_WARNING("\'skip_step\' not found in: " + paramfile + ", so we set it to default value 10.");
     }
 
     if( Read::Has_Key_in_File( paramfile, "chain_num" ) ) {
         Read::Read_Value_from_File(paramfile, "chain_num", chain_num);
 
        if( chain_num <= 0 ) {
-           Info::ErrorInfo( "chain_num is <= 0, which means you do want any chains, so quit..." );
+           // Info::ErrorInfo( "chain_num is <= 0, which means you do want any chains, so quit..." );
+        MPI_IMCMC_ERROR( "chain_num is <= 0, which means you do want any chains, so quit..." );
        }
         // StopOnError( chain_num <= 0, "chain_num is <= 0, which means you do want any chains, so quit..." );
     }
@@ -104,7 +113,8 @@ void ensemble_workspace::init( std::string paramfile ) {
         Read::Read_Value_from_File(paramfile, "sample_step", sample_step);
     }
     else {
-        imcmc_runtime_warning("\'sample_step\' not found, so the default value 50 will be used.");
+        // imcmc_runtime_warning("\'sample_step\' not found, so the default value 50 will be used.");
+        MPI_IMCMC_WARNING("\'sample_step\' not found, so the default value 50 will be used.");
         sample_step = 50;
     }
 
@@ -112,15 +122,16 @@ void ensemble_workspace::init( std::string paramfile ) {
         Read::Read_Value_from_File(paramfile, "efficient_a", efficient_a);
     }
     else {
-        imcmc_runtime_warning("\'efficient_a\' not found, so the default value 2.0 will be used.");
+        // imcmc_runtime_warning("\'efficient_a\' not found, so the default value 2.0 will be used.");
+        MPI_IMCMC_WARNING("\'efficient_a\' not found, so the default value 2.0 will be used.");
     }
 
     if( Read::Has_Key_in_File( paramfile, "init_ball_radius" ) ) {
         Read::Read_Value_from_File(paramfile, "init_ball_radius", init_ball_radius);
 
         if( init_ball_radius <=0.0 || init_ball_radius >= 0.999999 ) {
-            // imcmc_runtime_error("init_ball_radius should be greater than 0.0 and samller than 1.0");
-            imcmc_runtime_warning("init_ball_radius should be greater than 0.0 and samller than 1.0, so I reset it to default value 0.5");
+            // imcmc_runtime_warning("init_ball_radius should be greater than 0.0 and samller than 1.0, so I reset it to default value 0.5");
+            MPI_IMCMC_WARNING("init_ball_radius should be greater than 0.0 and samller than 1.0, so I reset it to default value 0.5");
             init_ball_radius = 0.5;
         }
     }
@@ -158,7 +169,8 @@ void ensemble_workspace::init( std::string paramfile ) {
     if( Read::Has_Key_in_File( paramfile, "save_state_for_N_steps") ) {
         save_state_for_N_steps = Read::Read_Int_from_File(paramfile, "save_state_for_N_steps");
         if( save_state_for_N_steps < 0 ) {
-            imcmc_runtime_warning("save_state_for_N_steps is less than 0 !!!");
+            // imcmc_runtime_warning("save_state_for_N_steps is less than 0 !!!");
+            MPI_IMCMC_WARNING("save_state_for_N_steps is less than 0 !!!");
         }
     }
 
@@ -174,15 +186,19 @@ void ensemble_workspace::init( std::string paramfile ) {
     if( Read::Has_Key_in_File( paramfile, "stop_on_error" ) ) {
         likelihood_state.stop_on_error = Read::Read_Bool_from_File(paramfile, "stop_on_error");
 
-        if( likelihood_state.stop_on_error )
-            imcmc_runtime_warning("your sampling will stop when error(s) encountered inside likelihoods!");
+        if( likelihood_state.stop_on_error ){
+            // imcmc_runtime_warning("your sampling will stop when error(s) encountered inside likelihoods!");
+            MPI_IMCMC_WARNING("your sampling will stop when error(s) encountered inside likelihoods!");
+        }
     }
 
     if( Read::Has_Key_in_File( paramfile, "prompt_warning") ) {
         likelihood_state.prompt_warning = Read::Read_Bool_from_File(paramfile, "prompt_warning");
 
-        if( !likelihood_state.prompt_warning )
-            imcmc_runtime_warning("you choose to ignore likelihood warning messages ...");
+        if( !likelihood_state.prompt_warning ){
+            // imcmc_runtime_warning("you choose to ignore likelihood warning messages ...");
+            MPI_IMCMC_WARNING("you choose to ignore likelihood warning messages ...");
+        }
     }
 
 //  setup seeds for the random number generators
@@ -382,12 +398,15 @@ void ensemble_workspace::init_param() {   //    loop over FullParams
                     full_param_max[it->first]   = par[1];
                 }
                 else {
-                    throw std::runtime_error("\nensemble_workspace::init_param( std::string paramfile\
-                                             ) --> Check parameter value setting for " + it->first );
+                    // throw std::runtime_error("\nensemble_workspace::init_param( std::string paramfile\
+                    //                          ) --> Check parameter value setting for " + it->first );
+                    MPI_IMCMC_ERROR("\nensemble_workspace::init_param( std::string paramfile ) --> Check parameter value setting for " + it->first );
                 }
             }
             else {
-                throw std::runtime_error("\nensemble_workspace::init_param( std::string paramfile ) -\
+                // throw std::runtime_error("\nensemble_workspace::init_param( std::string paramfile ) -\
+                //                             -> Check parameter value setting for " + it->first );
+                MPI_IMCMC_ERROR("\nensemble_workspace::init_param( std::string paramfile ) -\
                                             -> Check parameter value setting for " + it->first );
             }
 
@@ -401,7 +420,9 @@ void ensemble_workspace::init_param() {   //    loop over FullParams
             delete[] par;
         }
         else {
-            throw std::runtime_error( "\nensemble_workspace::InitParam( std::string paramfile ) --> \
+            // throw std::runtime_error( "\nensemble_workspace::InitParam( std::string paramfile ) --> \
+            //             input value(s) for " + it->first + " has not been found in " + config_file);
+            MPI_IMCMC_ERROR( "\nensemble_workspace::InitParam( std::string paramfile ) --> \
                         input value(s) for " + it->first + " has not been found in " + config_file);
         }
 
@@ -428,8 +449,10 @@ void ensemble_workspace::init_param() {   //    loop over FullParams
             if( itd->first.size() > derived_params_width )
                 derived_params_width = itd->first.size();
         }
-        else
-            imcmc_runtime_error("found duplicate parameter: " + itd->first + ", check your list of derived parameters!");
+        else{
+            // imcmc_runtime_error("found duplicate parameter: " + itd->first + ", check your list of derived parameters!");
+            MPI_IMCMC_ERROR("found duplicate parameter: " + itd->first + ", check your list of derived parameters!");
+        }
 
         ++itd;
     }
@@ -470,7 +493,8 @@ void ensemble_workspace::init_param() {   //    loop over FullParams
                         if( name[m] == name[n] ) {
                             std::string errmesg = "\nensemble_workspace::init_param()\n\tfound duplicate of sampling parameter: "
                                                   + name[m] + " in output_params, remove it.";
-                            throw std::runtime_error(errmesg);
+                            // throw std::runtime_error(errmesg);
+                            MPI_IMCMC_ERROR(errmesg);
                         }
                     }
                 }
@@ -493,7 +517,8 @@ void ensemble_workspace::init_param() {   //    loop over FullParams
                     ++i;
                 }
                 else {
-                    imcmc_runtime_error( name[i] + " is not in the sampling parameter list, check your input file.");
+                    // imcmc_runtime_error( name[i] + " is not in the sampling parameter list, check your input file.");
+                    MPI_IMCMC_ERROR( name[i] + " is not in the sampling parameter list, check your input file.");
                 }
             }
         }
@@ -575,7 +600,8 @@ void ensemble_workspace::init_param() {   //    loop over FullParams
                     ++i;
                 }
                 else {
-                    imcmc_runtime_error( name[i] + " is not in the derived parameter list, check your input file.");
+                    // imcmc_runtime_error( name[i] + " is not in the derived parameter list, check your input file.");
+                    MPI_IMCMC_ERROR( name[i] + " is not in the derived parameter list, check your input file.");
                 }
             }
         }
@@ -595,7 +621,8 @@ void ensemble_workspace::init_param() {   //    loop over FullParams
         std::ofstream outfile( ofile.c_str() );
 
         if( !outfile.good() ) {
-            throw std::runtime_error("\nensemble_workspace::init_param(): failed to open " + ofile );
+            // throw std::runtime_error("\nensemble_workspace::init_param(): failed to open " + ofile );
+            MPI_IMCMC_ERROR("\nensemble_workspace::init_param(): failed to open " + ofile );
         }
 
         //  write the full parameters ...

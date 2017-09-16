@@ -65,8 +65,10 @@ namespace imcmc{
 
             out_stream.open(chain_name.c_str(), std::ofstream::out);
 
-            if( !out_stream.good() )
-                imcmc_runtime_error( "Filed to open file: " + chain_name );
+            if( !out_stream.good() ){
+                // imcmc_runtime_error( "Filed to open file: " + chain_name );
+                MPI_IMCMC_ERROR( "Filed to open file: " + chain_name );
+            }
 
         //  write parameter names into the first line of the chain file
             imcmc_vector_string_iterator it = output_param_name.begin();
@@ -127,8 +129,10 @@ namespace imcmc{
 
                 out_stream.open(chain_name.c_str(), std::ofstream::out);
 
-                if( !out_stream.good() )
-                    imcmc_runtime_error("Filed to open file: " + chain_name);
+                if( !out_stream.good() ){
+                    // imcmc_runtime_error("Filed to open file: " + chain_name);
+                    MPI_IMCMC_ERROR("Filed to open file: " + chain_name);
+                }
 
             //  write parameter names into the first line of the chain file
                 imcmc_vector_string_iterator it = output_param_name.begin();
@@ -811,8 +815,10 @@ namespace imcmc{
                                         MPI::DOUBLE,
                                         ROOT_RANK    );
             }
-            else
-                imcmc_runtime_error("Wrong parallel_mode !");
+            else{
+                // imcmc_runtime_error("Wrong parallel_mode !");
+                MPI_IMCMC_ERROR("Wrong parallel_mode !");
+            }
 
             delete[] walker_id;
         }
@@ -891,7 +897,8 @@ namespace imcmc{
                     }
                 }
                 else{
-                    imcmc_runtime_error("unknown accept value, must be 0 or 1!");
+                    // imcmc_runtime_error("unknown accept value, must be 0 or 1!");
+                    MPI_IMCMC_ERROR("unknown accept value, must be 0 or 1!");
                 }
             }
         }
