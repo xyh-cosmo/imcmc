@@ -1,15 +1,15 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-#AC_PREREQ(2.59)
-AC_INIT([imcmc], [0.1.1], [yhxu@nao.cas.cn])
+#AC_PREREQ([2.69])
+AC_INIT([imcmc],[0.1.1],[yhxu@nao.cas.cn])
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE([disable])
 #LT_PREREQ([2.2])
 LT_INIT
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX([mpic++])

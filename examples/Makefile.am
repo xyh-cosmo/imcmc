@@ -11,22 +11,22 @@ AM_CPPFLAGS = -I$(top_srcdir)/include
 
 # notice here that the compiler option: -Wl,--no-as-needed is for new versions of gnu compilers
 
-gaussian_test_CPPFLAGS = -I$(top_srcdir)/include
+gaussian_test_CPPFLAGS = -I$(top_srcdir)/include -g
 gaussian_test_LDFLAGS = -Wl,--no-as-needed
 gaussian_test_LDADD = ../src/libimcmc.la -lgsl -lgslcblas
 gaussian_test_SOURCES = gaussian.cpp
 
-rosenbrock_test_CPPFLAGS = -I$(top_srcdir)/include
+rosenbrock_test_CPPFLAGS = -I$(top_srcdir)/include -g
 rosenbrock_test_LDFLAGS = -Wl,--no-as-needed
 rosenbrock_test_LDADD = ../src/libimcmc.la -lgsl -lgslcblas
 rosenbrock_test_SOURCES = rosenbrock.cpp
 
-himmelblau_test_CPPFLAGS = -I$(top_srcdir)/include
+himmelblau_test_CPPFLAGS = -I$(top_srcdir)/include -g
 himmelblau_test_LDFLAGS = -Wl,--no-as-needed
 himmelblau_test_LDADD = ../src/libimcmc.la -lgsl -lgslcblas
 himmelblau_test_SOURCES = himmelblau.cpp
 
-cmb_test_CPPFLAGS = -I$(top_srcdir)/include
+cmb_test_CPPFLAGS = -I$(top_srcdir)/include -g
 cmb_test_LDFLAGS = -Wl,--no-as-needed
 cmb_test_LDADD = ../src/libimcmc.la -lgsl -lgslcblas
 cmb_test_SOURCES = cmb.cpp
