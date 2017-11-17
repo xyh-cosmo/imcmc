@@ -66,14 +66,17 @@ class IniFile {
     double  GetDouble(std::string pname);
     std::string  GetString(std::string pname);
 
-    void    GetValue(std::string pname, bool& value);
-    void    GetValue(std::string pname, int& value);
-    void    GetValue(std::string pname, double& value);
-    void    GetValue(std::string pname, std::string& value);
-    void    GetValue(std::string pname, bool *value, int n_value);
-    void    GetValue(std::string pname, int *value, int n_value);
-    void    GetValue(std::string pname, double *value, int n_value);
-    void    GetValue(std::string pname, )
+	bool ReadIni( std::string& inifile, bool& save_a_record=true );
+
+	bool ReadInt( std::string& varname, int& value );
+	bool ReadBool( std::string& varname, bool& value );
+	bool ReadStr( std::string& varname, std::string& value );
+	bool ReadDouble( std::string& varname, double& value );
+
+	bool ReadBoolArray( std::string& varname, bool* values, int& nvals );
+	bool ReadIntArray( std::string& varname, int* values, int& nvals );
+	bool ReadStrArray( std::string& varname, std::string* values, int& nvals );
+	bool ReadDoubleArray( std::string& varname, double* values, int& nvals );
 };
 
 
