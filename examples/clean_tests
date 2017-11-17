@@ -1,3 +1,20 @@
 #!/bin/bash
 
-rm *.txt *.ranges *.params *used_seeds  *.settings *.chk*
+to_del=( *.txt \
+		 *.ranges \
+		 *.params \
+		 *used_seeds  \
+		 *.settings \
+		 *.chk* )
+
+i=0
+while [ $i -lt ${#to_del[@]} ]
+do
+	if [ -e ${to_del[i]} ]
+		then
+			echo 'deleting '${to_del[i]}
+			rm ${to_del[i]}
+	fi;
+	i=`expr $i + 1`
+done
+
