@@ -24,7 +24,7 @@
 \usepackage{caption}
 \usepackage{subcaption}	% to support subfigure
 % \usepackage{xcolor}
-\usepackage{geometry}
+\usepackage[text={7in,10in},centering]{geometry}
 \usepackage{calc}
 \usepackage{authblk}
 \usepackage{multicol}
@@ -70,12 +70,6 @@ tabsize=2, % Number of spaces per tab in the code
 \newcommand{\insertcode}[2]{\begin{itemize}\item[]\lstinputlisting[caption=#2,label=#1,style=Style1]{#1}\end{itemize}}
 % The first argument is the script location/filename and the second is a caption for the listing
 
-%	set text width and heights
-\setlength\textwidth{7in}
-\setlength\textheight{10in}
-\setlength\oddsidemargin{(\paperwidth-\textwidth)/2 - 1in}
-\setlength\topmargin{(\paperheight-\textheight-\headheight-\headsep-\footskip)/2 - 1 in}
-
 %----------------------------------------------------------------------------------------
 
 \begin{document}
@@ -99,7 +93,7 @@ Why create imcmc?
 \section{Why build a library?}
 It's a nightmare when if you're managing a project with lots of source files.
 
-\section{Basics: Bayesian Analysis $\&$ MCMC}
+\section{Basics: Bayesian Analysis and MCMC}
 Before getting start to generate MC samples with imcmc, I will brieflly
 review the basics of Bayesian analysis and MCMC (use Metropolis-Hastings
 algorithm as the example)
@@ -125,5 +119,13 @@ algorithm as the example)
 \insertcode{"../examples/gaussian.cpp"}{Example of a multi-dimensional Gaussian likelihood distribution.} % The first argument is the script location/filename and the second is a caption for the listing
 
 %----------------------------------------------------------------------------------------
+
+\section{TO Do List}
+Well, this small library must have some shortcomings, which are normally found in everyday works. Here I give
+a list of functionalities that I think the library should have in the newer versions.
+
+\begin{itemize}
+\item Improve the ErrMsg handeling, make it easier to trace where the errors are from. (This idea is borrowed from CLASS.)
+\end{itemize}
 
 \end{document}

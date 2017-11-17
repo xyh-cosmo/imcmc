@@ -74,7 +74,6 @@ namespace parser{
         std::string Remove_Comments( std::string line ){
 
            if( Is_Commented(line) ){
-               // Info::ErrorInfo( "the line: " + line + " is commented out !");
              MPI_IMCMC_ERROR( "the line: " + line + " is commented out !");
            }
             
@@ -147,7 +146,6 @@ namespace parser{
             std::string::size_type idx = line.find_first_of("=") + 1;
 
             if( idx == std::string::npos ){
-                // Info::WarningInfo( "no \'=\' found" );
                 MPI_IMCMC_WARNING( "no \'=\' found" );
                 return std::string::npos;
             }
@@ -209,7 +207,6 @@ namespace parser{
             else if(nkey == 1)
                 has_key = true;
            else if(nkey > 1){
-               // Info::ErrorInfo( "more than one " + key + " ..." );
                 MPI_IMCMC_ERROR( "more than one " + key + " ..." );
            }
 
@@ -240,7 +237,6 @@ namespace parser{
                 has = true;
             }
            else{
-               // Info::ErrorInfo( "more than one " + key + " in paramfile, ambiguous" );
                 MPI_IMCMC_ERROR( "more than one " + key + " in paramfile, ambiguous" );
            }
             return has;
@@ -274,11 +270,7 @@ namespace parser{
                 double value;
                 while( stream >> value ) ++num_of_value;
             }
-            // else{
-            //     StopOnError( true, "unrecognized data type" );
-            // }
            else{
-               // Info::ErrorInfo( "unrecognized data type" );
                 MPI_IMCMC_ERROR( "unrecognized data type" );
            }
 
@@ -511,7 +503,6 @@ namespace parser{
                     str_array[i] = array[i];
             }
             else if(warn){
-                // Info::WarningInfo( "number of values does not match" );
                 MPI_IMCMC_WARNING( "number of values does not match" );
             }
         }
@@ -545,7 +536,6 @@ namespace parser{
                     int_array[i] = array[i];
             }
             else if(warn){
-                // Info::WarningInfo( "number of values does not match" );
                 MPI_IMCMC_WARNING( "number of values does not match" );
             }
         }
@@ -579,7 +569,6 @@ namespace parser{
                     double_array[i] = array[i];
             }
             else if(warn){
-                // Info::WarningInfo( "number of values does not match" );
                 MPI_IMCMC_WARNING( "number of values does not match" );
             }
         }
@@ -610,7 +599,6 @@ namespace parser{
             
             // StopOnError( readed==false, "Failed to read value for " + key );
            if( !readed ){
-               // Info::ErrorInfo( "Failed to read value for " + key );
                 MPI_IMCMC_ERROR( "Failed to read value for " + key );
            }
         }
@@ -633,10 +621,8 @@ namespace parser{
 
             in.close();
            if( !readed ){
-               // Info::ErrorInfo( "Failed to read value for " + key );
                 MPI_IMCMC_ERROR( "Failed to read value for " + key );
            }
-            // StopOnError( readed==false, "Failed to read value for " + key );
         }
 
         void Read_Value_from_File(  std::string infile,
@@ -656,7 +642,6 @@ namespace parser{
 
             in.close();
            if( !readed ){
-               // Info::ErrorInfo( "Failed to read value for " + key );
                 MPI_IMCMC_ERROR( "Failed to read value for " + key );
            }
         }
@@ -732,7 +717,6 @@ namespace parser{
 
             in.close();
            if( !readed ){
-               // Info::ErrorInfo( "Failed to read value for " + key );
                 MPI_IMCMC_ERROR( "Failed to read value for " + key );
            }
             // StopOnError( readed==false, "Failed to read value for " + key );
@@ -759,7 +743,6 @@ namespace parser{
                 in.close();
 
                 if( !readed ){
-                    // Info::WarningInfo( "Failed to read value for "+key+", so false is return");
                     MPI_IMCMC_WARNING( "Failed to read value for "+key+", so false is return");
                     bool_value = false;
                 }
@@ -773,9 +756,7 @@ namespace parser{
                     else if( value == "F" || value == "FALSE" || value == "" )
                         bool_value = false;
                     else{
-                       // Info::ErrorInfo( "unrecognized bool value: " + value );
                         MPI_IMCMC_ERROR( "unrecognized bool value: " + value );
-                        // StopOnError( true, "unrecognized bool value: " + value );
                     }
                 }
             }
@@ -798,11 +779,9 @@ namespace parser{
             }
 
             in.close();
-           if( !readed ){
-               // Info::ErrorInfo( "Failed to read value for " + key );
+            if( !readed ){
                 MPI_IMCMC_ERROR( "Failed to read value for " + key );
-           }
-            // StopOnError( readed==false, "Failed to read value for " + key );
+            }
             return value;
         }
 
@@ -822,10 +801,8 @@ namespace parser{
 
             in.close();
            if( !readed ){
-               // Info::ErrorInfo( "Failed to read value for " + key );
                 MPI_IMCMC_ERROR( "Failed to read value for " + key );
            }
-            // StopOnError( readed==false, "Failed to read value for " + key );
             return value;
         }
 
@@ -848,9 +825,7 @@ namespace parser{
 
             in.close();
             if( !readed ){
-               // Info::WarningInfo("Failed to read value for "+key);
                 MPI_IMCMC_WARNING("Failed to read value for "+key);
-                // DetectWarning( readed==false, "Failed to read value for "+key );
                 return NULL;
             }
             else
@@ -873,7 +848,6 @@ namespace parser{
 
             in.close();
             if( !readed ){
-                // Info::WarningInfo("Failed to read value for "+key);
                 MPI_IMCMC_WARNING("Failed to read value for "+key);
                 return NULL;
             }
@@ -897,7 +871,6 @@ namespace parser{
 
             in.close();
             if( !readed ){
-                // Info::WarningInfo("Failed to read value for "+key);
                 MPI_IMCMC_WARNING("Failed to read value for "+key);
                 return NULL;
             }
@@ -920,10 +893,8 @@ namespace parser{
             }
             in.close();
            if( !readed ){
-               // Info::ErrorInfo( "Failed to read str_array[] for " + key );
                 MPI_IMCMC_ERROR( "Failed to read str_array[] for " + key );
            }
-            // StopOnError( readed==false, "Failed to read value for " + key );
         }
 
         void Read_Array_of_Int_from_File( std::string infile, std::string key, int int_array[], int array_size ){
@@ -941,17 +912,14 @@ namespace parser{
 
             in.close();
            if( !readed ){
-               // Info::ErrorInfo( "Failed to read int_array[] for " + key );
                 MPI_IMCMC_ERROR( "Failed to read int_array[] for " + key );
            }
-            // StopOnError( readed==false, "Failed to read value for " + key );
         }
 
         void Read_Array_of_Double_from_File( std::string infile, std::string key, double double_array[], int array_size ){
 
             bool readed = false;
             std::string line;
-//            double *array;
             std::ifstream in(infile.c_str());
 
             while( std::getline(in, line) ){
@@ -963,10 +931,8 @@ namespace parser{
 
             in.close();
            if( !readed ){
-               // Info::ErrorInfo( "Failed to read double_array[] for " + key );
                 MPI_IMCMC_ERROR( "Failed to read double_array[] for " + key );
            }
-            // StopOnError( readed==false, "Failed to read value for " + key );
         }
 
         void Read_Array_from_File(std::string infile, std::string key, std::string array[], int array_size){
@@ -1032,36 +998,5 @@ namespace parser{
 
     }
 
-    namespace Info{
-    //  Though imcmc has two functions similar to the follwings, I still keep them here, because these
-    //  two are used inside parser only, and NO imcmc function were used here, so this parser is actually
-    //  completely independent and can be used anywhere else directly (don't forget the header)
-
-    //  print warning information, but will not stop execution unless stop=true
-        void WarningInfo( std::string warninginfo, bool stop ){
-
-            std::cout << "\n#########################################################\n"
-                      << "#--- File Name: " << __FILE__ << "\n"
-                      << "#--- Line    #: " << __LINE__ << "\n"
-                      << "#--- Func Name: " << __FUNCTION__ << "\n"
-                      << "#--- Warning Infomation: " << warninginfo << "\n\n";
-
-            if(stop){
-                std::cout << "---->\tExit from " << __FUNCTION__ << "\n";
-                throw std::runtime_error( "you requested to stop here!\n" );
-            }
-        }
-
-    //  print error information and stop
-        void ErrorInfo( std::string errorinfo ){
-
-            std::cout << "\n#########################################################\n"
-                      << "#--- File Name: " << __FILE__ << "\n"
-                      << "#--- Line    #: " << __LINE__ << "\n"
-                      << "#--- Func Name: " << __FUNCTION__ << "\n";
-
-            throw std::runtime_error( errorinfo + "\n" );
-        }
-    }
 }
 }

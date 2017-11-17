@@ -1,0 +1,15 @@
+v611/*
+*.fdb_latexmk
+*.fls
+*Notes.bib
+*.aux
+*.log
+*.out
+EoS*.pdf
+*.synctex.gz
+*.toc
+*.lb
+*.end
+*.bbl
+*.blg
+*.xdv

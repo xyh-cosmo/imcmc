@@ -202,7 +202,7 @@ namespace imcmc{
             if( (skip_step > 0)  && (i < chain_num+existed_chain_num) ){
 
                 if( rank == ROOT_RANK )
-                    std::cout << "\n ****** skipping some chains, can be viewed as extra burn-in ******\n";
+                    std::cout << "\n ****** skipping some steps, can be viewed as extra burn-in ******\n";
 
                 for( int j=0; j<skip_step; ++j ){
 

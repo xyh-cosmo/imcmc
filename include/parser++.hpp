@@ -190,13 +190,7 @@ namespace imcmc {
                                         double      array[],
                                         int         array_size );
         }
-
-        namespace Info {
-            void WarningInfo( std::string warninginfo, bool stop=false );
-            void ErrorInfo( std::string errorinfo );
-        }
     }
-
 }
 
 #define IMCMC_ERROR(ERR_MSG) {                    \

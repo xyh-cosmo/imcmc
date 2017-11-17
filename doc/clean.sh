@@ -3,14 +3,16 @@
 to_del=( *.aux \
 		 *.fls \
 		 *.log \
-		 *.bbl \
 		 *.blg \
+		 *.bbl \
 		 *.fdb_latexmk \
 		 *.out \
 		 *.pages \
 		 *.toc \
 		 *.end \
-		 *synctex.gz )
+		 *.xdv \
+		 *synctex.gz \
+		 *Notes.bib )
 
 i=0
 while [ $i -lt ${#to_del[@]} ]
@@ -22,3 +24,4 @@ do
 	fi;
 	i=`expr $i + 1`
 done
+
