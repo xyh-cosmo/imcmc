@@ -294,7 +294,7 @@ void ensemble_workspace::init( std::string paramfile ) {
             used_settings << std::setw(iterm_width) << std::left << " write_chain_header" << " = false\n";
 
         used_settings.close();
-        std::cout << " ===> seetings have been saved\n\n";
+        std::cout << " ===> settings have been saved\n\n";
     }
 
     init_param();
