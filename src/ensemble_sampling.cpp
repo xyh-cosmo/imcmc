@@ -14,16 +14,20 @@ namespace imcmc{
 
     double ensemble_workspace::gz(){
 
-        double z;
-        double zmin = 1./efficient_a;
-        double zmax = efficient_a;
-        double gmax = g(zmin);
-        double gx;
+//        double z;
+//        double zmin = 1./efficient_a;
+//        double zmax = efficient_a;
+//        double gmax = g(zmin);
+//        double gx;
 
-        do{
-            z     = gsl_ran_flat(rand_seed, zmin, zmax);
-            gx    = gsl_ran_flat(rand_seed,  0.0, gmax);
-        } while( gx > g(z) );
+//        do{
+//            z     = gsl_ran_flat(rand_seed, zmin, zmax);
+//            gx    = gsl_ran_flat(rand_seed,  0.0, gmax);
+//        } while( gx > g(z) );
+
+//  this new implementation is more efficient! (The idea is borrowed from emcee)
+        double R = gsl_ran_flat(rand_seed, 0.0, 1.0);
+        double z = pow( (efficient_a-1.0)*R+1, 2) / efficient_a;
 
         return z;
     }
