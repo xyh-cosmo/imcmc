@@ -634,6 +634,10 @@ ac_includes_default="\
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
+Darwin_FALSE
+Darwin_TRUE
+Linux_FALSE
+Linux_TRUE
 POW_LIB
 LIBOBJS
 CXXCPP
@@ -740,7 +744,6 @@ infodir
 docdir
 oldincludedir
 includedir
-runstatedir
 localstatedir
 sharedstatedir
 sysconfdir
@@ -834,7 +837,6 @@ datadir='${datarootdir}'
 sysconfdir='${prefix}/etc'
 sharedstatedir='${prefix}/com'
 localstatedir='${prefix}/var'
-runstatedir='${localstatedir}/run'
 includedir='${prefix}/include'
 oldincludedir='/usr/include'
 docdir='${datarootdir}/doc/${PACKAGE_TARNAME}'
@@ -1087,15 +1089,6 @@ do
   | -silent | --silent | --silen | --sile | --sil)
     silent=yes ;;
 
-  -runstatedir | --runstatedir | --runstatedi | --runstated \
-  | --runstate | --runstat | --runsta | --runst | --runs \
-  | --run | --ru | --r)
-    ac_prev=runstatedir ;;
-  -runstatedir=* | --runstatedir=* | --runstatedi=* | --runstated=* \
-  | --runstate=* | --runstat=* | --runsta=* | --runst=* | --runs=* \
-  | --run=* | --ru=* | --r=*)
-    runstatedir=$ac_optarg ;;
-
   -sbindir | --sbindir | --sbindi | --sbind | --sbin | --sbi | --sb)
     ac_prev=sbindir ;;
   -sbindir=* | --sbindir=* | --sbindi=* | --sbind=* | --sbin=* \
@@ -1233,7 +1226,7 @@ fi
 for ac_var in	exec_prefix prefix bindir sbindir libexecdir datarootdir \
 		datadir sysconfdir sharedstatedir localstatedir includedir \
 		oldincludedir docdir infodir htmldir dvidir pdfdir psdir \
-		libdir localedir mandir runstatedir
+		libdir localedir mandir
 do
   eval ac_val=\$$ac_var
   # Remove trailing slashes.
@@ -1386,7 +1379,6 @@ Fine tuning of the installation directories:
   --sysconfdir=DIR        read-only single-machine data [PREFIX/etc]
   --sharedstatedir=DIR    modifiable architecture-independent data [PREFIX/com]
   --localstatedir=DIR     modifiable single-machine data [PREFIX/var]
-  --runstatedir=DIR       modifiable per-process data [LOCALSTATEDIR/run]
   --libdir=DIR            object code libraries [EPREFIX/lib]
   --includedir=DIR        C header files [PREFIX/include]
   --oldincludedir=DIR     C header files for non-gcc [/usr/include]
@@ -18198,6 +18190,25 @@ fi
 done
 
 
+# check system with `uname`. Latest versions of gcc needs the link flag: -Wl,--no-as-needed
+SYS_NAME=`uname`
+ if test "$SYS_NAME" = "Linux"; then
+  Linux_TRUE=
+  Linux_FALSE='#'
+else
+  Linux_TRUE='#'
+  Linux_FALSE=
+fi
+
+ if test "$SYS_NAME" = "Darwin"; then
+  Darwin_TRUE=
+  Darwin_FALSE='#'
+else
+  Darwin_TRUE='#'
+  Darwin_FALSE=
+fi
+
+
 # Write Makefiles and configuration header.
 ac_config_headers="$ac_config_headers config.h"
 
@@ -18346,6 +18357,14 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCXX\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${Linux_TRUE}" && test -z "${Linux_FALSE}"; then
+  as_fn_error $? "conditional \"Linux\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${Darwin_TRUE}" && test -z "${Darwin_FALSE}"; then
+  as_fn_error $? "conditional \"Darwin\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

@@ -174,6 +174,11 @@ AC_CHECK_HEADERS(   [mpi.h],
                             AC_MSG_ERROR("Can't find mpi includes; use --with-mpiinc")
                         fi  ] )
 
+# check system with `uname`. Latest versions of gcc needs the link flag: -Wl,--no-as-needed
+SYS_NAME=`uname`
+AM_CONDITIONAL([Linux],  [test "$SYS_NAME" = "Linux"])
+AM_CONDITIONAL([Darwin], [test "$SYS_NAME" = "Darwin"])
+
 # Write Makefiles and configuration header.
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES(    [ Makefile
