@@ -872,7 +872,7 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
                     start_value = full_param[*it];
                 }
                 else {
-                    //  central values might not as good as fiducial values, but should not be bad either.
+                    //  central values might be not as good as fiducial values, but should not be bad neither.
                     start_value = 0.5*(full_param_min[*it] + full_param_max[*it]);
                 }
 
@@ -888,15 +888,21 @@ void ensemble_workspace::init_walkers() {  //  NOTE: intialized walkers MUST lie
 
                     if( value_width > width_right )
                         value_width = width_right;
-                }
 
-                //  ==============================================================================
-                //  just give the walkers some reasonable values...
-                //  0.25 can be replaced by other values whoes absolute values are less than 0.5
-                //  ==============================================================================
-                walker[*it][i]      = gsl_ran_flat( rand_seed,
+                    walker[*it][i]  = gsl_ran_flat( rand_seed,
+                                                    start_value - init_ball_radius*value_width,
+                                                    start_value + init_ball_radius*value_width );
+
+                    // make sure that walker[*it][i] dose not run out of range ~
+                    if( walker[*it][i] < full_param_min[*it] || walker[*it][i] > full_param_max[*it] ){
+                    	MPI_IMCMC_ERROR("walker["+*it+"][i] is out of sampling range !");
+                    }
+                }
+                else{
+                	walker[*it][i]  = gsl_ran_flat( rand_seed,
                                                     start_value - 0.5*init_ball_radius*value_width,
                                                     start_value + 0.5*init_ball_radius*value_width );
+                }
 
                 full_param_temp[*it] = walker[*it][i];
                 ++it;
