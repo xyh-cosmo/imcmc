@@ -142,9 +142,8 @@ namespace imcmc{
                 imcmc_vector_string_iterator it = output_param_name.begin();
 
             //  Write the first line
-                out_stream << "# ensemble format, exactly the same with MultiNest\n";
                 out_stream << "#";
-                out_stream << std::setw(_OUT_WIDTH_-1) << "probability" << std::setw(_OUT_WIDTH_) << "chisq";
+                out_stream << std::setw(_OUT_WIDTH_-1) << "weights" << std::setw(_OUT_WIDTH_) << "chisq";
 
             //  Write the second line
                 if( write_chain_header ){
