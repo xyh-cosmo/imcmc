@@ -37,6 +37,8 @@ namespace imcmc{
         write_chain_header  = true; //  default true
         save_burned_ashes   = true;
         start_from_fiducial = true;
+        
+        chisq_rescale_factor = 1.0;
     }
 
     ensemble_workspace::~ensemble_workspace(){

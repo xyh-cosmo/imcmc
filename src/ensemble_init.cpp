@@ -182,6 +182,13 @@ void ensemble_workspace::init( std::string paramfile ) {
     if( Read::Has_Key_in_File( paramfile, "start_from_check_point") ) {
         start_from_check_point = Read::Read_Bool_from_File(paramfile, "start_from_check_point");
     }
+    
+    if( start_from_check_point == true ){
+        chisq_rescale_factor = 1.0;     // by default it should be 1.0
+        if( Read::Has_Key_in_File( paramfile, "chisq_rescale_factor" ) ){
+            chisq_rescale_factor = Read::Read_Double_from_File(paramfile,"chisq_rescale_factor");
+        }
+    }
 
     if( Read::Has_Key_in_File( paramfile, "stop_on_error" ) ) {
         likelihood_state.stop_on_error = Read::Read_Bool_from_File(paramfile, "stop_on_error");

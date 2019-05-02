@@ -209,8 +209,11 @@ namespace imcmc{
 
         //  test whether there is any error happened
             if( likelihood_state.this_like_is_ok ){
-                lndet += lndet_temp;
-                chisq += chisq_temp;
+//                lndet += lndet_temp;
+//                chisq += chisq_temp;
+                lndet += lndet_temp*chisq_rescale_factor;
+                chisq += chisq_temp*chisq_rescale_factor;
+                
             }
             else{
 
@@ -218,8 +221,8 @@ namespace imcmc{
                     likelihood_state.what_happened();
                 else{
                     likelihood_state.what_happened(); // still going on sampling, but will print the error information
-                    chisq   = _IMCMC_CHISQ_MAX_;
-                    ln_post = _IMCMC_LNPOST_MIN_;
+                    chisq   = _IMCMC_CHISQ_MAX_*chisq_rescale_factor;
+                    ln_post = _IMCMC_LNPOST_MIN_*chisq_rescale_factor;
                 }
                 break;  //  jump out the loop
             }
