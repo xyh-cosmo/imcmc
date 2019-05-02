@@ -221,7 +221,7 @@ namespace imcmc{
                                                     temp,
                                                     walker_num );
             for( int i=0; i<walker_num; ++i ){
-                walker["LnPost"][i] = temp[i];  // *chisq_rescale_factor
+                walker["LnPost"][i] = temp[i] * chisq_rescale_factor;
             }
 
             Read::Read_Array_of_Double_from_File(   chkfile,
@@ -237,7 +237,7 @@ namespace imcmc{
                                                     temp,
                                                     walker_num );
             for( int i=0; i<walker_num; ++i ){
-                walker["Chisq"][i] = temp[i];  // *chisq_rescale_factor
+                walker["Chisq"][i] = temp[i] * chisq_rescale_factor;
             }
 
             Read::Read_Array_of_Double_from_File(   chkfile,
@@ -253,7 +253,7 @@ namespace imcmc{
                                                     temp,
                                                     walker_num );
             for( int i=0; i<walker_num; ++i ){
-                walker_io["LnPost"][i] = temp[i];  // *chisq_rescale_factor
+                walker_io["LnPost"][i] = temp[i] * chisq_rescale_factor;
             }
 
             Read::Read_Array_of_Double_from_File(   chkfile,
@@ -269,7 +269,7 @@ namespace imcmc{
                                                     temp,
                                                     walker_num );
             for( int i=0; i<walker_num; ++i ){
-                walker_io["Chisq"][i] = temp[i];  // *chisq_rescale_factor
+                walker_io["Chisq"][i] = temp[i] * chisq_rescale_factor;
             }
 
             it = sampling_param_name.begin();
