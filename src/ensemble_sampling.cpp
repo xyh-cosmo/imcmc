@@ -344,7 +344,7 @@ namespace imcmc{
             int walker_num_half = walker_num / 2;   //  walker_num should be an even number.
 
         //  ==============================================================================
-        //  Update @ 2016-12-31: This part is used to handled by each rank, and each rank
+        //  Update @ 2016-12-31: This part is used to be handled by each rank, and each rank
         //  uses different random number seeds.  So walker_id[] are normally different in
         //  different ranks.  This might be a bug ... [not confirmed yet!!!]
         //  After this update, walker_id is first initialized in the root rank, and then

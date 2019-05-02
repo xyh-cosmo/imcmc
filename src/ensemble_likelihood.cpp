@@ -207,11 +207,13 @@ namespace imcmc{
 
             likelihood_state.this_like_is_ok = (likelihood_state.this_like_is_ok && last_state);
 
+            ln_post *= chisq_rescale_factor;
+
         //  test whether there is any error happened
             if( likelihood_state.this_like_is_ok ){
 //                lndet += lndet_temp;
 //                chisq += chisq_temp;
-                lndet += lndet_temp*chisq_rescale_factor;
+                lndet += lndet_temp*chisq_rescale_factor;   // lndet is acutally not used ...
                 chisq += chisq_temp*chisq_rescale_factor;
                 
             }
