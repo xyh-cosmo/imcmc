@@ -184,6 +184,7 @@ namespace imcmc {
         void save_state( int idx );  // save walkers' state into disk
         bool read_state();  // read walkers' state from state file stored on disk.
         double chisq_rescale_factor;    // @20190502, this factor is used to rescale the original chisq by a constant factor (e.g., 100)
+        bool rescale_chkfile_chisq_only; // if true, then only rescale the chisq and lndet in the chkfile (default: false)
         void set_chkfile_width(int width=8);
         void set_chkfile_precision(int precision=6);
     };

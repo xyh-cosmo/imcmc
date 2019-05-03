@@ -207,14 +207,18 @@ namespace imcmc{
 
             likelihood_state.this_like_is_ok = (likelihood_state.this_like_is_ok && last_state);
 
-            ln_post *= chisq_rescale_factor;
+            double chisq_rescale_factor_tmp = 1.0;
+            if( rescale_chkfile_chisq_only == false )
+                chisq_rescale_factor_tmp = chisq_rescale_factor;
+            
+            ln_post *= chisq_rescale_factor_tmp;
 
         //  test whether there is any error happened
             if( likelihood_state.this_like_is_ok ){
 //                lndet += lndet_temp;
 //                chisq += chisq_temp;
-                lndet += lndet_temp*chisq_rescale_factor;   // lndet is acutally not used ...
-                chisq += chisq_temp*chisq_rescale_factor;
+                lndet += lndet_temp*chisq_rescale_factor_tmp;   // lndet is acutally not used ...
+                chisq += chisq_temp*chisq_rescale_factor_tmp;
                 
             }
             else{
@@ -223,8 +227,8 @@ namespace imcmc{
                     likelihood_state.what_happened();
                 else{
                     likelihood_state.what_happened(); // still going on sampling, but will print the error information
-                    chisq   = _IMCMC_CHISQ_MAX_*chisq_rescale_factor;
-                    ln_post = _IMCMC_LNPOST_MIN_*chisq_rescale_factor;
+                    chisq   = _IMCMC_CHISQ_MAX_*chisq_rescale_factor_tmp;
+                    ln_post = _IMCMC_LNPOST_MIN_*chisq_rescale_factor_tmp;
                 }
                 break;  //  jump out the loop
             }

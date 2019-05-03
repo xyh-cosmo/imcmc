@@ -184,9 +184,15 @@ void ensemble_workspace::init( std::string paramfile ) {
     }
     
     if( start_from_check_point == true ){
-        chisq_rescale_factor = 1.0;     // by default it should be 1.0
+        chisq_rescale_factor        = 1.0;     // by default it should be 1.0
+        rescale_chkfile_chisq_only  = false;
+        
         if( Read::Has_Key_in_File( paramfile, "chisq_rescale_factor" ) ){
             chisq_rescale_factor = Read::Read_Double_from_File(paramfile,"chisq_rescale_factor");
+        }
+        
+        if( Read::Has_Key_in_File( paramfile, "rescale_chkfile_chisq_only" ) ){
+            rescale_chkfile_chisq_only = Read::Read_Bool_from_File(paramfile,"rescale_chkfile_chisq_only");
         }
     }
 
