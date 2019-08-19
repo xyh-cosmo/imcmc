@@ -215,16 +215,16 @@ namespace imcmc {
 
 
 #define MPI_IMCMC_ERROR(ERR_MSG) {                \
-if( MPI::COMM_WORLD.Get_rank() == 0 ){            \
+  if( MPI::COMM_WORLD.Get_rank() == 0 ){            \
     std::cout                                     \
     << "#--- IMCMC Error ---\n"                   \
     << "#--- File Name: " << __FILE__ << "\n"     \
     << "#--- Line    #: " << __LINE__ << "\n"     \
     << "#--- Func name: " << __FUNCTION__ << "\n" \
     << "#--- Error Msg: " << ERR_MSG << "\n\n";   \
-    MPI::Finalize();                              \
-    exit(0);                                      \
   }                                               \
+  MPI::Finalize();                              \
+  exit(0);                                      \
 }
 
 
